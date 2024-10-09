@@ -42,6 +42,7 @@ export default function SignUp() {
   const [specialty, setSpecialty] = useState('');
   const [selectedInsurances, setSelectedInsurances] = useState<string[]>([]); // list of selected insurances
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]); // list of selected languages
+  const [showMoreInsurances, setShowMoreInsurances] = useState(false);
 
   // if user is logged in, redirect to home page
   useEffect(() => {
@@ -474,8 +475,19 @@ export default function SignUp() {
         ];
         return (
           <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-2">
-              {insurances.map((insurance) => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {insurances.slice(0, 10).map((insurance) => (
+                <Button
+                  key={insurance}
+                  type="button"
+                  variant={selectedInsurances.includes(insurance) ? "default" : "outline"}
+                  onClick={() => toggleInsurance(insurance)}
+                  className="justify-start"
+                >
+                  {insurance}
+                </Button>
+              ))}
+              {showMoreInsurances && insurances.slice(10).map((insurance) => (
                 <Button
                   key={insurance}
                   type="button"
@@ -487,6 +499,14 @@ export default function SignUp() {
                 </Button>
               ))}
             </div>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setShowMoreInsurances(!showMoreInsurances)}
+              className="w-full"
+            >
+              {showMoreInsurances ? "Show Less" : "More Insurances"}
+            </Button>
           </div>
         );
       case 5:
