@@ -33,6 +33,7 @@ const Navbar = () => {
                   alt="Doctor Finder Logo"
                   width={95}
                   height={95}
+                  className="pt-2"
                 />
               </Link>
             </div>
