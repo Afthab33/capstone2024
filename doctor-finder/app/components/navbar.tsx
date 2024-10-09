@@ -29,7 +29,7 @@ const Navbar = () => {
             <div className="flex-shrink-0 flex items-center">
               <Link href="/" className="flex items-center">
                 <Image
-                  src="/logo.svg"
+                  src="/logonew.svg"
                   alt="Doctor Finder Logo"
                   width={95}
                   height={95}
