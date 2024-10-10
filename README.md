@@ -10,7 +10,7 @@ git clone https://github.com/markie-dev/capstone2024.git
 ```
 2. cd into the project
 ```
-cd doctor-finder
+cd capstone2024/doctor-finder
 ```
 3. Install dependencies
 ```
