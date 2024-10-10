@@ -548,8 +548,8 @@ export default function SignUp() {
               <Card className="mt-3">
                 <form onSubmit={handleSignUp}>
                   <CardHeader>
-                    <CardTitle className="text-xl sm:text-lg md:text-lg lg:text-lg">Patient Signup</CardTitle>
-                    <CardDescription className="text-base sm:text-sm md:text-sm lg:text-sm">
+                    <CardTitle className="text-lg sm:text-lg md:text-lg lg:text-lg">Patient Signup</CardTitle>
+                    <CardDescription className="text-sm sm:text-sm md:text-sm lg:text-sm">
                       Once you sign up, you will be able to find your doctor and book an appointment.
                     </CardDescription>
                   </CardHeader>
@@ -670,14 +670,14 @@ export default function SignUp() {
               <Card className="mt-3">
                 <form onSubmit={handleSignUp}>
                   <CardHeader>
-                    <CardTitle className="text-xl sm:text-lg md:text-lg lg:text-lg">
+                    <CardTitle className="text-lg sm:text-lg md:text-lg lg:text-lg">
                       {doctorSignupStep === 1 && "Doctor Signup"}
                       {doctorSignupStep === 2 && "Add Your Clinic"}
-                      {doctorSignupStep === 3 && "Add Your Service Offered"}
+                      {doctorSignupStep === 3 && "Choose Your Specialty"}
                       {doctorSignupStep === 4 && "Add Your Insurances Offered"}
                       {doctorSignupStep === 5 && "Add Your Languages Spoken"}
                     </CardTitle>
-                    <CardDescription className="text-base sm:text-sm md:text-sm lg:text-sm">
+                    <CardDescription className="text-sm sm:text-sm md:text-sm lg:text-sm">
                       {doctorSignupStep === 1 && "Once you sign up, we will verify your credentials and show your profile to patients"}
                       {doctorSignupStep === 2 && "Enter your clinic's information for verification"}
                       {doctorSignupStep === 3 && "Select the service offered by your clinic"}
