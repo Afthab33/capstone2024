@@ -31,8 +31,12 @@ const ViewAllDoctors = () => {
         }
         const data = await response.json();
         setDoctors(data); // Populate the state with the fetched doctors
-      } catch (error: any) {
-        setError(error.message);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          setError(error.message); // Use error.message if it is an Error instance
+        } else {
+          setError('An unknown error occurred'); // Fallback for unknown types
+        }
       } finally {
         setLoading(false); // Set loading to false after fetching
       }
