@@ -1,6 +1,7 @@
 {
   "extends": ["next/core-web-vitals", "next/typescript", "prettier"],
   "rules": {
-    "react/no-unescaped-entities": "off"
+    "react/no-unescaped-entities": "off",         // Du hates you ' vs ", bypass you also
+    "@typescript-eslint/no-explicit-any": "off"   // DU bypass this so can use any type
   }
 }
