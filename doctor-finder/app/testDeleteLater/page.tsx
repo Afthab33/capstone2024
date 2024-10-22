@@ -73,6 +73,7 @@ export default function UserList() {
               ))}
             </ul>
             <p><strong>Role:</strong> {user.role}</p>
+            <p><strong>Rating:</strong> {user.rating}</p>
             {/* Remove the stuff you not need DU */}
           </li>
         ))}
