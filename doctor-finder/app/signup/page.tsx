@@ -132,6 +132,7 @@ export default function SignUp() {
           specialty,
           acceptedInsurances: selectedInsurances,
           spokenLanguages: selectedLanguages,
+          rating: 0,
         } : {}),
         createdAt: new Date().toISOString(), // convert current date to string
       });

@@ -50,6 +50,12 @@ const Navbar = () => {
                   <span className="absolute left-0 bottom-0 w-full h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
                 </span>
               </Link>
+              <Link href="/testDeleteLater" className="text-gray-900 inline-flex items-center px-1 pt-1 hover:text-gray-600 relative group">
+                <span className="relative">
+                  DU testing
+                  <span className="absolute left-0 bottom-0 w-full h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
+                </span>
+              </Link>
             </div>
           </div>
           <div className="flex items-center space-x-4 lg:pr-10">
@@ -71,8 +77,8 @@ const Navbar = () => {
                     </DialogDescription>
                   </DialogHeader>
                   <DialogFooter className="sm:justify-end flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 pt-2">
-                    <Button variant="outline" onClick={() => setIsLogoutDialogOpen(false)} className="w-full sm:w-auto">Cancel</Button>
                     <Button onClick={handleLogout} className="w-full sm:w-auto">Log Out</Button>
+                    <Button variant="outline" onClick={() => setIsLogoutDialogOpen(false)} className="w-full sm:w-auto">Cancel</Button>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
