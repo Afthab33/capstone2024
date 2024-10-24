@@ -1,7 +1,11 @@
 
-'use client';   //client component 
+'use client';
+
+// add onsnapshot for realtime updates 
 
 import { useEffect, useState } from 'react';
+import { getFirestore, collection, getDocs, query, where, onSnapshot } from 'firebase/firestore';
+import { useAuth } from '../authcontext';
 
 interface Doctor {
   id: string;
@@ -21,29 +25,38 @@ const ViewAllDoctors = () => {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { user } = useAuth();  // check if the user is logged in 
 
   useEffect(() => {
+
     const fetchDoctors = async () => {
+
+      const db = getFirestore();
+      // search db for all doctors
+      const doctorsQuery = query(collection(db, 'users'), where("role", "==", "doctor"));
+
       try {
-        const response = await fetch('/api/doctors'); // Call API route
-        if (!response.ok) {
-          throw new Error('Failed to fetch doctors');
-        }
-        const data = await response.json();
-        setDoctors(data); // Populate the state with the fetched doctors
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          setError(error.message); // Use error.message if it is an Error instance
-        } else {
-          setError('An unknown error occurred'); // Fallback for unknown types
-        }
-      } finally {
+        const userSnapshot = await getDocs(doctorsQuery);
+        const userList: Doctor[] = userSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data() as Omit<Doctor, 'id'>, // ensure data matches the Doctor interface
+        }));
+        setDoctors(userList);
+      } catch (err) {
+        console.error('Error fetching users:', err);
+        setError('Failed to fetch users.');
+      }finally {
         setLoading(false); // Set loading to false after fetching
       }
     };
 
-    fetchDoctors();
-  }, []);
+    if (user) {
+      fetchDoctors(); // verify user is logged in
+    } else {
+      setLoading(false); // Set loading to false if user is not logged in
+    }
+
+  }, [user]);
 
   if (loading) return <div>Loading...</div>; // Loading state
   if (error) return <div>Error: {error}</div>; // Error state
