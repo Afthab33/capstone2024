@@ -4,7 +4,7 @@
 // add onsnapshot for realtime updates 
 
 import { useEffect, useState } from 'react';
-import { getFirestore, collection, getDocs, query, where, onSnapshot } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, query, where} from 'firebase/firestore';
 import { useAuth } from '../authcontext';
 
 interface Doctor {
