@@ -39,6 +39,7 @@ export { initializeFirebase, getFirebaseAuth as auth, getFirebaseDb as db };
 
 export const clearUserCache = () => {
     localStorage.removeItem('userCache'); // remove user cache from local storage
+    localStorage.removeItem('userLocation'); // remove user location from local storage
 }
 
 interface AuthContextType {
