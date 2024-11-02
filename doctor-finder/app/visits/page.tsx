@@ -1,4 +1,4 @@
-import AppointmentsCard from "../components/appointmentsCard"
+import AppointmentsCard from "../components/AppointmentsCard"
 export default function AppointmentsPage() {
   return (
     <>

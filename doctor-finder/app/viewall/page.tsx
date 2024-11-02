@@ -6,6 +6,7 @@
 import { useEffect, useState } from 'react';
 import { getFirestore, collection, getDocs, query, where} from 'firebase/firestore';
 import { useAuth } from '../authcontext';
+import DoctorCard from '../components/doctorCard';
 
 interface Doctor {
   id: string;
@@ -61,22 +62,29 @@ const ViewAllDoctors = () => {
   if (loading) return <div>Loading...</div>; // Loading state
   if (error) return <div>Error: {error}</div>; // Error state
 
+
   return (
-    <div>
-      <h1>View All Doctors</h1>
-      <ul>
-        {doctors.map((doctor) => (
-          <li key={doctor.id}>
-            <h2>{doctor.name}</h2>
-            <p>Degree: {doctor.degree}</p>
-            <p>Clinic Name: {doctor.clinicName}</p>
-            <p>Address: {doctor.streetAddress}, {doctor.city}, {doctor.state} {doctor.zipCode}</p>
-            <p>Specialty: {doctor.specialty}</p>
-            <p>Accepted Insurances: {doctor.acceptedInsurances.join(', ')}</p>
-            <p>Spoken Languages: {doctor.spokenLanguages.join(', ')}</p>
-          </li>
-        ))}
-      </ul>
+    <div className="flex justify-center">
+      <div className="w-full max-w-7xl mx-auto px-36">
+        <h1 className="text-2xl font-bold mb-4 text-center">View All Doctors</h1>
+        <div className="space-y-4">
+          {doctors.map((doctor) => (
+            <DoctorCard
+              key={doctor.id}
+              name={doctor.name}
+              specialty={doctor.specialty}
+              nextAvailable="Next available date here"  // add doctors next available date
+              clinicName={doctor.clinicName}
+              streetAddress={doctor.streetAddress}
+              city={doctor.city}
+              state={doctor.state}
+              zipCode={doctor.zipCode}
+              acceptedInsurances={doctor.acceptedInsurances}
+              spokenLanguages={doctor.spokenLanguages}
+            />
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
