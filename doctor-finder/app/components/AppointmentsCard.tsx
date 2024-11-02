@@ -1,46 +1,72 @@
 'use client';
 
+import { Button } from '@/components/ui/button';
 import { Star, Shield, MessageCircle, MapPin } from 'lucide-react';
 import { useState } from 'react';
 //name specialty available location language reviews medicare plans
 interface AppointmentsCardProps {
-  
   specialty: string;
   nextAvailable: string;
-  location?: string;
 }
 
 function AppointmentsCard({ specialty, nextAvailable }: AppointmentsCardProps) {
   return (
-    <div className="flex items-center justify-between w-full max-w-2xl p-4 bg-white rounded-lg shadow">
-      <div className="flex items-center space-x-4">
-        <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center">
-          {/* Placeholder for 's image */}
-          <span className="text-gray-500 text-2xl">DR</span>
+    <>
+
+      <div className="flex items-center justify-between w-full max-w p-4 bg-white rounded-lg ">
+        <div className="flex items-center space-x-4">
+          <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center">
+            {/* Placeholder for 's image */}
+          </div>
+          <div>
+            <div className='flex justify-left text-gray-500 mb-2' style={{ position: "relative", right: "80px", fontSize: "15px" }}>
+              Tuesday, November 26, 2024 [temp]
+            </div>
+            <span className="text-lg font-semibold text-gray-800">DR Bob Ross, MD</span>
+            <h3 className="text-gray-500 text-sm 1px mb-2">{specialty}</h3>
+            <div className="flex flex-col items-left text-sm mb-2"  >
+
+              <Star className="w-5 h-5 text-yellow-400 fill-current mb-2" />
+              <MapPin className="w-5 h-5 text-black-500 mb-2" />
+              <Shield className="w-5 h-5 text-blue-500 mb-2" />
+              <MessageCircle className="w-5 h-5 text-black-500 mb-2" />
+
+            </div>
+            <div className='flex flex-col mb-2 space-y-1' style={{ position: "relative", top: "-122px", left: "25px", marginRight: "175px" , marginBottom: "-110px"}}>
+
+              <div >5 · 144 reviews</div>
+              <div >1.3mi · 301 Maple St, Denton, Tx 75601</div>
+              <div >Accepts, Tricare, Blue Cross, Shield, Humana +12 more</div>
+              <div >Speaks English</div>
+            </div>
+          </div>
         </div>
-        <div>
-          <h3 className="text-lg font-semibold text-gray-800">{nextAvailable}</h3>
+        <div className="flex items-center space-x-2">
+          <div className="flex flex-col items-end">
+            <p className="text-sm text-gray-500 mb-2 ">Next available: {nextAvailable}</p>
+            <Button className=" mb-2" style={{
+              width: 175
+            }}>
+              Book Again
+            </Button>
+
+            <div>
+              <Button className="mb-2 " style={{
+                backgroundColor: "#829eb5",
+                width: 175
+              }}>
+                Leave a Review
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
-      <div className="flex items-center space-x-4">
-        <div className="flex flex-col items-center space-y-2">
-          <Star className="w-5 h-5 text-yellow-400 fill-current" />
-          <MapPin className="w-5 h-5 text-blue-500" />
-          <Shield className="w-5 h-5 text-blue-500" />
-          <MessageCircle className="w-5 h-5 text-blue-500" />
-        </div>
-        <div className="flex flex-col items-end">
-          <p className="text-sm text-gray-600 mb-2">Next available:{specialty}</p>
-          <button className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300">
-            Book Online
-          </button>
-        </div>
-      </div>
-    </div>
+      <hr style={{ border: '1px solid gray-200' }} />
+    </>
   );
 }
 
-export default function AppointmentsPage({ location }: AppointmentsCardProps) {
+export default function AppointmentsPage({ }: AppointmentsCardProps) {
 
   const [appointments] = useState<AppointmentsCardProps[]>([
     { specialty: 'Internal Medicine', nextAvailable: 'Tue, Nov 26' },
@@ -53,10 +79,11 @@ export default function AppointmentsPage({ location }: AppointmentsCardProps) {
     { specialty: 'Psychiatry', nextAvailable: 'Thu, Dec 5' },
   ]);
 
-  return (
-    <div className="flex justify-center items-start min-h-screen bg-gray-100 p-4">
-      <div className="w-full max-w-2xl">
-        <h1 className="text-2xl font-bold mb-4 text-center">Top Rated doctor's in {location} </h1>
+  return (<>
+
+    <div className="flex justify-center items-start min-h-screen p-5 flex grow">
+      <div className="w-100rem">
+        <h1 className="text-2xl font-bold mb-4 text-left">Appointments History </h1>
         <div className="overflow-y-auto max-h-[calc(100vh-8rem)] pr-2">
           {appointments.map((appointment, index) => (
             <AppointmentsCard key={index} {...appointment} />
@@ -64,5 +91,6 @@ export default function AppointmentsPage({ location }: AppointmentsCardProps) {
         </div>
       </div>
     </div>
+  </>
   );
 }

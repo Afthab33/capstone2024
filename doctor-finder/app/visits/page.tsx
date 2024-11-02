@@ -1,12 +1,10 @@
-import AppointmentsCard from "../components/AppointmentsCard"
- 
+import AppointmentsCard from "../components/appointmentsCard"
 export default function AppointmentsPage() {
-
-  
-    
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <AppointmentsCard  specialty={""} nextAvailable={""}  location={"Texas" } />
-    </div>
+    <>
+      <div className="flex justify-center p-4">
+        <AppointmentsCard specialty={""} nextAvailable={""} />
+      </div>
+    </>
   )
 }
