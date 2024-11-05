@@ -74,23 +74,34 @@ const Navbar = () => {
                 <Skeleton className="h-10 w-20" />
               </>
             ) : user ? (
-              <Dialog open={isLogoutDialogOpen} onOpenChange={setIsLogoutDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button>Log Out</Button>
-                </DialogTrigger>
-                <DialogContent className="top-1/4 sm:max-w-[425px] w-[90vw] max-w-[90vw] rounded-lg">
-                  <DialogHeader>
-                    <DialogTitle>Confirm Logout</DialogTitle>
-                    <DialogDescription>
-                      Are you sure you want to log out?
-                    </DialogDescription>
-                  </DialogHeader>
-                  <DialogFooter className="sm:justify-end flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 pt-2">
-                    <Button onClick={handleLogout} className="w-full sm:w-auto">Log Out</Button>
-                    <Button variant="outline" onClick={() => setIsLogoutDialogOpen(false)} className="w-full sm:w-auto">Cancel</Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
+              <>
+                <Link href="/settings">
+                  <Image
+                    src="/settings2.png"
+                    alt="Settings"
+                    width={40}
+                    height={40}
+                    className="cursor-pointer hover:opacity-80 shadow-[0_0_3px_rgba(0,0,0,0.3)] rounded-full p-0.5"
+                  />
+                </Link>
+                <Dialog open={isLogoutDialogOpen} onOpenChange={setIsLogoutDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button>Log Out</Button>
+                  </DialogTrigger>
+                  <DialogContent className="top-1/4 sm:max-w-[425px] w-[90vw] max-w-[90vw] rounded-lg">
+                    <DialogHeader>
+                      <DialogTitle>Confirm Logout</DialogTitle>
+                      <DialogDescription>
+                        Are you sure you want to log out?
+                      </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter className="sm:justify-end flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 pt-2">
+                      <Button onClick={handleLogout} className="w-full sm:w-auto">Log Out</Button>
+                      <Button variant="outline" onClick={() => setIsLogoutDialogOpen(false)} className="w-full sm:w-auto">Cancel</Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              </>
             ) : (
               <>
                 {pathname !== '/login' && (
