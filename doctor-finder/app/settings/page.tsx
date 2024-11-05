@@ -40,6 +40,7 @@ export default function SettingsPage() {
   const [uploading, setUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [toBeRemoved, setToBeRemoved] = useState(false);
 
   const fetchUserData = useCallback(async () => {
     try {
@@ -78,32 +79,41 @@ export default function SettingsPage() {
   };
 
   const handleSave = async () => {
-    if (!selectedFile || !user) return;
+    if (!user) return;
     
     try {
       setUploading(true);
-      const storage = getStorage();
-      const storageRef = ref(storage, `doctor-profiles/${user.uid}/${selectedFile.name}`);
-      
-      await uploadBytes(storageRef, selectedFile);
-      const downloadURL = await getDownloadURL(storageRef);
-      
       const db = getFirebaseDb();
-      await updateDoc(doc(db, 'users', user.uid), {
-        profileImage: downloadURL
-      });
+
+      if (toBeRemoved) {
+        await updateDoc(doc(db, 'users', user.uid), {
+          profileImage: null
+        });
+      } else if (selectedFile) {
+        const storage = getStorage();
+        const storageRef = ref(storage, `doctor-profiles/${user.uid}/${selectedFile.name}`);
+        
+        await uploadBytes(storageRef, selectedFile);
+        const downloadURL = await getDownloadURL(storageRef);
+        
+        await updateDoc(doc(db, 'users', user.uid), {
+          profileImage: downloadURL
+        });
+      }
       
       await fetchUserData();
       handleCancel(); // clear the preview state
     } catch (error) {
-      console.error('Error uploading file:', error);
+      console.error('Error updating profile picture:', error);
     } finally {
       setUploading(false);
+      setToBeRemoved(false);
     }
   };
 
   const handleCancel = () => {
     setSelectedFile(null);
+    setToBeRemoved(false);
     if (previewUrl) {
       URL.revokeObjectURL(previewUrl);
       setPreviewUrl(null);
@@ -196,7 +206,7 @@ export default function SettingsPage() {
                       zipCode={userData.zipCode || ''}
                       acceptedInsurances={userData.acceptedInsurances || []}
                       spokenLanguages={userData.spokenLanguages || []}
-                      previewImage={previewUrl || userData.profileImage}
+                      previewImage={toBeRemoved ? null : (previewUrl || userData.profileImage)}
                       rating={userData.rating || 0}
                       reviewCount={userData.reviewCount || 0}
                     />
@@ -227,17 +237,29 @@ export default function SettingsPage() {
                     </div>
                   </div>
 
-                  <div className="flex justify-end space-x-2 mt-4">
+                  <div className="flex flex-col sm:flex-row justify-end gap-2 mt-4">
+                    {userData.profileImage && (
+                      <Button
+                        variant="destructive"
+                        onClick={() => setToBeRemoved(true)}
+                        disabled={uploading || toBeRemoved}
+                        className="w-full sm:w-auto"
+                      >
+                        Remove current picture
+                      </Button>
+                    )}
                     <Button
                       variant="outline"
                       onClick={handleCancel}
-                      disabled={uploading || !selectedFile}
+                      disabled={uploading || (!selectedFile && !toBeRemoved)}
+                      className="w-full sm:w-auto"
                     >
                       Cancel
                     </Button>
                     <Button
                       onClick={handleSave}
-                      disabled={uploading || !selectedFile}
+                      disabled={uploading || (!selectedFile && !toBeRemoved)}
+                      className="w-full sm:w-auto"
                     >
                       {uploading ? 'Saving...' : 'Save'}
                     </Button>

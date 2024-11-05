@@ -69,10 +69,10 @@ export default function DoctorProfileCard({
           </div>
           <div className="w-full">
             <span className="text-base sm:text-lg font-semibold text-gray-800">{displayName}</span>
-            <h3 className="text-xs sm:text-sm text-gray-500 mb-2">{specialty}</h3>
+            <h3 className="text-md sm:text-md text-gray-500 mb-2">{specialty}</h3>
             <div className="flex flex-col sm:flex-col gap-2 text-sm sm:text-base">
               <div className="flex items-center gap-2">
-                <Star className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400 fill-current" />
+                <Star className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400" />
                 <span>
                   {rating}
                   <span className="font-semibold"> · {reviewCount} reviews</span>
