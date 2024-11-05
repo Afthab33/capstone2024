@@ -242,7 +242,7 @@ export default function SettingsPage() {
                       <Button
                         variant="destructive"
                         onClick={() => setToBeRemoved(true)}
-                        disabled={uploading || toBeRemoved}
+                        disabled={uploading || toBeRemoved || selectedFile !== null}
                         className="w-full sm:w-auto"
                       >
                         Remove current picture
