@@ -58,7 +58,7 @@ export default function DoctorProfileCard({
               ) : (
                 <div className="w-full h-full bg-gray-200 flex items-center justify-center relative">
                   <Image
-                    src="https://firebasestorage.googleapis.com/v0/b/dfdatabase-c1532.appspot.com/o/profpic.svg?alt=media&token=2b600d7a-bd04-4da4-8e71-f77a7c562182"
+                    src="/profpic.png"
                     alt="Profile placeholder"
                     fill
                     className="object-cover"
