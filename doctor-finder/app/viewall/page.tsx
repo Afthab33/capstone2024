@@ -64,7 +64,7 @@ const ViewAllDoctors = () => {
 
 
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center p-4">
       <div className="w-full max-w-7xl mx-auto px-36">
         <h1 className="text-2xl font-bold mb-4 text-center">View All Doctors</h1>
         <div className="space-y-4">
