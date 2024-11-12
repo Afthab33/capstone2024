@@ -9,6 +9,8 @@ import { getFirestore, Firestore } from 'firebase/firestore';
 let app: FirebaseApp;
 let auth: Auth;
 let db: Firestore;
+let auth2: Auth;
+let db2: Firestore;
 
 const initializeFirebase = async () => {
     // initialize firebase app, auth, and db
@@ -18,6 +20,8 @@ const initializeFirebase = async () => {
         app = initializeApp(firebaseConfig); // initialize firebase app
         auth = getAuth(app); // get auth
         db = getFirestore(app); // get firestore
+        auth2 = auth;   // DU copy so not mess up original
+        db2 = db;       // DU copy so not mess up original
     }
 };
 
@@ -35,7 +39,8 @@ const getFirebaseDb = () => {
     return db;
 };
 
-export { initializeFirebase, getFirebaseAuth as auth, getFirebaseDb as db };
+// Du need auth2, db2 unchanged
+export { app, db2, auth2, initializeFirebase, getFirebaseAuth as auth, getFirebaseDb as db };
 
 export const clearUserCache = () => {
     localStorage.removeItem('userCache'); // remove user cache from local storage
