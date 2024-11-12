@@ -7,7 +7,7 @@ import { addDoc, collection,doc, serverTimestamp,onSnapshot,query,where,orderBy,
 // import { firestore } from '@/lib/firebase';
 import { db2 as firestore} from "../authcontext"; // omg confusing
 
-function ChatRoom({ user ,selectedChatroom}) {
+function ChatRoom({ selectedChatroom}) {
     const me = selectedChatroom?.myData
     const other = selectedChatroom?.otherData
     const chatRoomId = selectedChatroom?.id
