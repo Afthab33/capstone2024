@@ -1,6 +1,6 @@
 'use client';
 
-import { Star, Shield, MessageCircle, MapPin } from 'lucide-react';
+import { Star, Shield, MessageCircle, MapPin, Pencil } from 'lucide-react';
 import Image from 'next/image';
 
 interface DoctorProfileCardProps {
@@ -16,6 +16,7 @@ interface DoctorProfileCardProps {
   rating?: number;
   reviewCount?: number;
   degree?: string;
+  setIsDialogOpen?: (open: boolean) => void;
 }
 
 export default function DoctorProfileCard({
@@ -31,6 +32,7 @@ export default function DoctorProfileCard({
   previewImage,
   rating = 0,
   reviewCount = 0,
+  setIsDialogOpen,
 }: DoctorProfileCardProps) {
   const displayName = `${degree === 'MD' ? 'Dr. ' : ''}${name}${degree ? `, ${degree}` : ''}`;
 
@@ -47,22 +49,40 @@ export default function DoctorProfileCard({
       <div className="flex items-center justify-between w-full p-4 bg-white rounded-lg">
         <div className="flex flex-col sm:flex-row items-start sm:items-center sm:space-x-6 w-full">
           <div className="profile-image mb-4 sm:mb-0">
-            <div className="w-32 h-32 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0 relative">
-              {previewImage ? (
-                <Image 
-                  src={previewImage} 
-                  alt="Profile" 
-                  fill
-                  className="object-cover"
-                />
-              ) : (
-                <div className="w-full h-full bg-gray-200 flex items-center justify-center relative">
-                  <Image
-                    src="/profpic.png"
-                    alt="Profile placeholder"
-                    fill
-                    className="object-cover"
-                  />
+            <div className="relative group">
+              <div 
+                className={`w-32 h-32 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden transition-opacity duration-200 ${setIsDialogOpen ? 'cursor-pointer group-hover:opacity-75' : ''}`}
+                onClick={() => setIsDialogOpen && setIsDialogOpen(true)}
+              >
+                {previewImage ? (
+                  <div className="relative w-full h-full rounded-full overflow-hidden">
+                    <Image 
+                      src={previewImage} 
+                      alt="Profile" 
+                      fill
+                      className="object-cover rounded-full"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-full h-full bg-gray-200 flex items-center justify-center relative rounded-full overflow-hidden">
+                    <Image
+                      src="/profpic.png"
+                      alt="Profile placeholder"
+                      fill
+                      className="object-cover rounded-full"
+                    />
+                  </div>
+                )}
+              </div>
+              {setIsDialogOpen && (
+                <div 
+                  className="absolute top-0 right-0 p-2 bg-primary rounded-full shadow-lg cursor-pointer transition-transform duration-200 group-hover:scale-110"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsDialogOpen(true);
+                  }}
+                >
+                  <Pencil className="w-5 h-5 text-white" />
                 </div>
               )}
             </div>
@@ -97,7 +117,6 @@ export default function DoctorProfileCard({
           </div>
         </div>
       </div>
-      <hr className="border-gray-200" />
     </>
   );
 }

@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import DoctorProfileCard from "../components/DoctorProfileCard";
 import { useDropzone } from 'react-dropzone';
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import Image from "next/image";
 
 interface userData {
     firstName: string;
@@ -41,6 +43,7 @@ export default function SettingsPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [toBeRemoved, setToBeRemoved] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const fetchUserData = useCallback(async () => {
     try {
@@ -76,6 +79,9 @@ export default function SettingsPage() {
     // create preview url
     const preview = URL.createObjectURL(file);
     setPreviewUrl(preview);
+    
+    // close the dialog
+    setIsDialogOpen(false);
   };
 
   const handleSave = async () => {
@@ -135,52 +141,53 @@ export default function SettingsPage() {
           <Skeleton className="w-36 h-8 mb-8" /> {/* title skeleton */}
           <Card>
             <CardContent className="p-2 sm:p-4">
-              <div className="flex items-center space-x-6">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center sm:space-x-6">
                 {/* profile image skeleton */}
-                <Skeleton className="w-32 h-32 rounded-full" />
-                
-                <div className="flex-1">
-                  {/* name and specialty skeletons */}
-                  <Skeleton className="w-64 h-6 mb-2" />
-                  <Skeleton className="w-48 h-4 mb-4" />
-                  
-                  {/* icon and text row skeletons */}
-                  <div className="flex space-x-4">
-                    <div className="w-5">
-                      <Skeleton className="w-5 h-5" />
+                <div className="mb-4 sm:mb-0">
+                  <Skeleton className="w-32 h-32 rounded-full" />
+                </div>
+
+                {/* doctor info skeleton */}
+                <div className="flex-1 pt-4">
+                  <div className="space-y-3">
+                    {/* name and specialty */}
+                    <Skeleton className="w-64 h-7" />
+                    <Skeleton className="w-48 h-5" />
+                    
+                    {/* address */}
+                    <div className="flex items-center space-x-2">
+                      <Skeleton className="w-4 h-4" />
+                      <Skeleton className="w-72 h-5" />
                     </div>
-                    <Skeleton className="w-48 h-4 mb-2" />
-                  </div>
-                  <div className="flex space-x-4">
-                    <div className="w-5">
-                      <Skeleton className="w-5 h-5" />
+
+                    {/* insurance */}
+                    <div className="flex items-center space-x-2">
+                      <Skeleton className="w-4 h-4" />
+                      <Skeleton className="w-80 h-5" />
                     </div>
-                    <Skeleton className="w-64 h-4 mb-2" />
-                  </div>
-                  <div className="flex space-x-4">
-                    <div className="w-5">
-                      <Skeleton className="w-5 h-5" />
+
+                    {/* languages */}
+                    <div className="flex items-center space-x-2">
+                      <Skeleton className="w-4 h-4" />
+                      <Skeleton className="w-56 h-5" />
                     </div>
-                    <Skeleton className="w-56 h-4 mb-2" />
-                  </div>
-                  <div className="flex space-x-4">
-                    <div className="w-5">
-                      <Skeleton className="w-5 h-5" />
+
+                    {/* rating */}
+                    <div className="flex items-center space-x-2">
+                      <Skeleton className="w-4 h-4" />
+                      <Skeleton className="w-32 h-5" />
                     </div>
-                    <Skeleton className="w-40 h-4 mb-2" />
                   </div>
                 </div>
               </div>
 
-              {/* upload area skeleton */}
-              <div className="mt-6">
-                <Skeleton className="w-full h-32" />
-              </div>
+              <Skeleton className="my-4 h-px" />
 
               {/* buttons skeleton */}
-              <div className="flex justify-end space-x-2 mt-4">
-                <Skeleton className="w-20 h-10" />
-                <Skeleton className="w-20 h-10" />
+              <div className="mt-4 flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-2">
+                <Skeleton className="w-full sm:w-40 h-10" />
+                <Skeleton className="w-full sm:w-24 h-10" />
+                <Skeleton className="w-full sm:w-32 h-10" />
               </div>
             </CardContent>
           </Card>
@@ -209,35 +216,14 @@ export default function SettingsPage() {
                       previewImage={toBeRemoved ? null : (previewUrl || userData.profileImage)}
                       rating={userData.rating || 0}
                       reviewCount={userData.reviewCount || 0}
+                      setIsDialogOpen={setIsDialogOpen}
                     />
                   </div>
 
-                  <div className="mt-6">
-                    <div className="flex items-center space-x-4">
-                      <div
-                        {...getRootProps()}
-                        className={`p-8 border-2 border-dashed rounded-lg cursor-pointer flex-1
-                          ${isDragActive 
-                            ? 'border-blue-500 bg-blue-50' 
-                            : 'border-gray-300 bg-gray-50'
-                          }
-                          hover:border-blue-500 hover:bg-blue-50 transition-colors`}
-                      >
-                        <input {...getInputProps()} />
-                        {uploading ? (
-                          <p className="text-center text-gray-500">Uploading...</p>
-                        ) : isDragActive ? (
-                          <p className="text-center text-blue-500">Drop the file here...</p>
-                        ) : (
-                          <p className="text-center text-gray-500 text-sm sm:text-base">
-                            Upload a new profile picture here, or click to select
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
+                  <hr className="my-4" />
 
-                  <div className="flex flex-col sm:flex-row justify-end gap-2 mt-4">
+                  {/* buttons */}
+                  <div className="mt-4 flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-2">
                     {userData.profileImage && (
                       <Button
                         variant="destructive"
@@ -245,7 +231,7 @@ export default function SettingsPage() {
                         disabled={uploading || toBeRemoved || selectedFile !== null}
                         className="w-full sm:w-auto"
                       >
-                        Remove current picture
+                        Remove profile picture
                       </Button>
                     )}
                     <Button
@@ -261,11 +247,59 @@ export default function SettingsPage() {
                       disabled={uploading || (!selectedFile && !toBeRemoved)}
                       className="w-full sm:w-auto"
                     >
-                      {uploading ? 'Saving...' : 'Save'}
+                      {uploading ? 'Saving...' : 'Save changes'}
                     </Button>
                   </div>
                 </CardContent>
               </Card>
+
+              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogContent className="top-[35%] sm:top-1/4 sm:max-w-[425px] w-[90vw] max-w-[90vw] rounded-lg">
+                  <DialogHeader>
+                    <DialogTitle>Update Profile Picture</DialogTitle>
+                    <DialogDescription>
+                      Upload a new profile picture
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    {/* preview section */}
+                    <div className="flex justify-center">
+                      <div className="relative w-32 h-32 rounded-full overflow-hidden">
+                        <Image
+                          src={previewUrl || (toBeRemoved ? '/profpic.png' : userData.profileImage) || '/profpic.png'}
+                          alt="Profile Preview"
+                          fill
+                          className="object-cover"
+                          unoptimized={previewUrl ? true : false}
+                        />
+                      </div>
+                    </div>
+
+                    {/* upload section */}
+                    <div
+                      {...getRootProps()}
+                      tabIndex={-1}
+                      className={`p-8 border-2 border-dashed rounded-lg cursor-pointer
+                        ${isDragActive 
+                          ? 'border-blue-500 bg-blue-50' 
+                          : 'border-gray-300 bg-gray-50'
+                        }
+                        hover:border-blue-500 hover:bg-blue-50 transition-colors`}
+                    >
+                      <input {...getInputProps()} />
+                      {uploading ? (
+                        <p className="text-center text-gray-500">Uploading...</p>
+                      ) : isDragActive ? (
+                        <p className="text-center text-blue-500">Drop the file here...</p>
+                      ) : (
+                        <p className="text-center text-gray-500">
+                          Drag and drop your profile picture here, or click to select
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </div>
           )}
         </>
