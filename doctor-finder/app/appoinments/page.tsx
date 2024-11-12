@@ -67,30 +67,19 @@ export default function Appointments() {
             <div className="flex  justify-center items-stretch gap-2 ">
                 <div className="w-full">
                     <DoctorDescription
-                        name={"Dr. Bob Ross,MD"}
+                        name={"Dr. Bob Ross, MD"}
                         specialty={"Art"}
-                        streetAddress={""}
-                        city={""} state={""}
-                        zipCode={""}
+                        streetAddress={"301 Maple St"}
+                        city={"Denton"} state={" Tx"}
+                        zipCode={"75906"}
                         acceptedInsurances={['xyy']}
                         spokenLanguages={['abc']} />
                 </div>
 
 
 <div className="w-full">
-                <div className=" border border-left 4px solid-gray 
-                    border-right 4px solid-gray 
-                    border-top 4px solid-gray
-                    border-bottom 4px solid-gray">
-                    
-                        <DoctorDescription
-                            name={"Dr.Bobby, MD"}
-                            specialty={"EX"}
-                            streetAddress={"123"}
-                            city={"Dallas"} state={"Texas"}
-                            zipCode={"4321"}
-                            acceptedInsurances={[]}
-                            spokenLanguages={[]} />
+                <div className=" border border 4px solid-gray ">
+                                   
                     </div>
                 </div>
             </div>
