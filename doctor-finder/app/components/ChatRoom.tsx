@@ -7,26 +7,57 @@ import { addDoc, collection,doc, serverTimestamp,onSnapshot,query,where,orderBy,
 // import { firestore } from '@/lib/firebase';
 import { db2 as firestore} from "../authcontext"; // omg confusing
 
-function ChatRoom({ selectedChatroom}) {
-    const me = selectedChatroom?.myData
-    const other = selectedChatroom?.otherData
-    const chatRoomId = selectedChatroom?.id
-  
+function ChatRoom({ user, selectedChatroom }) {
+    // messages feature
+    const me = selectedChatroom?.myData;
+    const other = selectedChatroom?.otherData;
+    const chatRoomId = selectedChatroom?.id;
+
+    // Check if `me` and `chatRoomId` are defined before proceeding, works don't delete
+    if (!me || !chatRoomId) {
+      return <div>Loading...</div>;
+    }
+
+    // messaging feature
     const [message, setMessage] = useState([]);
     const [messages, setMessages] = useState([]);
     const messagesContainerRef = useRef(null);
+    
+    // image attachment feature
     const [image, setImage] = useState(null);
-  
+
+    /* Hardcoded messages
+    const messages = [ 
+      {
+        id: 1,
+        sender:"Elite Hacker",
+        avatarUrl:"https://i.pinimg.com/736x/ef/cd/09/efcd09ee321f51424c99890c73557c8c--pokemon-pikachu-screensaver.jpg",
+        content:"Hey, how are you",
+        time:"2 hours ago"
+      },
+      {
+        id: 2,
+        sender:"Trung Du",
+        avatarUrl:"https://th.bing.com/th/id/OIP.HsRS97pdiTGR5gobxacKjgHaH4?pid=ImgDet&w=200&h=213&c=7&dpr=1.3",
+        content:"Hey, how are you",
+        time:"2 hours ago"
+      }
+    ]
+    */
+
+    /*
     useEffect(() => {
       // Scroll to the bottom when messages change
       if (messagesContainerRef.current) {
         messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
       }
     }, [messages]);
-  
-  //get messages 
+  */
+
+  // get messages 
   useEffect(() => {
     if(!chatRoomId) return;
+
     const unsubscribe = onSnapshot(
       query(collection(firestore, 'messages'),where("chatRoomId","==",chatRoomId),orderBy('time', 'asc')),
       (snapshot) => {
@@ -34,64 +65,60 @@ function ChatRoom({ selectedChatroom}) {
           id: doc.id,
           ...doc.data(),
         }));
-        //console.log(messages);
+        // console.log(messages);
         setMessages(messages);
       }
     );
   
     return unsubscribe;
   }, [chatRoomId]);
-  
-  //put messages in db
-   const sendMessage = async () => {
-      const messagesCollection = collection(firestore, 'messages');
-      // Check if the message is not empty
-    if (message == '' && image == '') {
+
+  const sendMessage = async () => {
+    const messageCollection = collection(firestore, 'messages');
+
+    // if msg is empty don't send to firebase
+    if (message.trim() === '' && !image) {
       return;
     }
-  
+
     try {
-      // Add a new message to the Firestore collection
-      const newMessage = {
-        chatRoomId:chatRoomId,
-        sender: me.id,
+      const messageData = {
+        chatRoomId,
+        senderId: me.id,
         content: message,
         time: serverTimestamp(),
         image: image,
       };
-  
-      await addDoc(messagesCollection, newMessage);
+
+      await addDoc(messageCollection, messageData);
       setMessage('');
-      setImage('');
-      //send to chatroom by chatroom id and update last message
+      setImage(null);
+      
+      // update chatroom last message
       const chatroomRef = doc(firestore, 'chatrooms', chatRoomId);
-      await updateDoc(chatroomRef, { lastMessage: message ? message : "Image" });
-  
-      // Clear the input field after sending the message
       
-    } catch (error) {
-      console.error('Error sending message:', error.message);
+      await updateDoc(chatroomRef, {
+        lastMessage:message ? message : "Image",
+      });
+
+    } catch(err) {
+      console.error(err);
     }
-  
-    // Scroll to the bottom after sending a message
-    if (messagesContainerRef.current) {
-      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
-    }
-      
   }
-  
-  
+
+    // Current log in user
     return (
       <div className='flex flex-col h-screen'>
-        {/* Messages container with overflow and scroll */}
-        <div ref={messagesContainerRef} className='flex-1 overflow-y-auto p-10'>
+        <div className='flex-1 overflow-y-auto p-10'>
+          {/* Messages container with overflow and scroll */}
           {messages?.map((message) => (
             <MessageCard key={message.id} message={message} me={me} other={other}/>
           ))}
         </div>
   
-        {/* Input box at the bottom */}
-        <MessageInput sendMessage={sendMessage} message={message} setMessage={setMessage} image={image} setImage={setImage}/>
+        {/* Input box at the bottom*/}
+        <MessageInput sendMessage={sendMessage} message={message} setMessage={setMessage} 
+        image={image} setImage={setImage} />
       </div>
     );
   }

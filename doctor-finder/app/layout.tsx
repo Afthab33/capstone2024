@@ -20,7 +20,7 @@ export default function RootLayout({
       <body className={`${GeistSans.className}`}>
         <AuthProvider>
           <Navbar />
-          <Toaster position="bottom-center"></Toaster>
+          <Toaster position="top-center"></Toaster>
           <main>{children}</main>
         </AuthProvider>
       </body>
