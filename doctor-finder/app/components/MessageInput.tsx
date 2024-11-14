@@ -1,29 +1,38 @@
+// MessageInput.tsx
 'use client';
 
 import React, { useState } from 'react';
 import { FaPaperclip, FaPaperPlane } from 'react-icons/fa';
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';   // get stuff from Firebase Storage
-// import { app } from '@/lib/firebase';
-import { app } from "../authcontext"; // omg confusing
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';// get stuff from Firebase Storage
+import { app } from "../authcontext"; // Import Firebase app
 import EmojiPicker from 'emoji-picker-react';
 
-function MessageInput({sendMessage, message, setMessage, image, setImage}) {
+interface MessageInputProps {
+  sendMessage: () => void;
+  message: string;
+  setMessage: React.Dispatch<React.SetStateAction<string>>;
+  image: string | null;
+  setImage: React.Dispatch<React.SetStateAction<string | null>>;
+}
+
+function MessageInput({ sendMessage, message, setMessage, image, setImage }: MessageInputProps) {
   const storage = getStorage(app);
-  const [file, setFile] = useState(null);
-  const [uploadProgress, setUploadProgress] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
+  const [file, setFile] = useState<File | null>(null);
+  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    setFile(selectedFile);
-
-    // Display image preview
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setImagePreview(reader.result);
-    };
-    reader.readAsDataURL(selectedFile);
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files ? e.target.files[0] : null;
+    if (selectedFile) {
+      setFile(selectedFile);
+      // Display image preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string); // Casting to string since FileReader result is string | ArrayBuffer | null
+      };
+      reader.readAsDataURL(selectedFile);
+    }
   };
 
   const handleUpload = async () => {
@@ -53,23 +62,27 @@ function MessageInput({sendMessage, message, setMessage, image, setImage}) {
           setImage(downloadURL);
           // Clear image preview
           setImagePreview(null);
-          document.getElementById('my_modal_3').close()
+          // weird style but gets rid of typescript warning
+          const modal = document.getElementById('my_modal_3') as HTMLDialogElement;
+          modal?.close();
         });
       }
     );
   };
-  
-  const handleEmojiClick = (emojiData, event) => {
-    // Append the selected emoji to the message state
+
+  const handleEmojiClick = (emojiData: any) => {
     setMessage((prevMessage) => prevMessage + emojiData.emoji);
   };
 
   return (
     <div className='relative flex items-center p-4 border-t border-gray-200'>
-      {/* attach file/img*/}
+      {/* Attach file/image */}
       <FaPaperclip
-        onClick={() => document.getElementById('my_modal_3').showModal()}
-        className={`${image ? "text-blue-500":"text-gray-500"} mr-2 cursor-pointer`}
+        onClick={() => {
+          const modal = document.getElementById('my_modal_3') as HTMLDialogElement;
+          modal?.showModal();
+        }}
+        className={`${image ? "text-blue-500" : "text-gray-500"} mr-2 cursor-pointer`}
       />
 
       {/* Emoji Picker Button */}
@@ -77,13 +90,9 @@ function MessageInput({sendMessage, message, setMessage, image, setImage}) {
         💊
       </button>
 
-      {/*right-0 starts at bottom right change to 100 */}
       {showEmojiPicker && (
         <div className='absolute right-100 bottom-full p-2'>
-          <EmojiPicker
-            onEmojiClick={handleEmojiClick}
-            disableAutoFocus={true}
-          />
+          <EmojiPicker onEmojiClick={handleEmojiClick} />
         </div>
       )}
 
@@ -95,7 +104,7 @@ function MessageInput({sendMessage, message, setMessage, image, setImage}) {
         className='flex-1 border-none p-2 outline-none'
       />
 
-      <FaPaperPlane onClick={() => sendMessage()} className='text-blue-500 cursor-pointer ml-2' />
+      <FaPaperPlane onClick={sendMessage} className='text-blue-500 cursor-pointer ml-2' />
 
       {/* Image Upload Modal */}
       <dialog id="my_modal_3" className="modal bg-gray-100">
@@ -123,7 +132,7 @@ function MessageInput({sendMessage, message, setMessage, image, setImage}) {
                 Upload
               </button>
             </div>
-            {uploadProgress > 0 && (
+            {uploadProgress != null && (
               <progress
                 value={uploadProgress}
                 max="100"
@@ -132,7 +141,10 @@ function MessageInput({sendMessage, message, setMessage, image, setImage}) {
             )}
           </form>
           <button
-            onClick={() => document.getElementById('my_modal_3').close()}
+            onClick={() => {
+              const modal = document.getElementById('my_modal_3') as HTMLDialogElement;
+              modal?.close();
+            }}
             className="absolute right-2 top-2 text-gray-500 hover:text-gray-700"
           >
             ✕
@@ -142,5 +154,5 @@ function MessageInput({sendMessage, message, setMessage, image, setImage}) {
     </div>
   );
 }
-  
-  export default MessageInput;
+
+export default MessageInput;

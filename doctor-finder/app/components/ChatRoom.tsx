@@ -1,30 +1,59 @@
+// ChatRoom.tsx
 'use client';
 
-import React,{useState,useEffect,useRef} from 'react';
+import React,{useState,useEffect} from 'react';
 import MessageCard from './MessageCard';
 import MessageInput from './MessageInput';
 import { addDoc, collection,doc, serverTimestamp,onSnapshot,query,where,orderBy,updateDoc } from 'firebase/firestore';
 // import { firestore } from '@/lib/firebase';
 import { db2 as firestore} from "../authcontext"; // omg confusing
 
-function ChatRoom({ user, selectedChatroom }) {
+interface User {
+  id: string;
+  firstName: string;
+  lastName: string;
+  profileImage: string;
+  email: string;
+}
+
+interface Chatroom {
+  id: string;
+  myData: User;
+  otherData: User;
+}
+
+interface Message {
+  id: string;
+  content: string;
+  senderId: string;
+  time: any;                    // Timestamp or string
+  image: string | undefined;
+}
+
+interface ChatRoomProps {
+  user: User;
+  selectedChatroom: Chatroom;
+}
+
+function ChatRoom({ selectedChatroom }: ChatRoomProps) {
     // messages feature
     const me = selectedChatroom?.myData;
     const other = selectedChatroom?.otherData;
     const chatRoomId = selectedChatroom?.id;
 
     // Check if `me` and `chatRoomId` are defined before proceeding, works don't delete
+    /*
     if (!me || !chatRoomId) {
       return <div>Loading...</div>;
     }
+    */
 
     // messaging feature
-    const [message, setMessage] = useState([]);
-    const [messages, setMessages] = useState([]);
-    const messagesContainerRef = useRef(null);
+    const [message, setMessage] = useState<string>('');         // State for message
+    const [messages, setMessages] = useState<Message[]>([]);    // State for messages
     
     // image attachment feature
-    const [image, setImage] = useState(null);
+    const [image, setImage] = useState<string | null>(null);    // State for image
 
     /* Hardcoded messages
     const messages = [ 
@@ -56,16 +85,19 @@ function ChatRoom({ user, selectedChatroom }) {
 
   // get messages 
   useEffect(() => {
-    if(!chatRoomId) return;
-
+    if (!chatRoomId) return;
+  
     const unsubscribe = onSnapshot(
-      query(collection(firestore, 'messages'),where("chatRoomId","==",chatRoomId),orderBy('time', 'asc')),
+      query(collection(firestore, 'messages'), where("chatRoomId", "==", chatRoomId), orderBy('time', 'asc')),
       (snapshot) => {
         const messages = snapshot.docs.map((doc) => ({
           id: doc.id,
-          ...doc.data(),
+          content: doc.data().content,
+          senderId: doc.data().senderId,
+          time: doc.data().time, // Ensure `time` matches the expected type (either a timestamp or string)
+          image: doc.data().image || null, // Ensure `image` can be `null`
         }));
-        // console.log(messages);
+  
         setMessages(messages);
       }
     );
@@ -74,36 +106,36 @@ function ChatRoom({ user, selectedChatroom }) {
   }, [chatRoomId]);
 
   const sendMessage = async () => {
-    const messageCollection = collection(firestore, 'messages');
+  const messageCollection = collection(firestore, 'messages');
 
-    // if msg is empty don't send to firebase
-    if (message.trim() === '' && !image) {
-      return;
-    }
+  // if msg is empty don't send to firebase
+  if (message.trim() === '' && !image) {
+    return;
+  }
 
-    try {
-      const messageData = {
-        chatRoomId,
-        senderId: me.id,
-        content: message,
-        time: serverTimestamp(),
-        image: image,
-      };
+  try {
+    const messageData = {
+       chatRoomId,
+       senderId: me.id,
+       content: message,
+       time: serverTimestamp(),
+       image: image,
+    };
 
-      await addDoc(messageCollection, messageData);
-      setMessage('');
-      setImage(null);
+    await addDoc(messageCollection, messageData);
+    setMessage('');
+    setImage(null);
       
-      // update chatroom last message
-      const chatroomRef = doc(firestore, 'chatrooms', chatRoomId);
-      
-      await updateDoc(chatroomRef, {
-        lastMessage:message ? message : "Image",
-      });
+    // update chatroom last message
+    const chatroomRef = doc(firestore, 'chatrooms', chatRoomId);
+     
+    await updateDoc(chatroomRef, {
+      lastMessage:message ? message : "Image",
+    });
 
-    } catch(err) {
-      console.error(err);
-    }
+  } catch(err) {
+    console.error(err);
+  }
   }
 
     // Current log in user

@@ -1,10 +1,32 @@
+// MessageCard.tsx
 import React from 'react';
 import moment from 'moment';
+import { Timestamp } from 'firebase/firestore';
 
-function MessageCard( {message, me, other}) {
+// Define the types for the props
+interface Message {
+  id: string;
+  senderId: string;
+  content: string;
+  time: Timestamp;
+  image?: string;
+}
+
+interface User {
+  id: string;
+  profileImage: string;
+}
+
+interface MessageCardProps {
+  message: Message;
+  me: User;
+  other: User;
+}
+
+function MessageCard( {message, me, other} : MessageCardProps) {
     const isMessageFromMe = message.senderId === me.id;
 
-    const formatTimeAgo = (time) => {
+    const formatTimeAgo = (time: Timestamp) => {
       const date = time?.toDate();
       const momentDate = moment(date);
       return momentDate.fromNow();
