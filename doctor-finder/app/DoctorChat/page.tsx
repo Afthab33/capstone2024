@@ -8,7 +8,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import UserChat from "../components/UserChat";	// omg can't use User/Users from lucidchart library		
 import ChatRoom from "../components/ChatRoom";
-import { toast } from 'react-hot-toast';
+// import { toast } from 'react-hot-toast';
 
 // Firebase imports for dynamic
 import { onAuthStateChanged, User as FirebaseUser, getAuth } from 'firebase/auth';
@@ -58,7 +58,7 @@ export default function DoctorChat() {
           setUser(null);
           // DEBUG: Error w/ signout prob go away when put this as login feature only
           // OR could just remove this toast message : )
-          toast.error('Please sign in before sending a message to a doctor', { position: 'top-center' });
+          // toast.error('Please sign in before sending a message to a doctor', { position: 'top-center' });
           router.push('/');
         }
       });
