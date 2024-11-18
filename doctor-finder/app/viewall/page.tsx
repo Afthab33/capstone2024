@@ -9,8 +9,10 @@ import { useAuth } from '../authcontext';
 import DoctorCard from '../components/doctorCard';
 
 interface Doctor {
+  key: string;
   id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   degree: string;
   clinicName: string;
   streetAddress: string;
@@ -71,11 +73,14 @@ const ViewAllDoctors = () => {
           {doctors.map((doctor) => (
             <DoctorCard
               key={doctor.id}
-              name={doctor.name}
+              id= {doctor.id}
+              firstName={doctor.firstName}
+              lastName={doctor.lastName}
+              degree={doctor.degree}
               specialty={doctor.specialty}
               nextAvailable="Next available date here"  // add doctors next available date
               clinicName={doctor.clinicName}
-              streetAddress={doctor.streetAddress}
+              streetAddress={doctor.streetAddress}    // not used yet 
               city={doctor.city}
               state={doctor.state}
               zipCode={doctor.zipCode}
