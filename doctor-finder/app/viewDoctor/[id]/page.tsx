@@ -22,14 +22,17 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
     const fetchDoctor = async () => {
       const db = getFirebaseDb(); // Call the function to get the Firestore instance
       const doctorRef = doc(db, 'users', id); // Reference the doctor document
-      const doctorSnap = await getDoc(doctorRef); // Fetch the document
-
-      console.log(id);
-
-      if (doctorSnap.exists()) {
-        setDoctor(doctorSnap.data()); // Store doctor data
-      } else {
-        setError('Doctor not found');
+      try {
+        const doctorSnap = await getDoc(doctorRef);
+        if (doctorSnap.exists()) {
+          setDoctor(doctorSnap.data());
+        } else {
+          console.error(`No doctor found with id: ${id}`);
+          setError('Doctor not found');
+        }
+      } catch (err) {
+        console.error('Error fetching doctor:', err);
+        setError('Failed to fetch doctor');
       }
       setLoading(false);
     };
@@ -46,7 +49,7 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
 
   return (
     <div>
-      <h1>{doctor?.name}</h1>
+      <h1>{doctor?.firstName}</h1>
       {/* Render other doctor information here */}
     </div>
   );
