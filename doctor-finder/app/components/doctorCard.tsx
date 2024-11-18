@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Star, Shield, MessageCircle, MapPin } from 'lucide-react';
+import Link from 'next/link';
 
 interface DoctorCardProps {
   firstName: string;
@@ -90,17 +91,7 @@ export default function DoctorCard({
               Book
             </Button>
             <div>
-              <Button
-                className="mb-2"
-                style={{
-                  backgroundColor: '#829eb5',
-                  width: 175,
-                }}
-              >
-                View
-              </Button>
-              {/* Uncomment if id-based navigation is required */}
-              {/* <Link href={`/viewDoctor/${id}`}>
+              { <Link href={`/viewDoctor/${id}`}>
                 <Button
                   className="mb-2"
                   style={{
@@ -110,7 +101,7 @@ export default function DoctorCard({
                 >
                   View
                 </Button>
-              </Link> */}
+              </Link> }
             </div>
           </div>
         </div>

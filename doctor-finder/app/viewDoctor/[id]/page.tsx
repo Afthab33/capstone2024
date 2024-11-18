@@ -1,18 +1,18 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
-import { db as getFirebaseDb  } from '../../authcontext'; // Import the function to get db
+import { db as getFirebaseDb } from '../../authcontext'; // Import the function to get db
 import { useAuth } from '../../authcontext'; // Use the auth context
 
 interface ViewDoctorProps {
-  params: {
+  params: Promise<{
     id: string; // Assuming the ID is a string
-  };
+  }>;
 }
 
 const ViewDoctor = ({ params }: ViewDoctorProps) => {
-  const { id } = params; // Get the doctor ID from URL params
+  const { id } = use(params); // Unwrap the params promise using `use()`
   const [doctor, setDoctor] = useState<any>(null); // Use 'any' or define a specific type for doctor
   const { user } = useAuth(); // Use auth context to get the current user
   const [loading, setLoading] = useState(true);
@@ -23,6 +23,8 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
       const db = getFirebaseDb(); // Call the function to get the Firestore instance
       const doctorRef = doc(db, 'users', id); // Reference the doctor document
       const doctorSnap = await getDoc(doctorRef); // Fetch the document
+
+      console.log(id);
 
       if (doctorSnap.exists()) {
         setDoctor(doctorSnap.data()); // Store doctor data
