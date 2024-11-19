@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { getFirestore, collection, getDocs, query, where } from 'firebase/firestore';
 import { useAuth } from '../authcontext';
 import DoctorDescription from "../components/DoctorDescription";
+import BookAppointment from "../components/BookAppointment";
 
 interface Doctor {
     nextAvailable: string;
@@ -17,6 +18,9 @@ interface Doctor {
     specialty: string;
     acceptedInsurances: string[];
     spokenLanguages: string[];
+    previewImage?: string | null;
+    rating?: number;
+    reviewCount?: number;
 }
 
 export default function Appointments() {
@@ -64,23 +68,29 @@ export default function Appointments() {
 
 
 
-            <div className="flex  justify-center items-stretch gap-2 ">
+            <div className="flex  justify-center items-stretch gap-2 col ">
                 <div className="w-full">
                     <DoctorDescription
-                        name={"Dr. Bob Ross, MD"}
+                        name={"Bob Ross"}
                         specialty={"Art"}
+                        degree="MD"
                         streetAddress={"301 Maple St"}
                         city={"Denton"} state={" Tx"}
                         zipCode={"75906"}
                         acceptedInsurances={['xyy']}
-                        spokenLanguages={['abc']} />
+                        spokenLanguages={['abc']}
+                        previewImage={''}
+                        rating={4.95}
+                        reviewCount={144}
+
+                    />
                 </div>
 
 
-<div className="w-full">
-                <div className=" border border 4px solid-gray ">
-                                   
-                    </div>
+                <div className="w-full">
+                    
+                        <BookAppointment />
+                    
                 </div>
             </div>
         </>

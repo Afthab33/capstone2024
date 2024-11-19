@@ -93,22 +93,22 @@ export default function DoctorProfile({
                             <div className='flex flex-col space-x-6  '>
                                 <h3 className="flex justify-start  text-xl font-semibold text-gray-800 mt-8 ml-6 "> {displayName}</h3>
                                 <h3 className="text-gray-500 text-lg 1px  ">{specialty}</h3>
-                                <div className='pt-0' > {streetAddress}, {city}, {state} {zipCode}</div>  {/*add distance*/}
+                                <div > {streetAddress}, {city}, {state} {zipCode}</div>
 
                             </div>
                         </div>
-                        <div className="flex flex-col sm:flex-col gap-2 text-sm sm:text-base mt-8 mr-20 ml-20">
+                        <div className="flex flex-col sm:flex-col gap-2 text-sm sm:text-base mt-8 mr-20 ml-20 ">
                             <div className='flex items-stretch gap-5 rounded-lg  '
                                 style={{
                                     backgroundColor: "#ededed"
                                 }}>
                                 <div className="flex items-center gap-2 ">
                                     <div className="flex flex-col items-center text-lg font-semibold text-gray-800">
-                                        <span className="text-2xl font-semibold ">
+                                        <span className="text-5xl font-semibold mb-2 pl-4">
                                             {rating}
                                         </span>
 
-                                        <div className='flex flex-row gap-1 items-center ml-5 '>
+                                        <div className='flex flex-row gap-1 items-center ml-5 mb-6'>
 
                                             {/* going to be function */}
                                             <Star className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400 " />
@@ -122,8 +122,8 @@ export default function DoctorProfile({
                                     </div>
                                 </div>
                                 <div className='border border-left 4px solid-gray'></div>
-                                <div className="flex justify-between items-end flex-col pl-4 pb-4 ">
-                                    <div className="text-gray-500 text-sm 1px mb-2 ">
+                                <div className="flex justify-between items-end flex-col pl-4 pb-4 text-clip overflow-hidden ">
+                                    <div className=" text-gray-500 text-sm 1px mb-2 pt-6 pr-2">
 
                                         Lorem ipsum dolor sit ameue idil fugiat iusto quibusdam nisi exercitationem dolore. Ducimus deleniti sapiente sit quae?
                                     </div>
@@ -155,43 +155,48 @@ export default function DoctorProfile({
                                     <h3 className="text-gray-500 text-sm 1px mb-2  ">{spokenLanguages.join(', ')}</h3>
                                 </div>
                             </div>
-                            <hr className="border-gray-200 " />
+
+                            <div className='flex flex-col'>
+
+                                <hr className="border-gray-200 mb-4" />
+
+                                <div className='flex flex-wrap justify-center gap-4     '>
+                                    <div>
+                                        <Link href="/appoinments">
+                                            <Button className=" shadow-md mb-2 text-gray-400 w-64 h-12" style={{
+                                                backgroundColor: "#E3E4E5",
+
+
+                                            }} >
+                                                <div className='flex items-center gap-2 text-gray-400 font-semibold mr-12 '>
+                                                    <ReportDoctor />
+                                                    Report Profile
+                                                </div>
+                                            </Button>
+                                        </Link>
+                                    </div>
+                                    <div>
+                                        <Button className=" shadow-md mb-2 text-gray-400 w-64 h-12" style={{
+                                            // backgroundColor: "#E3E4E5",
+                                            backgroundColor: "#EDEDED",
+
+                                        }}>
+                                            <div className='flex items-center gap-2 text-gray-400 font-semibold  '>
+                                                <TwoPeopleSeparated />
+                                                Compare Doctors
+                                            </div>
+                                        </Button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div className='flex justify-center gap-6'>
-                <div>
-                    <Link href="/appoinments">
-                        <Button className=" mb-2 mt-4 text-gray-400 h-12" style={{
-                            backgroundColor: "#E3E4E5",
-                            width: "275px",
-
-                        }} >
-                            <div className='flex items-center gap-4 text-gray-400 font-semibold mr-8 '>
-                                <ReportDoctor />
-                                Report Profile</div>
-                        </Button>
-                    </Link>
-                </div>
-                <div>
-                    <Button className="mb-2 mt-4 text-gray-400  h-12" style={{
-                        // backgroundColor: "#E3E4E5",
-                        backgroundColor: "#EDEDED",
-                        width: "275px",
-
-                    }}>
-                        <div className='flex items-center gap-4 text-gray-400 font-semibold  '>
-                            <TwoPeopleSeparated />
-                            Compare Doctors
-                        </div>
-                    </Button>
                 </div>
             </div>
 
         </>
     );
+
+
+
 }
-
-
-
