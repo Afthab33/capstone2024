@@ -4,20 +4,52 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Button } from "@/components/ui/button";
-import { useAuth, auth as getFirebaseAuth, clearUserCache } from "../authcontext";
+import { useAuth, auth as getFirebaseAuth, clearUserCache, db as getFirebaseDb } from "../authcontext";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { doc, getDoc } from 'firebase/firestore';
+
+interface UserData {
+  role?: string;
+}
 
 const Navbar = () => {
   const { user, loading } = useAuth(); // get user and loading state from authcontext
   const pathname = usePathname(); // get pathname from next/navigation
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
+  const [userData, setUserData] = useState<UserData | null>(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (!user) return;
+      try {
+        const db = getFirebaseDb();
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        
+        if (userDoc.exists()) {
+          setUserData(userDoc.data() as UserData);
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    if (user) {
+      fetchUserData();
+    }
+  }, [user]);
+
+  const getSettingsRoute = () => {
+    if (!user || !userData) return '/login';
+    return userData.role === 'doctor' ? '/dsettings' : '/psettings';
+  };
 
   const handleLogout = () => {
     clearUserCache(); // clear user cache
     getFirebaseAuth().signOut(); // sign out user
     console.log('User logged out');
+    setUserData(null); // reset user data
     setIsLogoutDialogOpen(false);
   };
 
@@ -99,7 +131,7 @@ const Navbar = () => {
               </>
             ) : user ? (
               <>
-                <Link href="/settings">
+                <Link href={getSettingsRoute()}>
                   <Image
                     src="/settings2.png"
                     alt="Settings"

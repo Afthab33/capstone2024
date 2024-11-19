@@ -13,7 +13,7 @@ interface UsersCardProps {
 
 // Reminder: put a default image
 // function UsersCard({ name, latestMessage, type, time, avatarUrl }) {
-function UsersCard({ name, latestMessage, type, time=String(Timestamp), avatarUrl = "https://th.bing.com/th/id/OIP.HsRS97pdiTGR5gobxacKjgHaH4?pid=ImgDet&w=200&h=213&c=7&dpr=1.3", email}: UsersCardProps) {
+function UsersCard({ name, latestMessage, type, time=String(Timestamp), avatarUrl = "/profpic.png", email}: UsersCardProps) {
   /*
   // Convert Firebase Timestamp to a readable string
   const formatTime = (timestamp?: Timestamp): string => {
