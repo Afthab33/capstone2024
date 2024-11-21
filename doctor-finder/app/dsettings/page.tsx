@@ -357,7 +357,7 @@ export default function SettingsPage() {
 
   const getVisibleDates = () => {
     const now = new Date();
-    let startDate = addDays(now, weekOffset * 14);
+    const startDate = addDays(now, weekOffset * 14);
     const dates: Date[] = [];
     let daysToAdd = 0;
 
