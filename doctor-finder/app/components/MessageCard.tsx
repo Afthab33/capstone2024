@@ -64,8 +64,8 @@ function MessageCard( {message, me, other} : MessageCardProps) {
         */}
 
           {/* Edit this to change output of messages*/}
-          {/* Message bubble on the right or left based on the sender, think ml-3 look good enough */}
-          <div className={`text-white p-2 rounded-md ${isMessageFromMe ? 'bg-blue-500 self-end ml-3' : 'bg-[#19D39E] self-start ml-3'}`}>
+          {/* Message bubble on the right or left based on the sender, think ml-3 look good enough change color here */}
+          <div className={`text-white p-2 rounded-md ${isMessageFromMe ? 'bg-blue-500 self-end ml-3' : 'bg-gray-400 self-start ml-3'}`}>
             {
               message.image && <img src={message.image} className='max-h-60 w-60 mb-4' />
             }

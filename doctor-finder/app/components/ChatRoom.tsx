@@ -141,6 +141,8 @@ function ChatRoom({ selectedChatroom }: ChatRoomProps) {
     // Current log in user
     return (
       <div className='flex flex-col h-screen'>
+        <div className='text-xl font-bold py-4 pl-4'>{other.firstName + " " + other.lastName}</div>
+        <hr></hr>
         <div className='flex-1 overflow-y-auto p-10'>
           {/* Messages container with overflow and scroll */}
           {messages?.map((message) => (
