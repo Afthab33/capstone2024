@@ -43,23 +43,26 @@ interface userData {
 }
 
 // check if a date is fully past
-const isDateFullyPast = (date: Date, availabilityData: { [key: string]: string[] }) => {
-  const now = new Date();
+const isDateFullyPast = (date: Date, availabilityData: { [key: string]: string[] }, currentTime: Date) => {
   const dateKey = format(date, 'yyyy-MM-dd');
   const timeSlots = availabilityData[dateKey] || [];
   
   // if the date is before today, it's fully past
-  if (isBefore(startOfDay(date), startOfDay(now))) {
+  if (isBefore(startOfDay(date), startOfDay(currentTime))) {
     return true;
   }
   
   // if the date is today, check if all time slots are past
-  if (format(date, 'yyyy-MM-dd') === format(now, 'yyyy-MM-dd')) {
+  if (format(date, 'yyyy-MM-dd') === format(currentTime, 'yyyy-MM-dd')) {
+    // if there are no time slots for today, it's not fully past
+    if (timeSlots.length === 0) {
+      return false;
+    }
     return timeSlots.every(timeStr => {
       const [hours, minutes] = timeStr.split(':').map(Number);
       const slotTime = new Date(date);
       slotTime.setHours(hours, minutes);
-      return isBefore(slotTime, now);
+      return isBefore(slotTime, currentTime);
     });
   }
   
@@ -79,6 +82,7 @@ export default function SettingsPage() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTimes, setSelectedTimes] = useState<Date[]>([]);
   const [availabilityData, setAvailabilityData] = useState<{ [key: string]: string[] }>({});  // date -> array of time slots
+  const [now] = useState(() => new Date());
 
   const goToPreviousWeek = () => setWeekOffset(prev => Math.max(prev - 1, 0));
   const goToNextWeek = () => setWeekOffset(prev => prev + 1);
@@ -266,7 +270,7 @@ export default function SettingsPage() {
           return timeDate;
         })
         .filter(time => !isBefore(time, now)); // filter out past times
-        
+      
       setSelectedTimes(initialTimes); // update local state
     }
   };
@@ -356,7 +360,6 @@ export default function SettingsPage() {
   };
 
   const getVisibleDates = () => {
-    const now = new Date();
     const startDate = addDays(now, weekOffset * 14);
     const dates: Date[] = [];
     let daysToAdd = 0;
@@ -364,7 +367,14 @@ export default function SettingsPage() {
     // generate the initial 14 days
     while (dates.length < 14) {
       const currentDate = addDays(startDate, daysToAdd);
-      if (!isDateFullyPast(currentDate, availabilityData)) { // if the date is not fully past
+      
+      // check if it's today and after 5 PM
+      const isAfter5PM = now.getHours() >= 17;
+      const isToday = format(currentDate, 'yyyy-MM-dd') === format(now, 'yyyy-MM-dd');
+
+      // add the date if it's not fully past and if it's not today after 5 PM
+      if (!isDateFullyPast(currentDate, availabilityData, now) && 
+          !(isToday && isAfter5PM)) {
         dates.push(currentDate);
       }
       daysToAdd++;
@@ -497,6 +507,7 @@ export default function SettingsPage() {
                         isSelected={selectedDate ? format(selectedDate, 'yyyy-MM-dd') === dateKey : false}
                         onSelect={handleDateSelect}
                         availableSlots={slotsCount}
+                        currentTime={now}
                       />
                     </div>
                   );

@@ -1,19 +1,24 @@
 import { format } from 'date-fns';
 import { Card, CardContent } from "@/components/ui/card";
+import { startOfDay } from 'date-fns';
 
 interface AvailabilityCardProps {
   date: Date;
   isSelected: boolean;
   onSelect: (date: Date) => void;
   availableSlots?: number;
+  currentTime: Date;
 }
 
 export default function AvailabilityCard({ 
   date, 
   isSelected, 
   onSelect,
-  availableSlots = 0
+  availableSlots = 0,
+  currentTime
 }: AvailabilityCardProps) {
+  const isPast = startOfDay(date) < startOfDay(currentTime);
+
   return (
     <Card 
       className={`min-w-[70px] sm:min-w-[100px] h-[130px] sm:h-[130px] cursor-pointer transition-colors duration-200 select-none
@@ -35,8 +40,16 @@ export default function AvailabilityCard({
           
           <div className="text-lg sm:text-xl">
             {availableSlots > 0 ? (
-              <span className={isSelected ? 'text-primary-foreground' : 'text-primary'}>
-                {availableSlots} slots
+              <span 
+                className={
+                  isSelected 
+                    ? 'text-primary-foreground' 
+                    : isPast 
+                      ? 'text-gray-600' 
+                      : 'text-primary'
+                }
+              >
+                {availableSlots} {availableSlots === 1 ? 'slot' : 'slots'}
               </span>
             ) : (
               <span className={isSelected ? 'text-primary-foreground' : 'text-gray-600'}>
