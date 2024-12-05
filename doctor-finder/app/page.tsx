@@ -112,8 +112,8 @@ export default function Home() {
                 <div key={i} className="flex flex-col sm:flex-row w-full p-4 bg-white rounded-lg">
                   <div className="flex flex-col sm:flex-row items-start sm:items-center sm:space-x-6 w-full">
                     {/* profile image skeleton */}
-                    <div className="mb-4 sm:mb-0">
-                      <Skeleton className="w-32 h-32 rounded-full" />
+                    <div className="profile-image mb-4 sm:mb-0">
+                      <Skeleton className="w-28 h-28 rounded-full" />
                     </div>
                     
                     <div className="w-full relative">
@@ -124,7 +124,7 @@ export default function Home() {
                       </div>
                       
                       {/* info line skeletons */}
-                      <div className="flex flex-col gap-1">
+                      <div className="flex flex-col sm:flex-col gap-1 text-sm sm:text-base">
                         <div className="flex items-center gap-2">
                           <Skeleton className="h-5 w-5" />
                           <Skeleton className="h-5 w-32" />
@@ -144,7 +144,7 @@ export default function Home() {
                       </div>
 
                       {/* button section */}
-                      <div className="xl:absolute relative mt-4 xl:mt-0 xl:right-0 xl:top-10">
+                      <div className="xl:absolute relative mt-4 xl:mt-0 xl:right-0 xl:top-0">
                         <Skeleton className="hidden xl:block h-4 w-36 mb-3 mx-auto" />
                         <Skeleton className="h-10 w-full xl:w-[200px]" />
                         <Skeleton className="xl:hidden h-4 w-36 mt-2 mx-auto" />

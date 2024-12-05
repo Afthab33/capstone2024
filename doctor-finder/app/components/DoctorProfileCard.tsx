@@ -114,7 +114,7 @@ export default function DoctorProfileCard({
           <div className="profile-image mb-4 sm:mb-0">
             <div className="relative group">
               <div 
-                className={`w-32 h-32 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden transition-opacity duration-200 ${setIsDialogOpen ? 'cursor-pointer group-hover:opacity-75' : ''}`}
+                className={`w-28 h-28 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden transition-opacity duration-200 ${setIsDialogOpen ? 'cursor-pointer group-hover:opacity-75' : ''}`}
                 onClick={() => setIsDialogOpen && setIsDialogOpen(true)}
               >
                 {previewImage ? (
@@ -123,8 +123,10 @@ export default function DoctorProfileCard({
                       src={previewImage} 
                       alt="Profile" 
                       fill
-                      sizes="(max-width: 768px) 128px, 128px"
+                      sizes="112px"
+                      quality={95}
                       className="object-cover rounded-full"
+                      priority
                     />
                   </div>
                 ) : (
@@ -133,8 +135,10 @@ export default function DoctorProfileCard({
                       src="/profpic.png"
                       alt="Profile placeholder"
                       fill
-                      sizes="(max-width: 768px) 128px, 128px"
+                      sizes="112px"
+                      quality={95}
                       className="object-cover rounded-full"
+                      priority
                     />
                   </div>
                 )}
@@ -194,7 +198,7 @@ export default function DoctorProfileCard({
 
             {/* button section */}
             {id && (
-              <div className="xl:absolute relative mt-4 xl:mt-0 xl:right-0 xl:top-10">
+              <div className="xl:absolute relative mt-4 xl:mt-0 xl:right-0 xl:top-0">
                 {/* hide on mobile/tablet, show on desktop */}
                 <div className="hidden xl:block text-sm text-gray-500 mb-3 text-center">
                   Next available: {nextAvailableText}
