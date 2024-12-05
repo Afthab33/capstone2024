@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useEffect } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
-import { initializeApp, FirebaseApp } from 'firebase/app';
+import { initializeApp, FirebaseApp, getApp } from 'firebase/app';
 import { getAuth, Auth } from 'firebase/auth';
 import { getFirestore, Firestore } from 'firebase/firestore';
 
@@ -15,13 +15,26 @@ let db2: Firestore;
 const initializeFirebase = async () => {
     // initialize firebase app, auth, and db
     if (!app) {
-        const response = await fetch('/api/firebase-config'); // fetch firebase config from api
-        const firebaseConfig = await response.json(); // get firebase config
-        app = initializeApp(firebaseConfig); // initialize firebase app
-        auth = getAuth(app); // get auth
-        db = getFirestore(app); // get firestore
-        auth2 = auth;   // DU copy so not mess up original
-        db2 = db;       // DU copy so not mess up original
+        try {
+            const response = await fetch('/api/firebase-config'); // fetch firebase config from api
+            const firebaseConfig = await response.json(); // get firebase config
+            
+            // try to initialize app with config
+            try {
+                app = initializeApp(firebaseConfig);
+            } catch (error: any) {
+                if (error.code === 'app/duplicate-app') {
+                    app = getApp(); // get the existing app instead of trying to initialize without config
+                }
+            }
+
+            auth = getAuth(app); // get auth
+            db = getFirestore(app); // get firestore
+            auth2 = auth;   // DU copy so not mess up original 
+            db2 = db;       // DU copy so not mess up original
+        } catch (error) {
+            console.error('Error initializing Firebase:', error);
+        }
     }
 };
 

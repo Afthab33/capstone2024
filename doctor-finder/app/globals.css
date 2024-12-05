@@ -56,7 +56,6 @@ body {
 .hero-section {
   background: hsl(var(--secondary));
   color: hsl(var(--background));
-  height: 35vh;
 }
 
 .bg-primary {

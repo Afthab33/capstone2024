@@ -9,6 +9,11 @@ const nextConfig = {
           pathname: '/v0/b/**',
         },
       ],
+      domains: [
+        'encrypted-tbn0.gstatic.com',
+        'firebasestorage.googleapis.com',
+        'lh3.googleusercontent.com',
+      ],
     },
   }
 

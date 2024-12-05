@@ -3,69 +3,193 @@
 import { useEffect, useState } from 'react';
 import { Skeleton } from "@/components/ui/skeleton"
 import { stateAbbreviations } from './components/states';
+import { collection, getDocs, query, where, getDoc, doc } from 'firebase/firestore';
+import DoctorProfileCard from './components/DoctorProfileCard';
+import { initializeFirebase, db as getFirebaseDb } from './authcontext';
 
+interface Doctor {
+  id: string;
+  firstName: string;
+  lastName: string;
+  degree: string;
+  clinicName: string;
+  streetAddress: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  specialty: string;
+  acceptedInsurances: string[];
+  spokenLanguages: string[];
+  rating?: number;
+  reviewCount?: number;
+  profileImage?: string;
+  availability?: {
+    [date: string]: string[];
+  };
+}
 
 export default function Home() {
   const [mapsKey, setMapsKey] = useState('');
   const [userCity, setUserCity] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [mapLoaded, setMapLoaded] = useState(false);
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
 
   useEffect(() => {
-    async function fetchMapsKey() {
-      const response = await fetch('/api/firebase-config');
-      const config = await response.json();
-      setMapsKey(config.mapsKey);
-    }
-    fetchMapsKey();
+    async function initialize() {
+      try {
+        // get Maps API key
+        const response = await fetch('/api/firebase-config');
+        const config = await response.json();
+        setMapsKey(config.mapsKey);
+        
+        // initialize Firebase
+        await initializeFirebase();
 
-    // check the local storage for the user's location
-    const cachedLocation = localStorage.getItem('userLocation');
-    if (cachedLocation) {
-      setUserCity(cachedLocation);
-      setIsLoading(false);
-    } else {
-      // get the user's location using ipgeolocation.io
-      fetch('/api/geo')
-        .then(response => response.json())
-        .then(data => {
+        // fetch doctors
+        const doctorsQuery = query(collection(getFirebaseDb(), 'users'), where("role", "==", "doctor"));
+        const userSnapshot = await getDocs(doctorsQuery);
+        const doctorsPromises = userSnapshot.docs.map(async (userDoc) => {
+          const availabilityRef = doc(getFirebaseDb(), 'availability', userDoc.id);
+          const availabilityDoc = await getDoc(availabilityRef);
+          const availability = availabilityDoc.exists() ? availabilityDoc.data() : {};
+
+          return {
+            id: userDoc.id,
+            ...userDoc.data(),
+            availability
+          } as Doctor;
+        });
+
+        const doctorsList = await Promise.all(doctorsPromises);
+        setDoctors(doctorsList);
+
+        // handle location
+        const cachedLocation = localStorage.getItem('userLocation');
+        if (cachedLocation) {
+          setUserCity(cachedLocation);
+        } else {
+          const geoResponse = await fetch('/api/geo');
+          const data = await geoResponse.json();
           const city = data.city || '';
           const fullState = data.state_prov || '';
-          const stateAbbr = stateAbbreviations[fullState as keyof typeof stateAbbreviations] || fullState;  // convert full state name to abbreviation
+          const stateAbbr = stateAbbreviations[fullState as keyof typeof stateAbbreviations] || fullState;
           const locationString = `${city}, ${stateAbbr}`;
           setUserCity(locationString);
           localStorage.setItem('userLocation', locationString);
-        })
-        .catch(error => {
-          console.error('Error fetching location:', error);
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
+        }
+
+        // only set loading to false after everything is loaded
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Error during initialization:', error);
+        setIsLoading(false); // set loading to false even on error
+      }
     }
+
+    initialize();
   }, []);
 
   return (
     <div className="container max-w-full flex flex-col min-h-screen">
-      <div className="hero-section bg-background text-white py-10 sm:py-20">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl text-center font-semibold px-4">Find the best doctor near you.</h1>
+      <div className="hero-section bg-background text-white py-16 sm:py-32">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl text-center font-semibold px-4">
+          Find the best doctor near you.
+        </h1>
       </div>
       <div className="flex flex-col lg:flex-row flex-1">
         <div className="w-full lg:w-[70%] px-4 sm:px-6 lg:pl-10 xl:pl-20 pt-6 lg:pt-10">
           {isLoading ? (
-            <div className="flex items-center space-x-2">
-              <Skeleton className="h-6 sm:h-8 w-32 sm:w-44" />
-              <Skeleton className="h-6 sm:h-8 w-24 sm:w-32" />
+            <div className="space-y-6">
+              {/* location text skeleton */}
+              <div className="flex items-center space-x-2">
+                <Skeleton className="h-8 w-44" />
+                <Skeleton className="h-8 w-32" />
+              </div>
+              
+              {/* doctor card skeletons */}
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="flex flex-col sm:flex-row w-full p-4 bg-white rounded-lg">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center sm:space-x-6 w-full">
+                    {/* profile image skeleton */}
+                    <div className="mb-4 sm:mb-0">
+                      <Skeleton className="w-32 h-32 rounded-full" />
+                    </div>
+                    
+                    <div className="w-full relative">
+                      {/* name and specialty skeletons */}
+                      <div>
+                        <Skeleton className="h-6 w-48 mb-1" />
+                        <Skeleton className="h-5 w-36 mb-3" />
+                      </div>
+                      
+                      {/* info line skeletons */}
+                      <div className="flex flex-col gap-1">
+                        <div className="flex items-center gap-2">
+                          <Skeleton className="h-5 w-5" />
+                          <Skeleton className="h-5 w-32" />
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Skeleton className="h-5 w-5" />
+                          <Skeleton className="h-5 w-64" />
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Skeleton className="h-5 w-5" />
+                          <Skeleton className="h-5 w-72" />
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Skeleton className="h-5 w-5" />
+                          <Skeleton className="h-5 w-56" />
+                        </div>
+                      </div>
+
+                      {/* button section */}
+                      <div className="xl:absolute relative mt-4 xl:mt-0 xl:right-0 xl:top-10">
+                        <Skeleton className="hidden xl:block h-4 w-36 mb-3 mx-auto" />
+                        <Skeleton className="h-10 w-full xl:w-[200px]" />
+                        <Skeleton className="xl:hidden h-4 w-36 mt-2 mx-auto" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           ) : (
-            userCity && <p className="text-left text-xl sm:text-2xl">Top-rated doctors in <span className="underline decoration-primary underline-offset-4">{userCity}</span></p>
+            <>
+              {userCity && <p className="text-left text-xl sm:text-2xl mb-6">Top-rated doctors in <span className="underline decoration-primary underline-offset-4">{userCity}</span></p>}
+              <div className="space-y-2 pb-8">
+                {doctors.map((doctor, index) => (
+                  <div key={doctor.id}>
+                    <DoctorProfileCard
+                      id={doctor.id}
+                      name={`${doctor.firstName} ${doctor.lastName}`}
+                      degree={doctor.degree}
+                      specialty={doctor.specialty}
+                      streetAddress={doctor.streetAddress}
+                      city={doctor.city}
+                      state={doctor.state}
+                      zipCode={doctor.zipCode}
+                      acceptedInsurances={doctor.acceptedInsurances}
+                      spokenLanguages={doctor.spokenLanguages}
+                      previewImage={doctor.profileImage}
+                      rating={doctor.rating || 0}
+                      reviewCount={doctor.reviewCount || 0}
+                      availability={doctor.availability}
+                    />
+                    {index < doctors.length - 1 && (
+                      <div className="border-b border-gray-200 my-4" />
+                    )}
+                  </div>
+                ))}
+              </div>
+            </>
           )}
         </div>
         <div className="w-full lg:w-[30%] px-4 sm:px-6 lg:pr-10 xl:pr-20 pt-6 lg:pt-10">
           {isLoading ? (
-            <Skeleton className="w-full h-64 lg:h-full" />
+            <Skeleton className="w-full h-[calc(100vh-2rem)]" />
           ) : (
-            <div className="w-full h-64 lg:h-full bg-gray-100 relative">
+            <div className="w-full h-[calc(100vh-2rem)] bg-gray-100 relative sticky top-4 py-4">
               {mapsKey && (
                 <iframe
                   src={`https://www.google.com/maps/embed/v1/search?key=${mapsKey}&q=doctors+in+${encodeURIComponent(userCity || 'your area')}`}
