@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from "react";
-import { getFirestore, collection, getDocs, query, where } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, query, where, doc } from 'firebase/firestore';
 import { useAuth } from '../authcontext';
 import DoctorDescription from "../components/DoctorDescription";
 import BookAppointment from "../components/BookAppointment";
@@ -8,7 +8,8 @@ import BookAppointment from "../components/BookAppointment";
 interface Doctor {
     nextAvailable: string;
     id: string;
-    name: string;
+    firstName: string;
+    lastName: string;
     degree: string;
     clinicName: string;
     streetAddress: string;
@@ -62,35 +63,56 @@ export default function Appointments() {
     if (loading) return <div>Loding...</div>
     if (error) return <div>Error: {error}</div>
 
+    const description = () => {
+        {
+
+            const filteredDoctors = doctors.filter((doctor) =>
+                doctor.id === doctor.id &&
+                doctor.firstName == "Doctor" &&
+                doctor.lastName == "Ellison" &&
+                doctor.specialty === "Psychiatry" &&
+                doctor.degree === "MD" &&
+                doctor.streetAddress === "515 Cattail Circle" &&
+                doctor.city === "Harker Heights" &&
+                doctor.state === "TX" &&
+                doctor.zipCode === "76548"
+            )
+            return (
+
+                filteredDoctors.map((doctor, i) => {
+                    return (<div key={i} className="">
+                        <DoctorDescription
+                            firstName={doctor.firstName}
+                            lastName={doctor.lastName}
+                            specialty={doctor.specialty}
+                            degree={doctor.degree}
+                            streetAddress={doctor.streetAddress}
+                            city={doctor.city} state={doctor.state}
+                            zipCode={doctor.zipCode}
+                            acceptedInsurances={doctor.acceptedInsurances}
+                            spokenLanguages={doctor.spokenLanguages}
+                            previewImage={''}
+                            rating={doctor.rating}
+                            reviewCount={doctor.reviewCount}
+
+                        />
+                    </div>)
+                })
+            )
+        }
+    }
+
 
     return (
         <>
 
 
-
-            <div className="flex  justify-center items-stretch gap-2 col ">
-                <div className="w-full">
-                    <DoctorDescription
-                        name={"Bob Ross"}
-                        specialty={"Art"}
-                        degree="MD"
-                        streetAddress={"301 Maple St"}
-                        city={"Denton"} state={" Tx"}
-                        zipCode={"75906"}
-                        acceptedInsurances={['xyy']}
-                        spokenLanguages={['abc']}
-                        previewImage={''}
-                        rating={4.95}
-                        reviewCount={144}
-
-                    />
+            <div className="flex items-center flex-wrap md:flex-nowrap p-8">
+                <div >
+                    {description()}
                 </div>
-
-
-                <div className="w-full">
-                    
-                        <BookAppointment />
-                    
+                <div >
+                    <BookAppointment />
                 </div>
             </div>
         </>

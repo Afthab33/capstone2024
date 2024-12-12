@@ -6,6 +6,8 @@ import { useAuth } from '../authcontext';
 
 
 interface Appointments {
+  firstName: string;
+  lastName: string;
   nextAvailable: string;
   id: string;
   name: string;
@@ -18,6 +20,8 @@ interface Appointments {
   specialty: string;
   acceptedInsurances: string[];
   spokenLanguages: string[];
+  rating?: number;
+  reviewCount?: number;
 }
 
 export default function AppointmentsHistory() {
@@ -62,16 +66,20 @@ export default function AppointmentsHistory() {
 
   return (
     <>
-     
-        
+
+
       <div className="flex justify-center p-20 ">
         <div className="w-full max-w-7xl mx-auto px-36  ">
-        <h1 className="text-2xl font-bold mb-4 text-left">Appointments History </h1>
-        <div className="space-y-4">
+          <h1 className="text-2xl font-bold mb-4 text-left">Appointments History </h1>
+          <div className="space-y-4">
             {appointments.map((appointment, index) => (
               <AppointmentsCard
+
                 key={index}
-                name={appointment.name}
+                id={appointment.id}
+                firstName={appointment.firstName}
+                lastName={appointment.lastName}
+                degree={appointment.degree}
                 specialty={appointment.specialty}
                 streetAddress={appointment.streetAddress}
                 nextAvailable={appointment.nextAvailable}
@@ -80,7 +88,8 @@ export default function AppointmentsHistory() {
                 zipCode={appointment.zipCode}
                 acceptedInsurances={appointment.acceptedInsurances}
                 spokenLanguages={appointment.spokenLanguages}
-
+                rating={appointment.rating}
+                reviewCount={appointment.reviewCount}
               />
 
             ))}
