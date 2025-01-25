@@ -2,26 +2,26 @@
 
 import { use, useEffect, useState } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
-import { db as getFirebaseDb } from '../../authcontext'; // Import the function to get db
+import { db as getFirebaseDb } from '../../authcontext';
 import { useAuth } from '../../authcontext'; // Use the auth context
 
 interface ViewDoctorProps {
   params: Promise<{
-    id: string; // Assuming the ID is a string
+    id: string;
   }>;
 }
 
 const ViewDoctor = ({ params }: ViewDoctorProps) => {
-  const { id } = use(params); // Unwrap the params promise using `use()`
-  const [doctor, setDoctor] = useState<any>(null); // Use 'any' or define a specific type for doctor
+  const { id } = use(params); // unwrap 'promise'
+  const [doctor, setDoctor] = useState<any>(null);
   const { user } = useAuth(); // Use auth context to get the current user
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null); // Specify error type
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchDoctor = async () => {
-      const db = getFirebaseDb(); // Call the function to get the Firestore instance
-      const doctorRef = doc(db, 'users', id); // Reference the doctor document
+      const db = getFirebaseDb(); // firestore instance
+      const doctorRef = doc(db, 'users', id); // reference doctor based on primary key
       try {
         const doctorSnap = await getDoc(doctorRef);
         if (doctorSnap.exists()) {
