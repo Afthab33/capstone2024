@@ -91,31 +91,35 @@ const Navbar = () => {
                   <span className="absolute left-0 bottom-0 w-full h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
                 </span>
               </Link>
-              {
-                user ?(
-                  <Link href="/testDeleteLater" className="text-gray-900 inline-flex items-center px-1 pt-1 hover:text-gray-600 relative group">
-                    <span className="relative">
-                      DU testing query
-                      <span className="absolute left-0 bottom-0 w-full h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
-                    </span>
-                  </Link>
-                ) : <></>
-              }
-              {
-                user ?(
-                  <Link href="/testadd" className="text-gray-900 inline-flex items-center px-1 pt-1 hover:text-gray-600 relative group">
-                    <span className="relative">
-                      DU testing add
-                      <span className="absolute left-0 bottom-0 w-full h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
-                    </span>
-                  </Link>
-                ) : <></>
-              }
+              {/* Du comment this out no longer needed
+                {
+                  user ?(
+                    <Link href="/testDeleteLater" className="text-gray-900 inline-flex items-center px-1 pt-1 hover:text-gray-600 relative group">
+                      <span className="relative">
+                        DU testing query
+                        <span className="absolute left-0 bottom-0 w-full h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
+                      </span>
+                    </Link>
+                  ) : <></>
+                }
+              */}
+              {/* Du comment this out no longer needed
+                {
+                  user ?(
+                    <Link href="/testadd" className="text-gray-900 inline-flex items-center px-1 pt-1 hover:text-gray-600 relative group">
+                      <span className="relative">
+                        DU testing add
+                        <span className="absolute left-0 bottom-0 w-full h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
+                      </span>
+                    </Link>
+                  ) : <></>
+                }
+              */}
               {
                 user ?(
                   <Link href="/DoctorChat" className="text-gray-900 inline-flex items-center px-1 pt-1 hover:text-gray-600 relative group">
                     <span className="relative">
-                      DU test Msg
+                      Messenger
                       <span className="absolute left-0 bottom-0 w-full h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
                     </span>
                   </Link>

@@ -18,6 +18,8 @@ interface DoctorCardProps {
   zipCode: string;
   acceptedInsurances: string[];
   spokenLanguages: string[];
+  rating?: number;
+  reviewCount?: number;
 }
 
 export default function DoctorCard({
@@ -33,12 +35,14 @@ export default function DoctorCard({
   zipCode,
   acceptedInsurances,
   spokenLanguages,
+  rating = 0,
+  reviewCount = 0,
 }: DoctorCardProps) {
   return (
     <>
       <div className="flex items-center justify-between w-full max-w p-4 bg-white rounded-lg">
         <div className="flex items-center space-x-4">
-          <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center">
+          <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0 relative">
             {/* Placeholder for image */}
           </div>
           <div>
@@ -68,9 +72,9 @@ export default function DoctorCard({
                 marginBottom: '-110px',
               }}
             >
-              <div>5 · 144 reviews</div>
+              <div >{rating} · {reviewCount} · Reviews</div>      {/*add reviews/ratings to doctors, then add here*/}
               <div>
-                1.3mi · {streetAddress}, {city}, {state} {zipCode}
+                1.3mi · {streetAddress}, {city}, {state} {zipCode}  {/*add distance from user*/} 
               </div>
               <div>Accepts: {acceptedInsurances.join(', ')}</div>
               <div>Speaks: {spokenLanguages.join(', ')}</div>
@@ -82,27 +86,16 @@ export default function DoctorCard({
             <p className="text-sm text-gray-500 mb-2">
               Next available: {nextAvailable}
             </p>
-            <Button
-              className="mb-2"
-              style={{
-                width: 175,
-              }}
-            >
-              Book
-            </Button>
-            <div>
-              { <Link href={`/viewDoctor/${id}`}>
+            { <Link href={`/viewDoctor/${id}`}>
                 <Button
                   className="mb-2"
                   style={{
-                    backgroundColor: '#829eb5',
                     width: 175,
                   }}
                 >
                   View
                 </Button>
               </Link> }
-            </div>
           </div>
         </div>
       </div>
