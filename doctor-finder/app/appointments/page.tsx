@@ -4,6 +4,8 @@ import { getFirestore, collection, getDocs, query, where, doc } from 'firebase/f
 import { useAuth } from '../authcontext';
 import DoctorDescription from "../components/DoctorDescription";
 import BookAppointment from "../components/BookAppointment";
+import { useSearchParams } from "next/navigation";
+
 
 interface Doctor {
     nextAvailable: string;
@@ -29,6 +31,7 @@ export default function Appointments() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const { user } = useAuth();
+    const searchParams = useSearchParams();
     useEffect(() => {
         const fetchDoctors = async () => {
 
@@ -63,56 +66,62 @@ export default function Appointments() {
     if (loading) return <div>Loding...</div>
     if (error) return <div>Error: {error}</div>
 
+
     const description = () => {
-        {
+        try {
+            {
+                // filter doctors to find match from list 
+                const filteredDoctors = doctors.filter((doctor) =>
+                    doctor.id === doctor.id &&
+                    doctor.firstName == searchParams.get('firstName') &&
+                    doctor.lastName == searchParams.get('lastName') &&
+                    doctor.specialty === searchParams.get('specialty') &&
+                    doctor.degree === searchParams.get('degree') &&
+                    doctor.streetAddress == searchParams.get('streetAddress') &&
+                    //  doctor.city == searchParams.get('city') &&
+                    // doctor.state === searchParams.get('state')&& 
+                    doctor.zipCode === searchParams.get('zipCode')
+                )
+                return (
+                    filteredDoctors.map((doctor, i) => {
+                        return (<div key={i} className="">
+                            {/* set doctor description appointment */}
 
-            const filteredDoctors = doctors.filter((doctor) =>
-                doctor.id === doctor.id &&
-                doctor.firstName == "Doctor" &&
-                doctor.lastName == "Ellison" &&
-                doctor.specialty === "Psychiatry" &&
-                doctor.degree === "MD" &&
-                doctor.streetAddress === "515 Cattail Circle" &&
-                doctor.city === "Harker Heights" &&
-                doctor.state === "TX" &&
-                doctor.zipCode === "76548"
-            )
-            return (
+                            <DoctorDescription
+                                firstName={doctor.firstName}
+                                lastName={doctor.lastName}
+                                specialty={doctor.specialty}
+                                degree={doctor.degree}
+                                streetAddress={doctor.streetAddress}
+                                city={doctor.city} state={doctor.state}
+                                zipCode={doctor.zipCode}
+                                acceptedInsurances={doctor.acceptedInsurances}
+                                spokenLanguages={doctor.spokenLanguages}
+                                previewImage={doctor.previewImage}
+                                rating={doctor.rating}
+                                reviewCount={doctor.reviewCount}
 
-                filteredDoctors.map((doctor, i) => {
-                    return (<div key={i} className="">
-                        <DoctorDescription
-                            firstName={doctor.firstName}
-                            lastName={doctor.lastName}
-                            specialty={doctor.specialty}
-                            degree={doctor.degree}
-                            streetAddress={doctor.streetAddress}
-                            city={doctor.city} state={doctor.state}
-                            zipCode={doctor.zipCode}
-                            acceptedInsurances={doctor.acceptedInsurances}
-                            spokenLanguages={doctor.spokenLanguages}
-                            previewImage={''}
-                            rating={doctor.rating}
-                            reviewCount={doctor.reviewCount}
-
-                        />
-                    </div>)
-                })
-            )
+                            />
+                        </div>)
+                    })
+                )
+            }
+        } catch (error) {
+            console.error('Error fetching description:', error);
+                setError('Failed to fetch description.');
         }
     }
-
 
     return (
         <>
 
 
-            <div className="flex items-center flex-wrap md:flex-nowrap p-8">
+            <div className="flex justify-center items-center gap-x-[25rem] pt-12">
                 <div >
                     {description()}
                 </div>
                 <div >
-                    <BookAppointment />
+                    <BookAppointment  />
                 </div>
             </div>
         </>

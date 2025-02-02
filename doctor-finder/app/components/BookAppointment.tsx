@@ -9,23 +9,67 @@ import {
     CarouselItem,
     CarouselNext,
     CarouselPrevious,
-} from "@/components/ui/carousel"
+} from "@/components/ui/calendarCarousel"
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
+import dayjs from 'dayjs'
+import { addDays, eachDayOfInterval, getDate, getMonth } from "date-fns";
+
+interface Appointment {
+    appointment: string;
+}
 function BookAppointment() {
-    const [hovered, setHovered] = useState<string | null>(null);
-    const [ischeck, setIsCheck] = useState(1);
-    const [date, setDate] = React.useState<Date | undefined>(new Date())
-    const [selected, setSelected] = React.useState<Date>()
-    const getButtonStyle = (button: string) => ({
-        backgroundColor: hovered === button ? "#E3E4E5" : "#ededed",
+    // efffect for previous switch patient layout
+    // const [hovered, setHovered] = useState<string | null>(null);
+    // const [ischeck, setIsCheck] = useState(1);  
+    // const getButtonStyle = (button: string) => ({
+    //     backgroundColor: hovered === button ? "#E3E4E5" : "#ededed",
+    // });
 
-    });
+    const [selected, setSelected] = useState<Date>()
+    const weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'];
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
+    const today = new Date;
+    const month = dayjs().month();
+    
 
+    function futureDate(day:number,month:number, date:number){
+        //get day as num
+        
+        //add 1 
+       const newDay =dayjs().day(day)
+       const d =  newDay.add(2,'day')
+       const newDate = dayjs().date(date)
+        const D = newDate.add(2,'days')
+       const newMonth = dayjs().month(month)
+        const m =( date>D.date())?newMonth.add(1,'month'): dayjs().month(month)
+        
+       
+        //return
+        console.log("day", day,"after added",d.day(), "Month ",m.month(), "date",D.date())
+            return( <span> {weekday[d.day()]}, {months[m.month()]}  {D.date()}  </span>)
+    }
+
+    //amount of time slot for patient to book appointments
+    const years = 1;
+    //get start time 
+    const dayOfMonth = getDate(today);
+    //get end date
+    const nextYear = dayjs().add(years, 'year').get('year');
+    const endDate = new Date(nextYear, month, dayOfMonth);
+
+    //Calulate 1 year interval for future appointments
+    const bookingInterval = eachDayOfInterval({
+        start: today,
+        end: endDate
+    })
 
     return (
         <>
-            <div className='flex flex-row overflow-hidden  lg:pr-48 md:pr-0 sm:pr-0'>
-                <div className=" rounded-md border border-1 shadow-md solid-gray content-center p-4">
-                    <div className='ml-2 mr-4'>
+            <div className='flex overflow-hidden w-[30rem]'>
+          
+                <div className=" rounded-md border border-1 shadow-md solid-gray content-center p-6">
+                    <div className='flex flex-col'>
                         <h1 className='text-xl font-semibold mb-1'>Book an appointment today</h1>
                         <h3 className='text-sm font-semibold text-gray-400 mb-4'>Reason for visit</h3>
                         <div className='flex flex-col items-start gap-2 pb-1'>
@@ -58,6 +102,12 @@ function BookAppointment() {
                                     </SelectContent>
                                 </Select>
                             </div>
+                            <div className='flex items-center gap-4 pt-2 pb-2'>
+                                <Switch id="New Patient" />
+                                <Label htmlFor='New Patient'>New Patient</Label>
+                            </div>
+                            {/* 
+                            Previous switch layout
                             <div className='flex flex-wrap md:flex-nowrap items-center pt-6 pb-2'>
                                 <Button className='text-gray-400 h-20 w-52 shadow-md  gap-2 ' style={getButtonStyle("New Patient")}
                                     onMouseEnter={() => setHovered("New Patient")}
@@ -75,48 +125,44 @@ function BookAppointment() {
                                     {ischeck == 0 ? <Check></Check> : null}
                                     Returning Patient
                                 </Button>
-                            </div>
-                            {/* <p className='pb-1'>Tues, Oct 29-Mon, Nov 11</p> */}
-                            <div>
-                                 {/* <Calendar
-                                    mode="single"
-                                    selected={selected}
-                                    onSelect={setSelected}
-                                    className="rounded-md border"
-                                  
-                                    footer={
-                                        selected
-                                          ? `You picked ${selected.toLocaleDateString()}.`
-                                          : "Please pick a date."
-                                      }
-                                    
-                                />  */}
-                       
-                                <Carousel
-                                    opts={{
-                                        align: "start",
-                                    }}
-                                    className="w-full max-w-sm"
-                                >
-                                    <CarouselContent>
-                                        {Array.from({ length: 5 }).map((_, index) => (
-                                            <CarouselItem key={index} className="md:basis-1/2 lg:basis-2/5">
-                                                <div className="p-1">
-                                                    <Card>
-                                                        <CardContent className="flex aspect-square items-center justify-center p-6">
-                                                            <span className="text-3xl font-semibold">{selected?.toDateString()}</span>
-                                                        </CardContent>
-                                                    </Card>
-                                                </div>
-                                            </CarouselItem>
+                            </div> */}
+                            {selected!=null?<p className='pb-1 text-md font-semibold'> {weekday[Number(selected?.getDay())]},  {months[Number(selected?.getMonth())]}  {selected?.getDate().valueOf()}  - {futureDate(Number(selected?.getDay()),Number(selected?.getMonth()),Number(selected?.getDate()))}
 
-                                        ))}
-                                    </CarouselContent>
-                                    <CarouselPrevious />
-                                    <CarouselNext />
-                                </Carousel>
+                            </p>:<p>Error showing dates</p>}
+                            <div >
+                                <div className="mx-auto max-w-xs">
+                                    <Carousel className="w-full max-w-sm">
+                                        <CarouselContent className='-ml-1'>
+                                            {bookingInterval.map((interval, index) => (
+                                                <CarouselItem key={index} className=" flex basis-auto pl-2 "
+                                                onClick={()=>setSelected(interval)}
+                                                >
+                                                    <div className='p-2'>
+                                                        <Card className='flex flex-col justify-center pt-4 pb-4 w-20 h-28 text-gray-500 hover:text-white hover:bg-blue-400 '>
+                                                            <div className='flex flex-col pt-1 pl-2 mb-2 '>
+                                                                <span >{weekday[interval.getDay()]}</span>
+                                                                <span>{months[interval.getMonth()]} {interval.getDate()} </span>
+
+                                                            </div>
+                                                            <div className='flex flex-col pb-1 pl-2 '>
+                                                                <span>No</span>
+                                                                <span>appts</span>
+                                                            </div>
+
+                                                        </Card>
+                                                    </div>
+                                                </CarouselItem>
+                                            ))}
+                                        </CarouselContent>
+                                        <CarouselPrevious />
+                                        <CarouselNext />
+                                    </Carousel>
+                                    <div className="py-2 text-center text-sm text-muted-foreground">
+                                    </div>
+
+                                </div>
                             </div>
-                            {/* <p > Next Available Mon, Nov 4</p> */}
+                            <p > Next Available {weekday[Number(selected?.getDay())]},  {months[Number(selected?.getMonth())]}  {selected?.getDate().valueOf()} </p>
                         </div>
                     </div>
                 </div>
