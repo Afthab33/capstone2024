@@ -30,13 +30,13 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
   useEffect(() => {
     const fetchDoctor = async () => {
       const db = getFirebaseDb(); // firestore instance
-      const doctorRef = doc(db, 'users', id); // reference doctor based on primary key
+      const doctorRef = doc(db, 'users', id); // reference doctor based on primary key(id)
       try {
         const doctorSnap = await getDoc(doctorRef);
         if (doctorSnap.exists()) {
           setDoctor(doctorSnap.data());
         } else {
-          console.error(`No doctor found with id: ${id}`);
+          console.error(`No doctor found with id: ${id}`);      // debug, remove later
           setError('Doctor not found');
         }
       } catch (err) {
@@ -53,7 +53,7 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
     }
   }, [id, user]); // Depend on ID and user state
 
-  const { firstName, lastName, degree, specialty, streetAddress, city, state, zipCode, acceptedInsurances= doctor?.acceptedInsurances || [], spokenLanguages = doctor?.spokenLanguages || [], previewImage, rating = 0, reviewCount = 0 } = doctor || {};
+  const { firstName, lastName, degree, specialty, streetAddress, city, state, zipCode, acceptedInsurances= doctor?.acceptedInsurances || [], spokenLanguages = doctor?.spokenLanguages || [], previewImage, rating, reviewCount } = doctor || {};
 
   const displayName = `${degree === 'MD' ? 'Dr. ' : ''}${firstName + ' ' + lastName}${degree ? `, ${degree}` : ''}`;
 
@@ -79,7 +79,7 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
     starMap.set(3, <Star className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400 fill-current" />);
     starMap.set(4, <Star className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400 fill-current" />);
     starMap.set(5, <Star className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400 fill-current" />);
-    for (var index = 5; index > rating; index--) {
+    for (let index = 5; index > rating; index--) {
       starMap.delete(index);
     }
     return <div className='flex flex-row gap-1 items-center'>{Array.from(starMap.values(), (star, index) => <div key={index}>{star}</div>)}</div>;
@@ -113,7 +113,7 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
           <div className='flex items-stretch gap-5 rounded-lg' style={{ backgroundColor: "#ededed" }}>
             <div className="flex items-center gap-2 flex-row">
               <div className="flex flex-col items-center text-lg font-semibold text-gray-800 ml-4">
-                <span className="text-5xl font-semibold">{rating}</span>
+                <span className="text-5xl font-semibold">{rating}</span>                                {/*All ratings right now are 0 in the database, once reviews are finished this will display it*/}
                 <div className='flex flex-row gap-1 items-center'>{fillStars()}</div>
               </div>
             </div>

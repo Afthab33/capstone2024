@@ -35,8 +35,8 @@ export default function DoctorCard({
   zipCode,
   acceptedInsurances,
   spokenLanguages,
-  rating = 0,
-  reviewCount = 0,
+  rating = 0,   // default
+  reviewCount = 0,  // default
 }: DoctorCardProps) {
   return (
     <>
