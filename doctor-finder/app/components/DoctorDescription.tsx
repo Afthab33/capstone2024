@@ -78,7 +78,7 @@ export default function DoctorProfile({
         starMap.set(3, <Star className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400 fill-current" />);
         starMap.set(4, <Star className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400 fill-current" />);
         starMap.set(5, <Star className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400 fill-current" />);
-        for (var index =5; index> rating; index--) {
+        for (let index =5; index> rating; index--) {
             starMap.delete(index)
         }
         return <>
