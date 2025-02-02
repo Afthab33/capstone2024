@@ -94,8 +94,8 @@ export default function DoctorProfile({
     }
     return (
         <>
-            <div className="  ">
-                <div className="content-center lg:pl-48 md:pl-0 sm:pl-0">
+            <div className="flex w-56">
+                <div className="content-center ">
                     <div className='flex flex-row ml-24 '>
                         <div className="profile-image mb-4 sm:mb-0">
                             <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0 relative">

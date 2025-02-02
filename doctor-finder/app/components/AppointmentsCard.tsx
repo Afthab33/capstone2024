@@ -37,10 +37,13 @@ export default function AppointmentsCard({
   rating = 0,
   reviewCount = 0,
 }: AppointmentsCardProps) {
-  const remainingCount=0;
+  const remainingCount = 0;
+  const reviewPopUp = () =>{
+    
+  }
   return (
     <>
-                                        
+
 
       <div className="flex items-center justify-between w-full max-w p-4 bg-white rounded-lg ">
         <div className="flex items-center space-x-4">
@@ -73,7 +76,20 @@ export default function AppointmentsCard({
         <div className="flex items-center space-x-2">
           <div className="flex flex-col items-end">
             <p className="text-sm text-gray-500 mb-2 ">Next available: {nextAvailable}</p>
-            <Link href={`/viewDoctor/${id}`}>
+            <Link href={{
+              pathname: "/appointments",
+              query: {
+                id,
+                firstName,
+                lastName,
+                specialty,
+                degree,
+                streetAddress,
+                city,
+                state,
+                zipCode,
+              }
+            }}>
               <Button className=" mb-2" style={{
                 width: 175
               }} >
@@ -81,14 +97,14 @@ export default function AppointmentsCard({
               </Button>
             </Link >
 
-              <Link href='/appoinments'>
-                <Button className="mb-2 " style={{
-                  backgroundColor: "#829eb5",
-                  width: 175
-                }}>
-                  Leave a Review
-                </Button>
-              </Link>
+            <Link href='/appointments'>
+              <Button className="mb-2 " style={{
+                backgroundColor: "#829eb5",
+                width: 175
+              }}>
+                Leave a Review
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
