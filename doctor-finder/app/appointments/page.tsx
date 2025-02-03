@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { getFirestore, collection, getDocs, query, where, doc } from 'firebase/firestore';
 import { useAuth } from '../authcontext';
 import DoctorDescription from "../components/DoctorDescription";
@@ -31,7 +31,7 @@ export default function Appointments() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const { user } = useAuth();
-    const searchParams = useSearchParams();
+    
     useEffect(() => {
         const fetchDoctors = async () => {
 
@@ -63,67 +63,60 @@ export default function Appointments() {
         }
     }, [user]);
 
-    if (loading) return <div>Loding...</div>
-    if (error) return <div>Error: {error}</div>
-
-
-    const description = () => {
+    const DoctorDescriptionWrapper = () => {
+        const searchParams = useSearchParams();
+        
         try {
-            {
-                // filter doctors to find match from list 
-                const filteredDoctors = doctors.filter((doctor) =>
-                    doctor.id === doctor.id &&
-                    doctor.firstName == searchParams.get('firstName') &&
-                    doctor.lastName == searchParams.get('lastName') &&
-                    doctor.specialty === searchParams.get('specialty') &&
-                    doctor.degree === searchParams.get('degree') &&
-                    doctor.streetAddress == searchParams.get('streetAddress') &&
-                    //  doctor.city == searchParams.get('city') &&
-                    // doctor.state === searchParams.get('state')&& 
-                    doctor.zipCode === searchParams.get('zipCode')
-                )
-                return (
-                    filteredDoctors.map((doctor, i) => {
-                        return (<div key={i} className="">
-                            {/* set doctor description appointment */}
-
-                            <DoctorDescription
-                                firstName={doctor.firstName}
-                                lastName={doctor.lastName}
-                                specialty={doctor.specialty}
-                                degree={doctor.degree}
-                                streetAddress={doctor.streetAddress}
-                                city={doctor.city} state={doctor.state}
-                                zipCode={doctor.zipCode}
-                                acceptedInsurances={doctor.acceptedInsurances}
-                                spokenLanguages={doctor.spokenLanguages}
-                                previewImage={doctor.previewImage}
-                                rating={doctor.rating}
-                                reviewCount={doctor.reviewCount}
-
-                            />
-                        </div>)
-                    })
-                )
-            }
+            const filteredDoctors = doctors.filter((doctor) =>
+                doctor.firstName == searchParams.get('firstName') &&
+                doctor.lastName == searchParams.get('lastName') &&
+                doctor.specialty === searchParams.get('specialty') &&
+                doctor.degree === searchParams.get('degree') &&
+                doctor.streetAddress == searchParams.get('streetAddress') &&
+                doctor.zipCode === searchParams.get('zipCode')
+            );
+            
+            return (
+                filteredDoctors.map((doctor, i) => (
+                    <div key={i} className="">
+                        <DoctorDescription
+                            firstName={doctor.firstName}
+                            lastName={doctor.lastName}
+                            specialty={doctor.specialty}
+                            degree={doctor.degree}
+                            streetAddress={doctor.streetAddress}
+                            city={doctor.city}
+                            state={doctor.state}
+                            zipCode={doctor.zipCode}
+                            acceptedInsurances={doctor.acceptedInsurances}
+                            spokenLanguages={doctor.spokenLanguages}
+                            previewImage={doctor.previewImage}
+                            rating={doctor.rating}
+                            reviewCount={doctor.reviewCount}
+                        />
+                    </div>
+                ))
+            );
         } catch (error) {
             console.error('Error fetching description:', error);
-                setError('Failed to fetch description.');
+            setError('Failed to fetch description.');
+            return null;
         }
-    }
+    };
+
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error}</div>;
 
     return (
-        <>
-
-
-            <div className="flex justify-center items-center gap-x-[25rem] pt-12">
-                <div >
-                    {description()}
+        <div className="flex justify-center items-center gap-x-[25rem] pt-12">
+            <Suspense fallback={<div>Loading...</div>}>
+                <div>
+                    <DoctorDescriptionWrapper />
                 </div>
-                <div >
-                    <BookAppointment  />
+                <div>
+                    <BookAppointment />
                 </div>
-            </div>
-        </>
-    )
+            </Suspense>
+        </div>
+    );
 }
