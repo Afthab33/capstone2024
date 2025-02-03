@@ -192,10 +192,10 @@ export default function Home() {
           ) : (
             <div className="w-full h-[calc(100vh-2rem)] relative sticky top-4">
               {/* search by location button */}
-              <div className={`absolute top-8 left-1/2 transform -translate-x-1/2 z-10 transition-opacity duration-300 ${mapLoaded ? 'opacity-100' : 'opacity-0'}`}>
+              <div className={`absolute top-8 left-1/2 transform -translate-x-1/2 z-10 transition-opacity duration-300 hidden lg:block ${mapLoaded ? 'opacity-100' : 'opacity-0'}`}>
                 <Link 
                   href={'/locationSearch'}
-                  className="bg-white px-4 py-2 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200 flex items-center space-x-2"
+                  className="bg-white px-3 py-2 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200 flex items-center space-x-2 whitespace-nowrap text-sm"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-accent" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
@@ -207,7 +207,11 @@ export default function Home() {
                 <div className="w-full h-full overflow-hidden relative">
                   <div className="absolute inset-0">
                     <iframe
-                      src={`https://www.google.com/maps/embed/v1/search?key=${mapsKey}&q=doctors+in+${encodeURIComponent(userCity || 'your area')}`}
+                      src={`https://www.google.com/maps/embed/v1/search?key=${mapsKey}&q=${encodeURIComponent(
+                        doctors.map(doctor => 
+                          `${doctor.streetAddress},${doctor.city},${doctor.state},${doctor.zipCode}`
+                        ).join('|')
+                      )}`}
                       className={`w-full h-[calc(100%+35px)] transition-opacity duration-300 ${mapLoaded ? 'opacity-100' : 'opacity-0'}`}
                       style={{ border: 0, marginTop: '-50px' }}
                       allowFullScreen={false}
