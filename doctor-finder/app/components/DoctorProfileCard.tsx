@@ -158,7 +158,7 @@ export default function DoctorProfileCard({
           </div>
           <div className="w-full relative">
             <div>
-              <span className="text-base sm:text-lg font-semibold text-gray-800">{displayName}</span>
+              <span className="doctor-name text-base sm:text-lg font-semibold text-gray-800">{displayName}</span>
               <h3 className="text-md sm:text-md text-gray-500 mb-1">
                 {specialty}
               </h3>
