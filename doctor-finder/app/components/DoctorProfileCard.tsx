@@ -109,7 +109,7 @@ export default function DoctorProfileCard({
 
   return (
     <>
-      <div className="flex flex-col sm:flex-row w-full p-4 bg-white rounded-lg">
+      <div className="flex flex-col sm:flex-row w-full p-4 rounded-lg">
         <div className="flex flex-col sm:flex-row items-start sm:items-center sm:space-x-6 w-full">
           <div className="profile-image mb-4 sm:mb-0">
             <div className="relative group">
