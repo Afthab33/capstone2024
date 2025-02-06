@@ -2,7 +2,7 @@ import { format } from 'date-fns';
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { useState } from 'react';
-import { isBefore, startOfDay } from 'date-fns';
+import { isBefore } from 'date-fns';
 
 interface TimeSlotSelectorProps {
   selectedDate: Date;
@@ -13,6 +13,7 @@ interface TimeSlotSelectorProps {
   onDeselectAll: () => void;
   onCancel: () => void;
   onSave: () => void;
+  centerAligned?: boolean;
 }
 
 export default function TimeSlotSelector({ 
@@ -23,7 +24,8 @@ export default function TimeSlotSelector({
   onSelectAll,
   onDeselectAll,
   onCancel,
-  onSave
+  onSave,
+  centerAligned = false
 }: TimeSlotSelectorProps) {
   const [isSaving, setIsSaving] = useState(false);
 
@@ -68,9 +70,8 @@ export default function TimeSlotSelector({
     
     // organize slots into columns (3 for mobile, 6 for larger screens)
     const numColumns = window.innerWidth < 640 ? 3 : 6;
-    const columnLength = Math.ceil(slots.length / numColumns);
     const columns: Date[][] = Array.from({ length: numColumns }, (_, colIndex) =>
-      slots.filter((_, index) => Math.floor(index / columnLength) === colIndex)
+      slots.filter((_, index) => index % numColumns === colIndex)
     );
     
     return columns;
@@ -93,14 +94,20 @@ export default function TimeSlotSelector({
         {format(selectedDate, 'EEEE, MMMM d yyyy')}
       </h2>
       
-      <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-1 sm:gap-2 mb-6 max-h-[60vh] overflow-y-auto">
+      <div className={`grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-1 sm:gap-2 mb-6 max-h-[60vh] overflow-y-auto ${
+        centerAligned ? 'place-items-center' : ''
+      }`}>
         {generateTimeSlots().map((column, colIndex) => (
-          <div key={colIndex} className="flex flex-col gap-1 sm:gap-2">
+          <div key={colIndex} className={`flex flex-col gap-1 sm:gap-2 ${
+            centerAligned ? 'w-full' : ''
+          }`}>
             {column.map((time) => (
               <Button
                 key={time.toISOString()}
                 variant={isTimeSelected(time) ? "default" : "outline"}
-                className="w-full text-sm sm:text-sm py-1 h-8 sm:h-10"
+                className={`w-full text-sm sm:text-sm py-1 h-8 sm:h-10 ${
+                  centerAligned ? 'flex items-center justify-center' : ''
+                }`}
                 onClick={() => onTimeSelect(time)}
                 disabled={isTimeDisabled(time)}
               >

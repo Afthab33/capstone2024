@@ -3,7 +3,8 @@ import { GeistSans } from 'geist/font/sans';
 import "./globals.css";
 import Navbar from "./components/navbar";
 import { AuthProvider } from "./authcontext";
-import { Toaster } from "react-hot-toast"           // DU ADDED
+import { Toaster as HotToaster } from "react-hot-toast"
+import { Toaster as ShadcnToaster } from "@/components/ui/toaster"
 
 export const metadata: Metadata = {
   title: "Doctor Finder",
@@ -20,7 +21,8 @@ export default function RootLayout({
       <body className={`${GeistSans.className}`}>
         <AuthProvider>
           <Navbar />
-          <Toaster position="top-center"></Toaster>
+          <HotToaster position="top-center" />
+          <ShadcnToaster />
           <main>{children}</main>
         </AuthProvider>
       </body>

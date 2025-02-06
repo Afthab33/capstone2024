@@ -47,7 +47,13 @@ export default function SignUp() {
   // if user is logged in, redirect to home page
   useEffect(() => {
     if (user) {
-      router.push('/');
+      const redirectUrl = localStorage.getItem('redirectAfterAuth');
+      if (redirectUrl) {
+        localStorage.removeItem('redirectAfterAuth');
+        router.push(redirectUrl);
+      } else {
+        router.push('/');
+      }
     }
   }, [user, router]);
 
