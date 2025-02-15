@@ -2,11 +2,12 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { useAuth, auth as getFirebaseAuth, clearUserCache, db as getFirebaseDb } from "../authcontext";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { useState, useEffect } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
 
@@ -19,6 +20,8 @@ const Navbar = () => {
   const pathname = usePathname(); // get pathname from next/navigation
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
   const [userData, setUserData] = useState<UserData | null>(null);
+  const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -70,6 +73,9 @@ const Navbar = () => {
                 />
               </Link>
             </div>
+
+            {/*search bar here*/}
+            
             <div className="hidden pl-5 sm:ml-6 sm:flex sm:space-x-8">
               {
                 user ? (<Link href="/visits" className="text-gray-900 inline-flex items-center px-1 pt-1 hover:text-gray-600 relative group">
