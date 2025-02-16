@@ -56,6 +56,13 @@ const Navbar = () => {
     setIsLogoutDialogOpen(false);
   };
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim() !== "") {
+      router.push(`/search?query=${encodeURIComponent(searchQuery)}`);
+    }
+  };
+
   return (
     <nav className="bg-background border-b border-gray-200 relative z-50">
       <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
@@ -75,7 +82,17 @@ const Navbar = () => {
             </div>
 
             {/*search bar here*/}
-            
+            <form onSubmit={handleSearch} className="hidden sm:flex items-center border rounded-lg overflow-hidden">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search doctors..."
+                className="px-3 py-2 w-64 border-none focus:ring-0 focus:outline-none"
+              />
+            </form>
+
+
             <div className="hidden pl-5 sm:ml-6 sm:flex sm:space-x-8">
               {
                 user ? (<Link href="/visits" className="text-gray-900 inline-flex items-center px-1 pt-1 hover:text-gray-600 relative group">
