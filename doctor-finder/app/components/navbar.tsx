@@ -115,7 +115,7 @@ const Navbar = () => {
                   <span className="absolute left-0 bottom-0 w-full h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
                 </span>
               </Link>
-              {/* Du comment this out no longer needed
+              {/* Du comment this out no longer needed, reactivated to test code */}
                 {
                   user ?(
                     <Link href="/testDeleteLater" className="text-gray-900 inline-flex items-center px-1 pt-1 hover:text-gray-600 relative group">
@@ -126,7 +126,6 @@ const Navbar = () => {
                     </Link>
                   ) : <></>
                 }
-              */}
               {/* Du comment this out no longer needed
                 {
                   user ?(
