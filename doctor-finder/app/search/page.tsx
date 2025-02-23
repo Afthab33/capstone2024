@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { initializeFirebase, db as getFirebaseDb } from '../authcontext';
 
-const SearchPage = () => {
+// create separate component for search functionality
+const SearchContent = () => {
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get('query');
 
@@ -172,6 +173,15 @@ const SearchPage = () => {
       </ul>
 
     </div>
+  );
+};
+
+// main page component with suspense fallback
+const SearchPage = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SearchContent />
+    </Suspense>
   );
 };
 

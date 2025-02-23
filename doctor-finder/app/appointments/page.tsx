@@ -26,7 +26,7 @@ interface Doctor {
     reviewCount?: number;
 }
 
-export default function Appointments() {
+const AppointmentsContent = () => {
     const [doctors, setDoctors] = useState<Doctor[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -141,3 +141,13 @@ export default function Appointments() {
         </>
     )
 }
+
+const AppointmentsPage = () => {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <AppointmentsContent />
+        </Suspense>
+    );
+};
+
+export default AppointmentsPage;
