@@ -15,13 +15,16 @@ const SearchPage = () => {
 
   const [selectedInsurance, setSelectedInsurance] = useState('');
   const [selectedCity, setSelectedCity] = useState('');
+  const [selectedSpecialty, setSelectedSpecialty] = useState('');
 
   // temp filter states for display purposes 
   const [tempInsurance, setTempInsurance] = useState('');
   const [tempCity, setTempCity] = useState('');
+  const [tempSpecialty, setTempSpecialty] = useState('');
 
-  const insuranceOptions = ["Aetna", "BlueCross", "Cigna", "UnitedHealthcare", "Humana", "Molina Healthcare", "Health Net", "Other Asian Insurances"];
-  const cityOptions = ["Denton", "Dallas", "Lewisville"];
+  const [insuranceOptions, setInsuranceOptions] = useState<string[]>([]);
+  const [cityOptions, setCityOptions] = useState<string[]>([]);
+  const [specialtyOptions, setSpecialtyOptions] = useState<string[]>([]);
 
   const fetchDoctors = useCallback(async () => {
     setLoading(true);
@@ -45,9 +48,32 @@ const SearchPage = () => {
       if (selectedCity) {
         q = query(q, where("city", "==", selectedCity));
       }
+      if (selectedSpecialty) {
+        q = query(q, where("specialty", "==", selectedSpecialty));    // not filtering speciality correctly
+      }
 
       const querySnapshot = await getDocs(q);
       let doctorData = querySnapshot.docs.map(doc => doc.data());
+
+      // sets filter options to only display options from queried doctors
+      if (!selectedInsurance && !selectedCity && !selectedSpecialty)  {
+
+        const uniqueInsurances = new Set(
+          doctorData.flatMap(doctor => doctor.acceptedInsurances || [])
+        );
+        setInsuranceOptions(Array.from(uniqueInsurances));
+
+        const uniqueCities = new Set(
+          doctorData.map(doctor => doctor.city)
+        );
+        setCityOptions(Array.from(uniqueCities))
+
+        const uniqueSpecialities = new Set(
+          doctorData.map(doctor => doctor.specialty)
+        );
+        setSpecialtyOptions(Array.from(uniqueSpecialities))
+
+      }
 
       // filter based on query
       doctorData = doctorData.filter(doctor => 
@@ -71,7 +97,7 @@ const SearchPage = () => {
     } finally {
       setLoading(false);
     }
-  }, [searchQuery, selectedInsurance, selectedCity]);
+  }, [searchQuery, selectedInsurance, selectedCity, selectedSpecialty]);
 
   // search doctors based on query only, filters can be selected after
   useEffect(() => {
@@ -82,18 +108,28 @@ const SearchPage = () => {
 
   const handleSearchClick: () => void = () => {
     setSelectedInsurance(tempInsurance);
-    //setTempInsurance('');
     setSelectedCity(tempCity);
-    //setTempCity('');
+    setSelectedSpecialty(tempSpecialty);
     fetchDoctors();
   };
 
   return (
     <div>
       <div className="bg-white shadow-md p-4 mb-6 rounded-md">
-        <h3 className="text-lg font-semibold mb-2">Search For Doctors</h3>
         
         <div className="flex gap-4">
+
+          <select
+            className="border p-2 rounded-md w-1/4"
+            value={tempSpecialty}
+            onChange={(e) => setTempSpecialty(e.target.value)}
+          >
+            <option value="">Choose Specialty</option>
+            {specialtyOptions.map((specialty, index) => (
+              <option key={index} value={specialty}>{specialty}</option>
+            ))}
+          </select>
+
           <select
             className="border p-2 rounded-md w-1/4"
             value={tempInsurance}
