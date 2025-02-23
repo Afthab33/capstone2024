@@ -31,7 +31,8 @@ export default function Appointments() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const { user } = useAuth();
-    
+    const searchParams = useSearchParams();
+
     useEffect(() => {
         const fetchDoctors = async () => {
 
@@ -68,7 +69,6 @@ export default function Appointments() {
 
 
     const bookedCardAnddescription = () => {
-        const searchParams = useSearchParams();
 
         // filter doctors to find match from list 
         const filteredDoctors = doctors.filter((doctor) =>
