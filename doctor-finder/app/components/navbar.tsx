@@ -2,11 +2,12 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { useAuth, auth as getFirebaseAuth, clearUserCache, db as getFirebaseDb } from "../authcontext";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { useState, useEffect } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
 
@@ -19,6 +20,8 @@ const Navbar = () => {
   const pathname = usePathname(); // get pathname from next/navigation
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
   const [userData, setUserData] = useState<UserData | null>(null);
+  const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -53,8 +56,15 @@ const Navbar = () => {
     setIsLogoutDialogOpen(false);
   };
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim() !== "") {
+      router.push(`/search?query=${encodeURIComponent(searchQuery)}`);
+    }
+  };
+
   return (
-    <nav className="bg-background border-b border-gray-200">
+    <nav className="bg-background border-b border-gray-200 relative z-50">
       <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center lg:pl-10">
@@ -66,9 +76,23 @@ const Navbar = () => {
                   width={95}
                   height={95}
                   className="pt-2"
+                  priority
                 />
               </Link>
             </div>
+
+            {/*search bar here*/}
+            <form onSubmit={handleSearch} className="hidden sm:flex items-center border rounded-lg overflow-hidden">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search doctors..."
+                className="px-3 py-2 w-64 border-none focus:ring-0 focus:outline-none"
+              />
+            </form>
+
+
             <div className="hidden pl-5 sm:ml-6 sm:flex sm:space-x-8">
               {
                 user ? (<Link href="/visits" className="text-gray-900 inline-flex items-center px-1 pt-1 hover:text-gray-600 relative group">
@@ -91,7 +115,7 @@ const Navbar = () => {
                   <span className="absolute left-0 bottom-0 w-full h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
                 </span>
               </Link>
-              {/* Du comment this out no longer needed
+              {/* Du comment this out no longer needed, reactivated to test code */}
                 {
                   user ?(
                     <Link href="/testDeleteLater" className="text-gray-900 inline-flex items-center px-1 pt-1 hover:text-gray-600 relative group">
@@ -102,7 +126,6 @@ const Navbar = () => {
                     </Link>
                   ) : <></>
                 }
-              */}
               {/* Du comment this out no longer needed
                 {
                   user ?(

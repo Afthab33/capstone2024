@@ -5,9 +5,11 @@ import { startOfDay } from 'date-fns';
 interface AvailabilityCardProps {
   date: Date;
   isSelected: boolean;
-  onSelect: (date: Date) => void;
-  availableSlots?: number;
+  onSelect?: (date: Date) => void;
+  availableSlots: number;
   currentTime: Date;
+  disabled?: boolean;
+  disabledReason?: string;
 }
 
 export default function AvailabilityCard({ 
@@ -15,50 +17,61 @@ export default function AvailabilityCard({
   isSelected, 
   onSelect,
   availableSlots = 0,
-  currentTime
+  currentTime,
+  disabled = false,
+  disabledReason
 }: AvailabilityCardProps) {
   const isPast = startOfDay(date) < startOfDay(currentTime);
 
   return (
-    <Card 
-      className={`min-w-[70px] sm:min-w-[100px] h-[130px] sm:h-[130px] cursor-pointer transition-colors duration-200 select-none
-        ${isSelected ? 'bg-primary hover:bg-primary/90' : 'hover:bg-gray-50'}`}
-      onClick={() => onSelect(date)}
-    >
-      <CardContent className="h-full py-2 px-0">
-        <div className="flex flex-col items-left justify-between h-full pl-2">
-          <div className="space-y-[0px] sm:space-y-[-6px]">
-            <span className={`text-lg sm:text-lg font-medium leading-none
-              ${isSelected ? 'text-primary-foreground' : 'text-black'}`}>
-              {format(date, 'EEE')}
-            </span>
-            <div className={`text-lg sm:text-lg font-medium leading-none
-              ${isSelected ? 'text-primary-foreground' : 'text-black'}`}>
-              {format(date, 'MMM d')}
+    <div className="relative group w-full">
+      <Card 
+        className={`w-full h-[100px] sm:h-[130px] transition-colors duration-200 select-none
+          ${isSelected ? 'bg-primary hover:bg-primary/90' : 'hover:bg-gray-50'}
+          ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+        onClick={() => !disabled && onSelect?.(date)}
+      >
+        <CardContent className="h-full p-2 sm:p-4">
+          <div className="flex flex-col items-left justify-between h-full">
+            <div className="">
+              <span className={`text-md sm:text-lg lg:text-base xl:text-lg font-medium leading-none
+                ${isSelected ? 'text-primary-foreground' : 'text-black'}`}>
+                {format(date, 'EEE')}
+              </span>
+              <div className={`-mt-1 text-md sm:text-lg lg:text-base xl:text-lg font-medium leading-none
+                ${isSelected ? 'text-primary-foreground' : 'text-black'}`}>
+                {format(date, 'MMM d')}
+              </div>
+            </div>
+            
+            <div className="text-md sm:text-lg lg:text-base xl:text-lg">
+              {availableSlots > 0 ? (
+                <span 
+                  className={
+                    isSelected 
+                      ? 'text-primary-foreground' 
+                      : isPast 
+                        ? 'text-gray-600' 
+                        : 'text-primary'
+                  }
+                >
+                  {availableSlots} {availableSlots === 1 ? 'slot' : 'slots'}
+                </span>
+              ) : (
+                <span className={isSelected ? 'text-primary-foreground' : 'text-gray-600'}>
+                  Not set
+                </span>
+              )}
             </div>
           </div>
-          
-          <div className="text-lg sm:text-xl">
-            {availableSlots > 0 ? (
-              <span 
-                className={
-                  isSelected 
-                    ? 'text-primary-foreground' 
-                    : isPast 
-                      ? 'text-gray-600' 
-                      : 'text-primary'
-                }
-              >
-                {availableSlots} {availableSlots === 1 ? 'slot' : 'slots'}
-              </span>
-            ) : (
-              <span className={isSelected ? 'text-primary-foreground' : 'text-gray-600'}>
-                Not set
-              </span>
-            )}
-          </div>
+        </CardContent>
+      </Card>
+      
+      {disabled && disabledReason && (
+        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">
+          {disabledReason}
         </div>
-      </CardContent>
-    </Card>
+      )}
+    </div>
   );
 }

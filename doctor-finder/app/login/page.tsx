@@ -23,7 +23,13 @@ export default function Login() {
     // if user is logged in, redirect to home page
     useEffect(() => {
         if (user) {
-            router.push('/');
+            const redirectUrl = localStorage.getItem('redirectAfterAuth');
+            if (redirectUrl) {
+                localStorage.removeItem('redirectAfterAuth');
+                router.push(redirectUrl);
+            } else {
+                router.push('/');
+            }
         }
     }, [user, router]); 
 
@@ -44,7 +50,7 @@ export default function Login() {
             const auth = getFirebaseAuth(); // get firebase auth instance
             const { user } = await signInWithEmailAndPassword(auth, email, password); // sign in with email and password
             localStorage.setItem('userCache', JSON.stringify(user)); // store user in local storage
-            router.push('/'); // redirect to home page
+            // Redirect will be handled by the useEffect above
         } catch (error: unknown) {
             if (error instanceof FirebaseError) {
                 setError(error.message); // set error message if error is a FirebaseError

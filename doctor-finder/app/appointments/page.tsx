@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { getFirestore, collection, getDocs, query, where, doc } from 'firebase/firestore';
 import { useAuth } from '../authcontext';
 import DoctorDescription from "../components/DoctorDescription";
@@ -31,7 +31,7 @@ export default function Appointments() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const { user } = useAuth();
-    const searchParams = useSearchParams();
+    
     useEffect(() => {
         const fetchDoctors = async () => {
 
@@ -67,76 +67,63 @@ export default function Appointments() {
     if (error) return <div>Error: {error}</div>
 
 
-    const bookedCardAnddescription = () => {
+    const description = () => {
+        try {
+            {
+                // filter doctors to find match from list 
+                const filteredDoctors = doctors.filter((doctor) =>
+                    doctor.id === doctor.id &&
+                    doctor.firstName == searchParams.get('firstName') &&
+                    doctor.lastName == searchParams.get('lastName') &&
+                    doctor.specialty === searchParams.get('specialty') &&
+                    doctor.degree === searchParams.get('degree') &&
+                    doctor.streetAddress == searchParams.get('streetAddress') &&
+                    //  doctor.city == searchParams.get('city') &&
+                    // doctor.state === searchParams.get('state')&& 
+                    doctor.zipCode === searchParams.get('zipCode')
+                )
+                return (
+                    filteredDoctors.map((doctor, i) => {
+                        return (<div key={i} className="">
+                            {/* set doctor description appointment */}
 
-        // filter doctors to find match from list 
-        const filteredDoctors = doctors.filter((doctor) =>
-            doctor.id === doctor.id &&
-            doctor.firstName == searchParams.get('firstName') &&
-            doctor.lastName == searchParams.get('lastName') &&
-            doctor.specialty === searchParams.get('specialty') &&
-            doctor.degree === searchParams.get('degree') &&
-            doctor.streetAddress == searchParams.get('streetAddress') &&
-            //  doctor.city == searchParams.get('city') &&
-            // doctor.state === searchParams.get('state')&& 
-            doctor.zipCode === searchParams.get('zipCode')
-        )
-        return (
-            filteredDoctors.map((doctor, i) => {
-                return (<div key={i} className="flex justify-center items-center gap-x-[25rem] pt-12">
-                    {/* set doctor description appointment */}
-                    <div>
-                    <DoctorDescription
-                        firstName={doctor.firstName}
-                        lastName={doctor.lastName}
-                        specialty={doctor.specialty}
-                        degree={doctor.degree}
-                        streetAddress={doctor.streetAddress}
-                        city={doctor.city} state={doctor.state}
-                        zipCode={doctor.zipCode}
-                        acceptedInsurances={doctor.acceptedInsurances}
-                        spokenLanguages={doctor.spokenLanguages}
-                        previewImage={doctor.previewImage}
-                        rating={doctor.rating}
-                        reviewCount={doctor.reviewCount}
+                            <DoctorDescription
+                                firstName={doctor.firstName}
+                                lastName={doctor.lastName}
+                                specialty={doctor.specialty}
+                                degree={doctor.degree}
+                                streetAddress={doctor.streetAddress}
+                                city={doctor.city} state={doctor.state}
+                                zipCode={doctor.zipCode}
+                                acceptedInsurances={doctor.acceptedInsurances}
+                                spokenLanguages={doctor.spokenLanguages}
+                                previewImage={doctor.previewImage}
+                                rating={doctor.rating}
+                                reviewCount={doctor.reviewCount}
 
-                    />
-                    </div>
-                    <div>
-                    <BookAppointment
-                        firstName={doctor.firstName}
-                        lastName={doctor.lastName}
-                        specialty={doctor.specialty}
-                        degree={doctor.degree}
-                        streetAddress={doctor.streetAddress}
-                        city={doctor.city} state={doctor.state}
-                        zipCode={doctor.zipCode}
-                        acceptedInsurances={doctor.acceptedInsurances}
-                        spokenLanguages={doctor.spokenLanguages}
-                        // previewImage={doctor.previewImage}
-                        rating={doctor.rating}
-                        reviewCount={doctor.reviewCount} 
-                        nextAvailable={""} 
-                        id={doctor.id} 
-                        clinicName={doctor.clinicName}
-                    />
-                    </div>
-
-                </div>)
-            })
-        )
+                            />
+                        </div>)
+                    })
+                )
+            }
+        } catch (error) {
+            console.error('Error fetching description:', error);
+                setError('Failed to fetch description.');
+        }
     }
-
-    
 
     return (
         <>
 
 
-            <div>
-                {bookedCardAnddescription()}
+            <div className="flex justify-center items-center gap-x-[25rem] pt-12">
+                <div >
+                    {description()}
+                </div>
+                <div >
+                    <BookAppointment  />
+                </div>
             </div>
-              
         </>
     )
 }
