@@ -184,7 +184,7 @@ const CarouselItem = React.forwardRef<
       aria-roledescription="slide"
       className={cn(
         "min-w-0 shrink-0 grow-0 basis-full",
-        orientation === "vertical" ? "pl-4" : "pt-4",
+        orientation === "horizontal" ? "pl-4" : "pt-4",
         className
       )}
       {...props}
@@ -212,7 +212,7 @@ const CarouselPrevious = React.forwardRef<
         className
       )}
       disabled={!canScrollPrev}
-      onClick={scrollPrev}
+      onClick={()=>{scrollPrev();intervalDec()}}
       {...props}
     >
       <ChevronLeft className="h-5 w-5" />
@@ -221,6 +221,16 @@ const CarouselPrevious = React.forwardRef<
   )
 })
 CarouselPrevious.displayName = "CarouselPrevious"
+
+const intervalInc=() =>{
+
+  console.log("next clicked")
+}
+
+const intervalDec=() =>{
+
+  console.log("prev clicked")
+}
 
 const CarouselNext = React.forwardRef<
   HTMLButtonElement,
@@ -241,7 +251,8 @@ const CarouselNext = React.forwardRef<
         className
       )}
       disabled={!canScrollNext}
-      onClick={scrollNext}
+
+      onClick={()=>{scrollNext();intervalInc()}}
       {...props}
     >
       <ChevronRight className="h-5 w-5" />
