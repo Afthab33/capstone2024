@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import DoctorComparison from "../../components/DoctorComparison"; 
-//import { fetchDoctorsFromFirestore } from "../../lib/firestore"; 
+import Link from "next/link"; 
+import DoctorComparison from "../../components/DoctorComparison";
+import { fetchDoctorsFromFirestore } from "../../lib/firestore";
 
 const DoctorDetailsPage = () => {
   const router = useRouter();
@@ -12,11 +13,10 @@ const DoctorDetailsPage = () => {
   useEffect(() => {
     if (id) {
       fetchDoctorsFromFirestore().then((doctors) => {
-        
         const selectedDoctor = doctors.find((doc) => doc.id === id);
         setDoctor1(selectedDoctor);
 
-        // Second Doctor
+       
         const randomDoctor = doctors.find((doc) => doc.id !== id);
         setDoctor2(randomDoctor);
       });
@@ -31,7 +31,14 @@ const DoctorDetailsPage = () => {
       <h2>{doctor1?.name}</h2>
       <p>Specialty: {doctor1?.specialty}</p>
 
-      {/* Doctor Comparison */}
+      { }
+      <Link href={`/viewDoctor/comparison?doctorId1=${doctor1.id}&doctorId2=${doctor2.id}`}>
+        <button className="bg-blue-500 text-white px-4 py-2 rounded">
+          Compare Doctors
+        </button>
+      </Link>
+
+      {/* comparintg doctors */}
       {doctor1 && doctor2 && <DoctorComparison doctor1={doctor1} doctor2={doctor2} />}
     </div>
   );
