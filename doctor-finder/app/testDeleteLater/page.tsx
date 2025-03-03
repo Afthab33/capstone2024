@@ -14,9 +14,14 @@ export default function UserList() {
   const [selectedInsurance, setSelectedInsurance] = useState('');
   const [selectedCity, setSelectedCity] = useState('');
 
-  // Hardcoded options
+  // Hardcoded options, found on signup page...
   /* DEBUG this section later... search DEBUG on this page*/
-  const insuranceOptions = ["Aetna", "BlueCross", "Cigna", "UnitedHealthcare", "Humana", "Molina Healthcare", "Health Net", "Other Asian Insurances"];
+  const insuranceOptions = [
+    "UnitedHealthcare", "Blue Cross Blue Shield (BCBS)", "Aetna", "Cigna", "Humana",
+    "Anthem", "Kaiser Permanente", "Centene", "Molina Healthcare", "Health Net",
+    "WellCare", "Amerigroup", "Medicaid", "Medicare", "Tricare",
+    "CareSource", "Oscar Health", "EmblemHealth", "Highmark", "Ambetter"
+  ];
   const cityOptions = ["Denton", "Dallas", "Lewisville"];
 
   // Function to fetch users (triggered by button)
