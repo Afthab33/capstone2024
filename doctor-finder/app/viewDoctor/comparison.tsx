@@ -1,4 +1,4 @@
-/*import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import DoctorComparison from "../components/DoctorComparison";
 import { fetchDoctorsFromFirestore } from "../../lib/firestore";
 import { db } from "../../lib/firebase";
@@ -35,4 +35,4 @@ const CompareDoctorsPage = () => {
 };
 
 export default CompareDoctorsPage;
-*/
+
