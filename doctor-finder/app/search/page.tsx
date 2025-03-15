@@ -4,13 +4,31 @@ import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { initializeFirebase, db as getFirebaseDb } from '../authcontext';
+import DoctorCard from '../components/doctorCard';
+
+interface Doctor {
+  key: string;
+  id: string;
+  firstName: string;
+  lastName: string;
+  degree: string;
+  clinicName: string;
+  streetAddress: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  specialty: string;
+  profileImage: string;
+  acceptedInsurances: string[];
+  spokenLanguages: string[]; 
+}
 
 // create separate component for search functionality
 const SearchContent = () => {
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get('query');
 
-  const [doctors, setDoctors] = useState<any[]>([]);
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -50,11 +68,14 @@ const SearchContent = () => {
         q = query(q, where("city", "==", selectedCity));
       }
       if (selectedSpecialty) {
-        q = query(q, where("specialty", "==", selectedSpecialty));    // not filtering speciality correctly
+        q = query(q, where("specialty", "==", selectedSpecialty));
       }
 
       const querySnapshot = await getDocs(q);
-      let doctorData = querySnapshot.docs.map(doc => doc.data());
+      let doctorData: Doctor[] = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data() as Omit<Doctor, 'id'>, // ensure data matches the Doctor interface
+      }));
 
       // sets filter options to only display options from queried doctors
       if (!selectedInsurance && !selectedCity && !selectedSpecialty)  {
@@ -166,12 +187,30 @@ const SearchContent = () => {
       {error && <p>{error}</p>}
       {doctors.length === 0 && !loading && <p>No doctors found.</p>}
 
-      <ul>
-        {doctors.map((doctor, index) => (
-          <li key={index}>{doctor.firstName} {doctor.lastName}</li>
-        ))}
-      </ul>
-
+      <div className="flex justify-center p-4">
+            <div className="w-full max-w-7xl mx-auto px-36">
+                <div className="space-y-4">
+                  {doctors.map((doctor) => (
+                    <DoctorCard
+                      key={doctor.id}
+                      id= {doctor.id}
+                      firstName={doctor.firstName}
+                      lastName={doctor.lastName}
+                      degree={doctor.degree}
+                      specialty={doctor.specialty}
+                      nextAvailable="Next available date here"  // add doctors next available date
+                      clinicName={doctor.clinicName}
+                      streetAddress={doctor.streetAddress}    // not used yet 
+                      city={doctor.city}
+                      state={doctor.state}
+                      zipCode={doctor.zipCode}
+                      profileImage={doctor.profileImage}
+                      acceptedInsurances={doctor.acceptedInsurances}
+                      spokenLanguages={doctor.spokenLanguages}
+                  />))}
+              </div>
+            </div>
+          </div>
     </div>
   );
 };

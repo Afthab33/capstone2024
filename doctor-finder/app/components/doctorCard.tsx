@@ -3,6 +3,8 @@
 import { Button } from '@/components/ui/button';
 import { Star, Shield, MessageCircle, MapPin } from 'lucide-react';
 import Link from 'next/link';
+import DoctorProfileImage from "../viewDoctor/[id]/components/DoctorProfileImage";
+
 
 interface DoctorCardProps {
   firstName: string;
@@ -16,6 +18,7 @@ interface DoctorCardProps {
   city: string;
   state: string;
   zipCode: string;
+  profileImage: string;
   acceptedInsurances: string[];
   spokenLanguages: string[];
   rating?: number;
@@ -33,6 +36,7 @@ export default function DoctorCard({
   city,
   state,
   zipCode,
+  profileImage,
   acceptedInsurances,
   spokenLanguages,
   rating = 0,   // default
@@ -43,7 +47,7 @@ export default function DoctorCard({
       <div className="flex items-center justify-between w-full max-w p-4 bg-white rounded-lg">
         <div className="flex items-center space-x-4">
           <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0 relative">
-            {/* Placeholder for image */}
+          <DoctorProfileImage profileImage={profileImage} />
           </div>
           <div>
             <div

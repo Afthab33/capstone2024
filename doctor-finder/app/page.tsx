@@ -103,7 +103,6 @@ export default function Home() {
         Compare Doctors
       </button>
     </Link>
-  </div>
 </div>       
       </div>
       <div className="flex flex-col lg:flex-row flex-1">

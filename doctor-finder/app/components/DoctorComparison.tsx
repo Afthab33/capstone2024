@@ -1,4 +1,4 @@
-import React from "react";
+/*import React from "react";
 
 const DoctorComparison = ({ doctor1, doctor2 }) => {
   return (
@@ -40,4 +40,4 @@ const DoctorComparison = ({ doctor1, doctor2 }) => {
 
 export default DoctorComparison;
 
-
+*/
