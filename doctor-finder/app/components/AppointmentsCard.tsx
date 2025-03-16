@@ -402,7 +402,7 @@ export default function AppointmentsCard({
               <Button onClick={() => setOpen(!open)} className="mb-2 " style={{
                 backgroundColor: "#829eb5",
                 width: 175
-              }} onClick={handleReview}>
+              }} >
                 Leave a Review
               </Button>
 
