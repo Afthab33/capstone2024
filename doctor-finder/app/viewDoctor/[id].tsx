@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+/*import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link"; 
 import DoctorComparison from "../../components/DoctorComparison";
@@ -38,10 +38,9 @@ const DoctorDetailsPage = () => {
         </button>
       </Link>
 
-      {/* comparintg doctors */}
       {doctor1 && doctor2 && <DoctorComparison doctor1={doctor1} doctor2={doctor2} />}
     </div>
   );
 };
 
-export default DoctorDetailsPage;
+export default DoctorDetailsPage;*/

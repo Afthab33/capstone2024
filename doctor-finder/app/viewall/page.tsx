@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { getFirestore, collection, getDocs, query, where} from 'firebase/firestore';
 import { useAuth } from '../authcontext';
 import DoctorCard from '../components/doctorCard';
+import DoctorProfileImage from "../viewDoctor/[id]/components/DoctorProfileImage";
 
 interface Doctor {
   key: string;
@@ -20,6 +21,7 @@ interface Doctor {
   state: string;
   zipCode: string;
   specialty: string;
+  profileImage: string;
   acceptedInsurances: string[];
   spokenLanguages: string[]; 
 }
@@ -84,6 +86,7 @@ const ViewAllDoctors = () => {
               city={doctor.city}
               state={doctor.state}
               zipCode={doctor.zipCode}
+              profileImage={doctor.profileImage}
               acceptedInsurances={doctor.acceptedInsurances}
               spokenLanguages={doctor.spokenLanguages}
             />
