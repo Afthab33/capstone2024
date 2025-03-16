@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Star, Shield, MessageCircle, MapPin } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import ReviewCard from './ReviewCard';
  
 import { useState } from 'react';
 import { collection, addDoc, getFirestore,Timestamp, serverTimestamp, CollectionReference, DocumentData, getDoc, doc, documentId } from 'firebase/firestore';
@@ -48,6 +49,7 @@ export default function AppointmentsCard({
   scheduled,
 }: AppointmentsCardProps) {
  
+  const [showReview, setShowReview] = useState(false);
   const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   const day =weekday[scheduled.toDate().getDay()]
@@ -69,6 +71,10 @@ export default function AppointmentsCard({
       }
      
     }
+
+const handleReview = async () => {
+  setShowReview(true);
+}
     
 // Function to a appointment to history Firestore
 const handleAppointment = async () => {
@@ -158,14 +164,13 @@ const handleAppointment = async () => {
               </Button>
             </Link >
 
-            <Link href='/appointments'>
               <Button className="mb-2 " style={{
                 backgroundColor: "#829eb5",
                 width: 175
-              }}>
+              }} onClick={handleReview}>
                 Leave a Review
               </Button>
-            </Link>
+              {showReview && <ReviewCard />}
           </div>
         </div>
       </div>
