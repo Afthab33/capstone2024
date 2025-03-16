@@ -84,6 +84,8 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
   const [otherReportReason, setOtherReportReason] = useState('');
   const [isLargeScreen, setIsLargeScreen] = useState(false);
   const [showAllTimeSlots, setShowAllTimeSlots] = useState(false);
+  const [booked, setBooked] =useState('');
+  
   const { toast } = useToast();
 
   const handleReportClick = useCallback(() => {
@@ -425,6 +427,28 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
 
   const displayName = formatDisplayName(doctor);
 
+  const  bookedDate  =async  (selectedDate: Date) => {
+     const schMth = selectedDate.getMonth();
+        const schDate = selectedDate.getDate()
+        const noteDate = Timestamp.fromDate(new Date(schMth, schDate));
+         setLoading(true);
+         try {
+           const db = getFirebaseDb();
+           const docRef = await addDoc(collection(db, 'appointmentsTest'), {
+            
+           scheduled:  noteDate,
+           });
+           
+           setBooked(`Document added with ID: ${docRef.id}`);
+           console.log(booked.at(1));
+
+         } catch (error) {
+             console.error('Error fetching appointment data:', error);
+         } finally {
+           setLoading(false);
+         }
+  };
+
   return (
     <div className="container mx-auto px-4 xs:px-4 sm:px-4 md:px-4 lg:px-24 pt-8 lg:pt-16">
       <div className="flex flex-col lg:flex-row gap-8">
@@ -646,7 +670,7 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
                   @ {format(new Date(selectedDate).setHours(
                     parseInt(selectedTimeSlot.split(':')[0]),
                     parseInt(selectedTimeSlot.split(':')[1])
-                  ), 'h:mm a')}
+                  ), 'h:mm a')}                  
                 </span>
               </div>
             )}
@@ -742,6 +766,9 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
                     // update local state
                     setAvailabilityData(updatedAvailability);
                     
+                    // get booked date
+                    bookedDate(appointmentDate);
+
                     // reset state
                     setShowTimeSlots(false);
                     setSelectedDate(null);

@@ -4,6 +4,31 @@ import AppointmentsCard from "../components/AppointmentsCard";
 import { getFirestore, collection, getDocs, query, where, Timestamp } from 'firebase/firestore';
 import { useAuth } from '../authcontext';
  
+// interface AppointmentProps {
+  //   id: string;
+  //   doctorId: string;
+  //   patientId: string;
+  //   datetime: Timestamp;
+  //   status: 'scheduled' | 'completed' | 'cancelled' | 'no-show';
+  //   visitDetails: {
+  //     reason: string;
+  //     insurance: string;
+  //     patientType: 'new' | 'returning';
+  //     notes?: string;
+  //   };
+  //   doctorInfo: {
+  //     name: string;
+  //     specialty: string;
+  //     degree: string;
+  //     location: string;
+  //   };
+  //   patientInfo: {
+  //     name: string;
+  //     email: string;
+  //   };
+  //   createdAt: Timestamp;
+  //   updatedAt: Timestamp;
+  // }
 interface AppointmentHistoryprops {
   firstName: string;
   lastName: string;
@@ -22,26 +47,52 @@ interface AppointmentHistoryprops {
   rating?: number;
   reviewCount?: number;
   scheduled:Timestamp;
+  availability?: {
+    [date: string]: string[];
+  };
 }
 
 export default function AppointmentsHistory() {
   const [appointments, setAppointments] = useState<AppointmentHistoryprops[]>([]);
-  const [doctors, setDoctors] = useState<AppointmentHistoryprops[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { user } = useAuth();
 
-
+ // const appointmentData: Omit<Appointment, 'id'> = {
+  // doctorId: id,
+  //   patientId: user!.uid,
+  //   datetime: Timestamp.fromDate(appointmentDate),
+  //   status: 'scheduled',
+  //   visitDetails: {
+  //     reason: bookingPrereqs.reason,
+  //     insurance: bookingPrereqs.insurance,
+  //     patientType: bookingPrereqs.patientType as 'new' | 'returning',
+  //     ...(appointmentNotes.trim() && { notes: appointmentNotes.trim() })
+  //   },
+  //   doctorInfo: {
+  //     name: displayName,
+  //     specialty: doctor?.specialty,
+  //     degree: doctor?.degree,
+  //     location: `${doctor?.streetAddress}, ${doctor?.city}, ${doctor?.state} ${doctor?.zipCode}`
+  //   },
+  //   patientInfo: {
+  //     name: patientName,
+  //     email: user?.email || 'Unknown'
+  //   },
+  //   createdAt: Timestamp.now(),
+  //   updatedAt: Timestamp.now()
+  // };
+  // const newAppointmentRef = doc(appointmentsRef);
 
   useEffect(() => {
     const fetchAppointments = async () => {
       
       const ts = Timestamp.now();
 
-      const db2 = getFirestore();
+      const db = getFirestore();
       
       //find doctor and clinic patient has booked 
-      const appointmentsQuery = query(collection(db2, 'appointmentsTest'), where('scheduled', '<=', ts));
+      const appointmentsQuery = query(collection(db, 'appointmentsTest'), where('scheduled', '<=', ts));
 
       try {
         const userSnapshot = await getDocs(appointmentsQuery);
@@ -68,42 +119,6 @@ export default function AppointmentsHistory() {
   }, [user]);
 
 
-
-  useEffect(() => {
-    const fetchDoctors = async () => {
-
-      const db = getFirestore();
-      //search db for all doctors
-      const doctorQuery = query(collection(db, 'users'), where("role", "==", "doctor"));
-
-      try {
-        const userSnapshot = await getDocs(doctorQuery);
-        const userList: AppointmentHistoryprops[] = userSnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data() as Omit<AppointmentHistoryprops, 'id'> // ensure data matches the doctor interface
-
-
-        }));
-        setDoctors(userList);
-      }
-      catch (err) {
-        console.error('Error fetching users:', err);
-        setError('Failed to fetch users.');
-      }
-      finally {
-        setLoading(false);// set loading to false after fetching
-      }
-    }
-    if (user) {
-      fetchDoctors();//verify user logged in
-    }
-    else {
-      setLoading(false);
-    }
-  }, [user]);
-
-
-
   if (loading) return <div>Loding...</div>
   if (error) return <div>Error: {error}</div>
 
@@ -126,12 +141,10 @@ export default function AppointmentsHistory() {
                 specialty={appointment.specialty}
                 clinicName={appointment.clinicName}
                 streetAddress={appointment.streetAddress}
-                nextAvailable={appointment.nextAvailable}
+                availability={appointment.availability}
                 city={appointment.streetAddress}
                 state={appointment.streetAddress}
                 zipCode={appointment.zipCode}
-                // acceptedInsurances={[ ]}
-                // spokenLanguages={[ ]}
                 acceptedInsurances={appointment.acceptedInsurances}
                 spokenLanguages={appointment.spokenLanguages}
                 rating={appointment.rating}

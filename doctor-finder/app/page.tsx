@@ -92,21 +92,21 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="container max-w-full flex flex-col min-h-screen">
+    <><div className="container max-w-full flex flex-col min-h-screen">
       <div className="hero-section bg-background text-white py-16 sm:py-32">
         <h1 className="text-3xl sm:text-4xl md:text-5xl text-center font-semibold px-4">
           Find the best doctor near you.
         </h1>
-<div className="mt-6">
-    <Link href="/compare" passHref>
-      <button className="bg-blue-500 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-600 transition">
-        Compare Doctors
-      </button>
-    </Link>
-  </div>
-</div>       
+         <div className="mt-6">
+          <Link href="/compare" passHref>
+            <button className="bg-blue-500 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-600 transition">
+              Compare Doctors
+            </button>
+          </Link>
+        </div>
       </div>
-      <div className="flex flex-col lg:flex-row flex-1">
+    </div> 
+    <div className="flex flex-col lg:flex-row flex-1">
         <div className="w-full lg:w-[70%] px-4 sm:px-6 lg:pl-10 xl:pl-20 pt-6 lg:pt-10">
           {isLoading ? (
             <div className="space-y-6">
@@ -115,7 +115,7 @@ export default function Home() {
                 <Skeleton className="h-8 w-44" />
                 <Skeleton className="h-8 w-32" />
               </div>
-              
+
               {/* doctor card skeletons */}
               {[1, 2, 3].map((i) => (
                 <div key={i} className="flex flex-col sm:flex-row w-full p-4 bg-white rounded-lg">
@@ -124,14 +124,14 @@ export default function Home() {
                     <div className="profile-image mb-4 sm:mb-0">
                       <Skeleton className="w-28 h-28 rounded-full" />
                     </div>
-                    
+
                     <div className="w-full relative">
                       {/* name and specialty skeletons */}
                       <div>
                         <Skeleton className="h-6 w-48 mb-1" />
                         <Skeleton className="h-5 w-36 mb-3" />
                       </div>
-                      
+
                       {/* info line skeletons */}
                       <div className="flex flex-col sm:flex-col gap-1 text-sm sm:text-base">
                         <div className="flex items-center gap-2">
@@ -183,8 +183,7 @@ export default function Home() {
                       previewImage={doctor.profileImage}
                       rating={doctor.rating || 0}
                       reviewCount={doctor.reviewCount || 0}
-                      availability={doctor.availability}
-                    />
+                      availability={doctor.availability} />
                     {index < doctors.length - 1 && (
                       <div className="border-b border-gray-200 my-4" />
                     )}
@@ -193,7 +192,8 @@ export default function Home() {
               </div>
             </>
           )}
-        </div>
+          </div>
+        
         <div className="w-full lg:w-[30%] px-4 sm:px-6 lg:pr-10 xl:pr-20 pt-6 lg:pt-10">
           {isLoading ? (
             <Skeleton className="w-full h-[calc(100vh-2rem)]" />
@@ -201,7 +201,7 @@ export default function Home() {
             <div className="w-full h-[calc(100vh-2rem)] relative sticky top-4">
               {/* search by location button */}
               <div className={`absolute top-8 left-1/2 transform -translate-x-1/2 z-10 transition-opacity duration-300 hidden lg:block ${mapLoaded ? 'opacity-100' : 'opacity-0'}`}>
-                <Link 
+                <Link
                   href={'/locationSearch'}
                   className="bg-white px-3 py-2 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200 flex items-center space-x-2 whitespace-nowrap text-sm"
                 >
@@ -216,8 +216,7 @@ export default function Home() {
                   <div className="absolute inset-0">
                     <iframe
                       src={`https://www.google.com/maps/embed/v1/search?key=${mapsKey}&q=${encodeURIComponent(
-                        doctors.map(doctor => 
-                          `${doctor.streetAddress},${doctor.city},${doctor.state},${doctor.zipCode}`
+                        doctors.map(doctor => `${doctor.streetAddress},${doctor.city},${doctor.state},${doctor.zipCode}`
                         ).join('|')
                       )}`}
                       className={`w-full h-[calc(100%+35px)] transition-opacity duration-300 ${mapLoaded ? 'opacity-100' : 'opacity-0'}`}
@@ -233,7 +232,6 @@ export default function Home() {
             </div>
           )}
         </div>
-      </div>
-    </div>
-  );
-}
+      </div></>
+   );
+  }
