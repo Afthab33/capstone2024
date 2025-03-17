@@ -1,6 +1,19 @@
 import React from "react";
 
-const DoctorComparison = ({ doctor1, doctor2 }) => {
+interface Doctor {
+  name: string;
+  specialty: string;
+  location: string;
+  insurance: string[];
+  languages: string[];
+}
+
+interface DoctorComparisonProps {
+  doctor1: Doctor;
+  doctor2: Doctor;
+}
+
+const DoctorComparison = ({ doctor1, doctor2 }: DoctorComparisonProps) => {
   return (
     <div className="comparison-container">
       <table className="comparison-table">
@@ -39,5 +52,3 @@ const DoctorComparison = ({ doctor1, doctor2 }) => {
 };
 
 export default DoctorComparison;
-
-
