@@ -92,7 +92,7 @@ export default function Home() {
   }, []);
 
   return (
-    <><div className="container max-w-full flex flex-col min-h-screen">
+    <><div className="container max-w-full flex flex-col">
       <div className="hero-section bg-background text-white py-16 sm:py-32">
         <h1 className="text-3xl sm:text-4xl md:text-5xl text-center font-semibold px-4">
           Find the best doctor near you.
@@ -105,7 +105,7 @@ export default function Home() {
           </Link>
         </div> */}
       </div>
-      <div className="flex flex-col lg:flex-row flex-1">
+      {/* <div className="flex flex-col lg:flex-row flex-1"> // why were there two 😭😭
          <div className="mt-6">
           <Link href="/compare" passHref>
             <button className="bg-blue-500 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-600 transition">
@@ -113,7 +113,7 @@ export default function Home() {
             </button>
           </Link>
         </div>
-      </div>
+      </div> */}
     </div> 
     <div className="flex flex-col lg:flex-row flex-1">
         <div className="w-full lg:w-[70%] px-4 sm:px-6 lg:pl-10 xl:pl-20 pt-6 lg:pt-10">
