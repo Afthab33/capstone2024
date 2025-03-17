@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import Link from "next/link";
 import DoctorComparison from "../../components/DoctorComparison";
 import { fetchDoctorsFromFirestore } from "../../lib/firestore";
@@ -24,6 +22,7 @@ const DoctorDetailsPage = () => {
           setDoctor2(randomDoctor);
         })
         .catch((err) => {
+          console.error("Error fetching doctors:", err);
           setError("Failed to fetch doctors. Please try again later.");
         });
     }
