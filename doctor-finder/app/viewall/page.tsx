@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { getFirestore, collection, getDocs, query, where} from 'firebase/firestore';
 import { useAuth } from '../authcontext';
 import DoctorCard from '../components/doctorCard';
-import DoctorProfileImage from "../viewDoctor/[id]/components/DoctorProfileImage";
+import DoctorProfileImage from '../viewDoctor/[id]/components/DoctorProfileImage';
 import DoctorComparison from '../components/DoctorComparison';
 
 interface Doctor {
