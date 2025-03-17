@@ -13,7 +13,7 @@ const CompareDoctorsPage = () => {
   const { doctorId1, doctorId2 } = router.query;
 
   useEffect(() => {
-    if (doctorId1 && doctorId2) {
+    if (router.isReady && doctorId1 && doctorId2) {
       fetchDoctorsFromFirestore()
         .then((allDoctors) => {
           setDoctors(allDoctors);
@@ -31,7 +31,7 @@ const CompareDoctorsPage = () => {
           setLoading(false);
         });
     }
-  }, [doctorId1, doctorId2]);
+  }, [router.isReady, doctorId1, doctorId2]);
 
   if (loading) return <p>Loading doctors for comparison...</p>;
   if (error) return <p>{error}</p>;
