@@ -8,7 +8,7 @@ import { getFirestore, collection, getDocs, query, where} from 'firebase/firesto
 import { useAuth } from '../authcontext';
 import DoctorCard from '../components/doctorCard';
 import DoctorProfileImage from "../viewDoctor/[id]/components/DoctorProfileImage";
-import DoctorComparison from "../components/DoctorComparison";
+import DoctorComparison from '../components/DoctorComparison';
 
 interface Doctor {
   key: string;
