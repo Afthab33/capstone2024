@@ -9,10 +9,11 @@ const DoctorDetailsPage = () => {
   const { id } = router.query;
   const [doctor1, setDoctor1] = useState(null);
   const [doctor2, setDoctor2] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (id) {
+    if (router.isReady && id) {
       fetchDoctorsFromFirestore()
         .then((doctors) => {
           const selectedDoctor = doctors.find((doc) => doc.id === id);
@@ -20,16 +21,19 @@ const DoctorDetailsPage = () => {
 
           const randomDoctor = doctors.find((doc) => doc.id !== id);
           setDoctor2(randomDoctor);
+          setLoading(false);
         })
         .catch((err) => {
           console.error("Error fetching doctors:", err);
           setError("Failed to fetch doctors. Please try again later.");
+          setLoading(false);
         });
     }
-  }, [id]);
+  }, [router.isReady, id]);
 
+  if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
-  if (!doctor1 || !doctor2) return <p>Loading...</p>;
+  if (!doctor1 || !doctor2) return <p>Doctors not found for comparison.</p>;
 
   return (
     <div>
