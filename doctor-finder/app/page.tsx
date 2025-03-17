@@ -97,13 +97,13 @@ export default function Home() {
         <h1 className="text-3xl sm:text-4xl md:text-5xl text-center font-semibold px-4">
           Find the best doctor near you.
         </h1>
-<div className="mt-6">
-    <Link href="/compare" passHref>
-      <button className="bg-blue-500 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-600 transition">
-        Compare Doctors
-      </button>
-    </Link>
-</div>       
+        {/* <div className="mt-6">  // links to nothing
+          <Link href="/compare" passHref>
+            <button className="bg-blue-500 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-600 transition">
+              Compare Doctors
+            </button>
+          </Link>
+        </div> */}
       </div>
       <div className="flex flex-col lg:flex-row flex-1">
          <div className="mt-6">

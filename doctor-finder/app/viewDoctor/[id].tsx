@@ -1,55 +1,47 @@
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import Link from "next/link";
-import DoctorComparison from "../../components/DoctorComparison";
-import { fetchDoctorsFromFirestore } from "../../lib/firestore";
+// note from marcus:
+// ive commented out the code below because it causes build errors
+// please test the code by running npm run build before uncommenting and committing anything
+// tried to fix the other two implementations of the doctor comparisons just to give you an example of how to fetch doctor data
+// when you have the component figured out, please implement it in the @/app/viewDoctor/[id]/page.tsx file as a dialog!
+// thank you!!!!
 
-const DoctorDetailsPage = () => {
-  const router = useRouter();
-  const { id } = router.query;
-  const [doctor1, setDoctor1] = useState(null);
-  const [doctor2, setDoctor2] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+// import React, { useEffect, useState } from "react";
+// import { useRouter } from "next/router";
+// import DoctorComparison from "../../components/DoctorComparison"; 
+// //import { fetchDoctorsFromFirestore } from "../../lib/firestore";
 
-  useEffect(() => {
-    if (router.isReady && id) {
-      fetchDoctorsFromFirestore()
-        .then((doctors) => {
-          const selectedDoctor = doctors.find((doc) => doc.id === id);
-          setDoctor1(selectedDoctor);
+// const DoctorDetailsPage = () => {
+//   const router = useRouter();
+//   const { id } = router.query;
+//   const [doctor1, setDoctor1] = useState(null);
+//   const [doctor2, setDoctor2] = useState(null);
 
-          const randomDoctor = doctors.find((doc) => doc.id !== id);
-          setDoctor2(randomDoctor);
-          setLoading(false);
-        })
-        .catch((err) => {
-          console.error("Error fetching doctors:", err);
-          setError("Failed to fetch doctors. Please try again later.");
-          setLoading(false);
-        });
-    }
-  }, [router.isReady, id]);
+//   useEffect(() => {
+//     if (id) {
+//       fetchDoctorsFromFirestore().then((doctors) => {
+        
+//         const selectedDoctor = doctors.find((doc) => doc.id === id);
+//         setDoctor1(selectedDoctor);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
-  if (!doctor1 || !doctor2) return <p>Doctors not found for comparison.</p>;
+//         // Second Doctor
+//         const randomDoctor = doctors.find((doc) => doc.id !== id);
+//         setDoctor2(randomDoctor);
+//       });
+//     }
+//   }, [id]);
 
-  return (
-    <div>
-      <h1>Doctor Details</h1>
-      <h2>{doctor1?.name}</h2>
-      <p>Specialty: {doctor1?.specialty}</p>
+//   if (!doctor1 || !doctor2) return <p>Loading...</p>;
 
-      <Link href={`/viewDoctor/comparison?doctorId1=${doctor1.id}&doctorId2=${doctor2.id}`}>
-        <button className="bg-blue-500 text-white px-4 py-2 rounded">
-          Compare Doctors
-        </button>
-      </Link>
+//   return (
+//     <div>
+//       <h1>Doctor Details</h1>
+//       <h2>{doctor1?.name}</h2>
+//       <p>Specialty: {doctor1?.specialty}</p>
 
-      {doctor1 && doctor2 && <DoctorComparison doctor1={doctor1} doctor2={doctor2} />}
-    </div>
-  );
-};
+//       {/* Doctor Comparison */}
+//       {doctor1 && doctor2 && <DoctorComparison doctor1={doctor1} doctor2={doctor2} />}
+//     </div>
+//   );
+// };
 
-export default DoctorDetailsPage;
+// export default DoctorDetailsPage;

@@ -68,7 +68,7 @@ const Navbar = () => {
       <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center lg:pl-10">
-            <div className="flex-shrink-0 flex items-center">
+            <div className="flex-shrink-0 flex items-center pr-5">
               <Link href="/" className="flex items-center">
                 <Image
                   src="/logonew.svg"
@@ -93,7 +93,7 @@ const Navbar = () => {
             </form>
 
 
-            <div className="hidden pl-5 sm:ml-6 sm:flex sm:space-x-8">
+            <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
               {
                 user ? (<Link href="/visits" className="text-gray-900 inline-flex items-center px-1 pt-1 hover:text-gray-600 relative group">
                   <span className="relative">

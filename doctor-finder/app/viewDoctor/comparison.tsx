@@ -1,48 +1,57 @@
 import React, { useEffect, useState } from "react";
-import DoctorComparison from "@/components/DoctorComparison";
-import { fetchDoctorsFromFirestore } from "@/lib/firestore";
-import { useRouter } from "next/router";
+import DoctorComparison from "../components/DoctorComparison";
+import { collection, getDocs, query, where, getDoc, doc } from 'firebase/firestore';
+import { initializeFirebase, db as getFirebaseDb } from '../authcontext';
 
-const CompareDoctorsPage = () => {
-  const [doctors, setDoctors] = useState([]);
-  const [doctor1, setDoctor1] = useState(null);
-  const [doctor2, setDoctor2] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const router = useRouter();
-  const { doctorId1, doctorId2 } = router.query;
+interface Doctor {
+  id: string;
+  firstName: string;
+  lastName: string;
+  degree: string;
+  clinicName: string;
+  streetAddress: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  specialty: string;
+  acceptedInsurances: string[];
+  spokenLanguages: string[];
+  rating?: number;
+  reviewCount?: number;
+  profileImage?: string;
+  availability?: {
+    [date: string]: string[];
+  };
+}
+
+
+export default function CompareDoctorsPage() {
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [doctor1, setDoctor1] = useState<Doctor | null>(null);
+  const [doctor2, setDoctor2] = useState<Doctor | null>(null);
 
   useEffect(() => {
-    if (router.isReady && doctorId1 && doctorId2) {
-      fetchDoctorsFromFirestore()
-        .then((allDoctors) => {
-          setDoctors(allDoctors);
-
-          const doc1 = allDoctors.find((doc) => doc.id === doctorId1);
-          const doc2 = allDoctors.find((doc) => doc.id === doctorId2);
-
-          setDoctor1(doc1 || null);
-          setDoctor2(doc2 || null);
-          setLoading(false);
-        })
-        .catch((err) => {
-          console.error("Error fetching doctors:", err);
-          setError("Failed to fetch doctors. Please try again later.");
-          setLoading(false);
-        });
+    const fetchDoctors = async () => {
+      const db = getFirebaseDb();
+      const doctorsCollection = collection(db, 'doctors');
+      const querySnapshot = await getDocs(doctorsCollection);
+      const doctors = querySnapshot.docs.map((doc) => doc.data() as Doctor);
+      setDoctors(doctors);
+    };
+    fetchDoctors();
+    if (doctors.length > 0) {
+      setDoctor1(doctors[0]);
+      setDoctor2(doctors[1]);
     }
-  }, [router.isReady, doctorId1, doctorId2]);
-
-  if (loading) return <p>Loading doctors for comparison...</p>;
-  if (error) return <p>{error}</p>;
-  if (!doctor1 || !doctor2) return <p>Doctors not found for comparison.</p>;
+  }, [doctors]);
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Compare Doctors</h1>
-      <DoctorComparison doctor1={doctor1} doctor2={doctor2} />
+    <div>
+      <h1>Doctor Comparison</h1>
+      {doctor1 && doctor2 && (
+        <DoctorComparison doctor1={doctor1} doctor2={doctor2} />
+      )}
     </div>
   );
-};
+}
 
-export default CompareDoctorsPage;
