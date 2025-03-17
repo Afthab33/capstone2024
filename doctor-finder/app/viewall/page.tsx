@@ -8,6 +8,7 @@ import { getFirestore, collection, getDocs, query, where} from 'firebase/firesto
 import { useAuth } from '../authcontext';
 import DoctorCard from '../components/doctorCard';
 import DoctorProfileImage from "../viewDoctor/[id]/components/DoctorProfileImage";
+import DoctorComparison from "../components/DoctorComparison";
 
 interface Doctor {
   key: string;
@@ -91,6 +92,14 @@ const ViewAllDoctors = () => {
               spokenLanguages={doctor.spokenLanguages}
             />
           ))}
+          </div>
+        {/* the button for comparing doctors*/}
+        <div className="text-center mt-6">
+        <Link href="/compare" passHref>
+          <button className="bg-blue-500 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-600 transition">
+            Compare Doctors
+            </button>
+          </Link>
         </div>
       </div>
     </div>
