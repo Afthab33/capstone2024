@@ -4,6 +4,13 @@ import { Star, Shield, MessageCircle, MapPin, Pencil } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { format } from 'date-fns';
+import { useState, useEffect } from 'react';
+import useUserLocation from '../hooks/useUserLocation';
+
+type DistanceCache = {
+  [key: string]: number;
+};
+const distanceCache: DistanceCache = {};
 
 interface DoctorProfileCardProps {
   id?: string;
@@ -23,6 +30,11 @@ interface DoctorProfileCardProps {
   availability?: {
     [date: string]: string[];
   };
+  // Make distance optional - we'll calculate it if not provided
+  coordinates?: {
+    lat: number;
+    lng: number;
+  };
 }
 
 export default function DoctorProfileCard({
@@ -41,7 +53,51 @@ export default function DoctorProfileCard({
   reviewCount = 0,
   setIsDialogOpen,
   availability,
+  coordinates,
 }: DoctorProfileCardProps) {
+  const [isCalendlyLoaded, setIsCalendlyLoaded] = useState(false);
+  const [loadCalendly, setLoadCalendly] = useState(false);
+  const { coordinates: userCoords } = useUserLocation();
+  const [distance, setDistance] = useState<number | null>(null);
+
+  // calculate distance when coordinates change
+  useEffect(() => {
+    if (!userCoords || !coordinates) return;
+    
+    // create a cache key from both coordinates
+    const cacheKey = `${userCoords.lat},${userCoords.lng}-${coordinates.lat},${coordinates.lng}`;
+    
+    // check if we already calculated this distance
+    if (distanceCache[cacheKey] !== undefined) {
+      setDistance(distanceCache[cacheKey]);
+      return;
+    }
+    
+    // calculate and cache the distance
+    const calculatedDistance = calculateDistance(
+      userCoords.lat,
+      userCoords.lng,
+      coordinates.lat,
+      coordinates.lng
+    );
+    
+    distanceCache[cacheKey] = calculatedDistance;
+    setDistance(calculatedDistance);
+  }, [userCoords, coordinates]);
+
+  // calculate distance
+  const calculateDistance = (lat1: number, lng1: number, lat2: number, lng2: number): number => {
+    const R = 3958.8; 
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLng = (lng2 - lng1) * Math.PI / 180;
+    const a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+      Math.sin(dLng/2) * Math.sin(dLng/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return Math.round(R * c * 10) / 10; 
+  };
+
   const displayName = `${degree === 'MD' ? 'Dr. ' : ''}${name}${degree ? `, ${degree}` : ''}`;
 
   const displayInsurances = acceptedInsurances.length > 3 
@@ -176,7 +232,10 @@ export default function DoctorProfileCard({
               </div>
               <div className="flex items-center gap-2">
                 <MapPin className="min-w-5 min-h-5 w-5 h-5 text-black-500" />
-                <span className="flex-wrap">{streetAddress}, {city}, {state} {zipCode}</span>
+                <span className="flex-wrap">
+                  {distance !== null ? `${distance} mi · ` : ''}
+                  {streetAddress}, {city}, {state} {zipCode}
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <Shield className="min-w-5 min-h-5 w-5 h-5 text-blue-500" />

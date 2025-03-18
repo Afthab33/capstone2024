@@ -27,6 +27,10 @@ interface Doctor {
   availability?: {
     [date: string]: string[];
   };
+  coordinates?: {
+    lat: number;
+    lng: number;
+  };
 }
 
 export default function Home() {
@@ -67,7 +71,9 @@ export default function Home() {
 
         // handle location
         const cachedLocation = localStorage.getItem('userLocation');
-        if (cachedLocation) {
+        const cachedCoordinates = localStorage.getItem('userCoordinates');
+        
+        if (cachedLocation && cachedCoordinates) {
           setUserCity(cachedLocation);
         } else {
           const geoResponse = await fetch('/api/geo');
@@ -76,6 +82,13 @@ export default function Home() {
           const fullState = data.state_prov || '';
           const stateAbbr = stateAbbreviations[fullState as keyof typeof stateAbbreviations] || fullState;
           const locationString = `${city}, ${stateAbbr}`;
+          
+          //get coordinates
+          if (data.latitude && data.longitude) {
+            const coordinates = { lat: parseFloat(data.latitude), lng: parseFloat(data.longitude) };
+            localStorage.setItem('userCoordinates', JSON.stringify(coordinates));
+          }
+          
           setUserCity(locationString);
           localStorage.setItem('userLocation', locationString);
         }
@@ -182,7 +195,8 @@ export default function Home() {
                       previewImage={doctor.profileImage}
                       rating={doctor.rating || 0}
                       reviewCount={doctor.reviewCount || 0}
-                      availability={doctor.availability} />
+                      availability={doctor.availability}
+                      coordinates={doctor.coordinates} />
                     {index < doctors.length - 1 && (
                       <div className="border-b border-gray-200 my-4" />
                     )}
