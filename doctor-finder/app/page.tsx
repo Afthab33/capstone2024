@@ -92,7 +92,7 @@ export default function Home() {
   }, []);
 
   return (
-    <><div className="container max-w-full flex flex-col">
+    <div className="container max-w-full flex flex-col">
       <div className="hero-section bg-background text-white py-16 sm:py-32">
         <h1 className="text-3xl sm:text-4xl md:text-5xl text-center font-semibold px-4">
           Find the best doctor near you.
@@ -231,6 +231,7 @@ export default function Home() {
             </div>
           )}
         </div>
-      </div></>
+      </div>
+    </div>
    );
   }
