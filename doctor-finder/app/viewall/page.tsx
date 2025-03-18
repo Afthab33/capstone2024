@@ -4,7 +4,7 @@
 
 import { useEffect, useState } from 'react';
 import { getFirestore, collection, getDocs, query, where, getDoc, doc} from 'firebase/firestore';
-import { useAuth } from '../authcontext';
+import { initializeFirebase, useAuth } from '../authcontext';
 import { Button } from '@/components/ui/button';
 import {  SortAsc } from 'lucide-react';
 import DoctorProfileCard from '../components/DoctorProfileCard';
@@ -298,6 +298,7 @@ const ViewAllDoctors = () => {
 
   useEffect(() => {
     const fetchDoctors = async () => {
+      await initializeFirebase();
       const db = getFirestore();
       try {
         const doctorsQuery = query(collection(db, 'users'), where("role", "==", "doctor"));
@@ -332,12 +333,8 @@ const ViewAllDoctors = () => {
       }
     };
 
-    if (user) {
-      fetchDoctors();
-    } else {
-      setLoading(false);
-    }
-  }, [user]);
+    fetchDoctors();
+  }, []);
 
   return (
     <div className="flex flex-col p-4">
