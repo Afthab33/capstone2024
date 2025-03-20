@@ -18,6 +18,7 @@ import { useRouter } from 'next/navigation';
 import DoctorProfileImage from './components/DoctorProfileImage';
 import ActionButtons from './components/ActionButtons';
 import BookingForm from './components/BookingForm';
+import StarRating from './components/StarRating';
 import { getVisibleDates, formatDisplayName, resetVisibleDates } from './utils/dateUtils';
 import { findNextAvailableSlot } from './utils/availabilityUtils';
 import { arePrereqsComplete, validateBookingDetails } from './utils/bookingUtils';
@@ -452,15 +453,10 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
               <div className="flex flex-col sm:flex-row">
                 <div className="w-full sm:w-1/3 flex flex-col items-center sm:items-center justify-center sm:pr-5 mb-4 sm:mb-0">
                   <div className="flex flex-row sm:flex-col items-center gap-3 sm:gap-2">
-                    <span className="text-5xl sm:text-6xl font-regular leading-none">4.8</span>
-                    <div className="flex mt-0 sm:mt-2">
-                      {[...Array(5)].map((_, index) => (
-                        <Star
-                          key={index}
-                          className="w-6 h-6 sm:w-5 sm:h-5 text-yellow-400 fill-current"
-                        />
-                      ))}
-                    </div>
+                    <span className="text-5xl sm:text-6xl font-regular leading-none">{doctor?.rating}</span>
+                      <div>
+                        <StarRating rating={doctor?.rating ?? 0} />
+                      </div>
                   </div>
                   <div className="w-full h-px bg-gray-300 mt-4 mb-4 block sm:hidden" />
                 </div>
@@ -471,7 +467,8 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
                   </p>
                   <div className="text-right">
                     <span className="font-semibold text-sm underline cursor-pointer hover:text-gray-700">
-                      See all 144 reviews
+                      {/* link to reviews maybe? */}
+                      See all {doctor?.reviewCount} reviews
                     </span>
                   </div>
                 </div>
