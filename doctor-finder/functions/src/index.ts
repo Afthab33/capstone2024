@@ -83,3 +83,47 @@ export const geocodeDoctorAddress = onDocumentWritten('users/{userId}', async (e
 
   return null;
 });
+
+// function to update doctors rating + review count when user submits review
+export const updateDoctorRating = onDocumentWritten("reviews/{reviewId}", async (event) => {
+  const beforeData = event.data?.before?.data();
+  const afterData = event.data?.after?.data();
+
+  if (!afterData && !beforeData) {
+    return null;
+  }
+
+  // get doctorId from review
+  const doctorId = afterData?.doctorId || beforeData?.doctorId;
+  if (!doctorId) {
+    console.error("Review does not contain a valid doctorId.");
+    return null;
+  }
+
+  try {
+    // get all reviews for this doctor
+    const reviewsSnapshot = await db.collection("reviews").where("doctorId", "==", doctorId).get();
+
+    let totalRating = 0;
+    let reviewCount = reviewsSnapshot.size;
+
+    reviewsSnapshot.forEach((doc) => {
+      totalRating += doc.data().rating;
+    });
+
+    const newAverageRating = reviewCount > 0 ? totalRating / reviewCount : 0;
+
+    // update doctor with new values
+    await db.collection("users").doc(doctorId).update({
+      rating: newAverageRating,
+      reviewCount: reviewCount
+    });
+
+    // console.log(`Updated doctor (${doctorId})`);
+
+  } catch (error) {
+    console.error("Error updating doctor rating:", error);
+  }
+
+  return null;
+});
