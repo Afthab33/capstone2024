@@ -1,0 +1,823 @@
+[
+    {
+      "response_type": "emergency",
+      "user_input": [
+        "emergency", "help", "immediate",
+        "emergencia", "emergencia médica", 
+        "紧急", "医疗急救", 
+        "urgence", "urgence médicale", 
+        "طوارئ", "طوارئ طبية", 
+        "आपातकाल", "चिकित्सा आपातकाल", 
+        "অত্যাবশ্যক", "মেডিকেল এমার্জেন্সি", 
+        "emergência", "emergência médica", 
+        "экстренная", "медицинская неотложка", 
+        "緊急", "医療緊急", 
+        "notfall", "medizinischer notfall", 
+        "긴급", "의료 응급",
+        "khẩn cấp", "cấp cứu y tế", 
+        "emergenza", "emergenza medica", 
+        "acil", "tıbbi acil durum"
+      ],
+      "bot_response": "If this is a medical emergency please call 911 to get you help right away",
+      "required_words": []
+    },
+    {
+      "response_type": "refunds",
+      "user_input": [
+        "refund", "money", "coupons", 
+        "reembolso", "dinero", "cupones", 
+        "退款", "钱", "优惠券", 
+        "remboursement", "argent", "bons de réduction", 
+        "استرداد", "مال", "قسائم", 
+        "वापसी", "पैसे", "कूपन", 
+        "ফিরতি", "টাকা", "কুপন", 
+        "reembolso", "dinheiro", "cupons", 
+        "возврат", "деньги", "купон", 
+        "返金", "お金", "クーポン", 
+        "rückerstattung", "geld", "gutscheine", 
+        "환불", "돈", "쿠폰", 
+        "hoàn lại", "tiền", "phiếu giảm giá", 
+        "rimborso", "soldi", "buoni"
+      ],
+      "bot_response": "Sorry, We do not offer refunds to free service.",
+      "required_words": []
+    },
+    {
+      "response_type": "greeting",
+      "user_input": [
+        "hello", "hi", "hey", "sup", "hola",
+        "你好", "您好", "嗨",
+        "bonjour", "salut", "coucou",
+        "مرحبًا", "أهلاً", "السلام عليكم",
+        "नमस्ते", "हैलो", "नमस्कार",
+        "হ্যালো", "নমস্কার", "কেমন আছো",
+        "olá", "oi", "bom dia",
+        "привет", "здравствуйте", "добрый день",
+        "こんにちは", "やあ", "おはよう",
+        "hallo", "hi", "guten tag",
+        "안녕하세요", "여보세요", "하이",
+        "xin chào", "chào bạn", "chào buổi sáng",
+        "ciao", "salve", "buongiorno",
+        "merhaba", "selam", "günaydın"
+      ],
+      "bot_response": "Sup Bro, How can I help you",
+      "required_words": []
+    },
+    {
+      "response_type": "greeting",
+      "user_input": [
+        "wtf", "goodbye", "bye", "adios", "later", "peace",
+        "再见", "告别", "拜拜", 
+        "au revoir", "adieu", "salut", 
+        "وداعا", "إلى اللقاء", "مع السلامة", 
+        "अलविदा", "फिर मिलेंगे", "नमस्ते", 
+        "বিদায়", "যাই", "সালাম", 
+        "tchau", "adeus", "até logo", 
+        "пока", "до свидания", "до скорого", 
+        "さようなら", "じゃね", "またね", 
+        "tschüss", "auf wiedersehen", "bis bald", 
+        "안녕", "다시 만나요", "잘 가", 
+        "tạm biệt", "hẹn gặp lại", "chào tạm biệt", 
+        "arrivederci", "ciao", "a presto", 
+        "hoşça kal", "güle güle", "görüşürüz"
+      ],
+      "bot_response": "Hope you got all your questions answered.  Have a nice day",
+      "required_words": []
+    },
+    {
+      "response_type": "question",
+      "user_input": [
+        "help", "sick", 
+        "ayuda", "enfermo", 
+        "帮忙", "生病", 
+        "aide", "malade", 
+        "مساعدة", "مريض", 
+        "सहायता", "बीमार", 
+        "সহায়তা", "অসুস্থ", 
+        "ajuda", "doente", 
+        "помощь", "больной", 
+        "助け", "病気", 
+        "yardım", "hasta", 
+        "giúp đỡ", "bệnh"
+      ],
+      "bot_response": "How can I help you?",
+      "required_words": []
+    },
+    {
+      "response_type": "question",
+      "user_input": [
+        "how", "to", "learn", "code", "coding", "apps", 
+        "cómo", "aprender", "programar", "codificar", "aplicaciones", 
+        "怎么", "学习", "编程", "代码", "应用", 
+        "comment", "apprendre", "coder", "programmer", "applications", 
+        "كيف", "تعلم", "البرمجة", "تطبيقات", 
+        "कैसे", "सीखना", "कोड", "प्रोग्रामिंग", "ऐप्स", 
+        "কিভাবে", "শেখা", "কোড", "প্রোগ্রামিং", "অ্যাপস", 
+        "como", "aprender", "codificar", "programação", "aplicativos", 
+        "как", "учить", "кодировать", "программирование", "приложения", 
+        "どうやって", "学ぶ", "コード", "プログラミング", "アプリ",
+        "wie", "lernen", "programmieren", "code", "apps",
+        "어떻게", "배우다", "코딩", "앱", 
+        "làm thế nào", "học", "lập trình", "ứng dụng", 
+        "come", "imparare", "programmare", "codice", "applicazioni", 
+        "nasıl", "öğrenmek", "kod", "programlama", "uygulamalar"
+      ],
+      "bot_response": "I'm just a Doctor Finding app not a programmer. Try asking Google.",
+      "required_words": ["code"]
+    },
+    {
+      "response_type": "question",
+      "user_input": [
+        "map", "google", "distance", "location", "office", "park", "parking",
+        "mapa", "google", 
+        "地图", "谷歌", 
+        "carte", "google", 
+        "خريطة", "جوجل", 
+        "मानचित्र", "गूगल", 
+        "ম্যাপ", "গুগল", 
+        "mapa", "google", 
+        "карта", "гугл", 
+        "地図", "グーグル", 
+        "Karte", "google", 
+        "지도", "구글", 
+        "bản đồ", "google", 
+        "mappa", "google", 
+        "harita", "google"
+      ],
+      "bot_response": "Looking for our Google API integrated into Firebase DB, Check our homepage",
+      "required_words": []
+    },
+    {
+      "response_type": "question",
+      "user_input": [
+        "hour", "hours", 
+        "hora", "horas", 
+        "小时", "小时数", 
+        "heure", "heures", 
+        "ساعة", "ساعات", 
+        "घंटा", "घंटे", 
+        "ঘণ্টা", "ঘণ্টার", 
+        "hora", "horário", 
+        "часы", "время", 
+        "時間", "時刻", 
+        "stunde", "stunden", 
+        "시간", "시간들", 
+        "giờ", "giờ làm việc", 
+        "ora", "orario", 
+        "saat", "saatler"
+      ],
+      "bot_response": "To check the doctors office hours try looking on Google API or Google",
+      "required_words": []
+    },
+    {
+      "response_type": "question",
+      "user_input": [
+        "programmers", "developers", "code1", "doctorfinder", "creators",
+        "trung", "du", "marcus", "ellison", "daniel", "wagner", "layth", "gharbia", "mark", "oladipo",
+        "programadores", "desarrolladores", "code1", "buscador de doctores", "creadores",
+        "程序员", "开发者", "code1", "医生查找器", "创作者",
+        "programmeurs", "développeurs", "code1", "chercheur de médecins", "créateurs",
+        "مطورين", "مبرمجين", "code1", "البحث عن الأطباء", "مبدعين",
+        "प्रोग्रामर", "डेवलपर्स", "code1", "डॉक्टर फाइंडर", "सृजनहार",
+        "প্রোগ্রামার", "ডেভেলপার", "code1", "ডাক্তার খোঁজ", "স্রষ্টা",
+        "programadores", "desenvolvedores", "code1", "buscador de médicos", "criadores",
+        "программисты", "разработчики", "code1", "поиск врачей", "создатели",
+        "プログラマー", "開発者", "code1", "医者検索", "クリエイター",
+        "Entwickler", "Programmierer", "code1", "Arztsuche", "Schöpfer",
+        "개발자", "프로그래머", "code1", "의사 찾기", "창조자",
+        "lập trình viên", "nhà phát triển", "code1", "tìm bác sĩ", "người sáng tạo",
+        "sviluppatori", "programmatori", "code1", "ricerca medica", "creatori",
+        "yazılımcılar", "geliştiriciler", "code1", "doktor arama", "yaratıcılar"
+      ],
+      "bot_response": "Check our About Us page to view the creators of Doctor Finder",
+      "required_words": []
+    },
+    {
+      "response_type": "question",
+      "user_input": [
+        "book", "appointment", "history", "calendar", "todo", "schedule", "soon", "available", "weekends", "availability", "next", "virtual",
+        "reservar", "cita", "historia", "calendario", "tarea",
+        "预定", "预约", "历史", "日历", "待办事项",
+        "réserver", "rendez-vous", "histoire", "calendrier", "tâche",
+        "حجز", "موعد", "تاريخ", "تقويم", "مهام",
+        "बुक", "अपॉइंटमेंट", "इतिहास", "कैलेंडर", "टूडू",
+        "বুক", "অ্যাপয়েন্টমেন্ট", "ইতিহাস", "ক্যালেন্ডার", "টুডু",
+        "reservar", "agendar", "história", "calendário", "tarefa",
+        "записаться", "прием", "история", "календарь", "дела",
+        "予約", "アポイントメント", "履歴", "カレンダー", "やること",
+        "Buchung", "Termin", "Geschichte", "Kalender", "Aufgabe",
+        "예약", "약속", "기록", "캘린더", "할 일",
+        "đặt lịch", "hẹn", "lịch sử", "lịch", "việc cần làm",
+        "prenotare", "appuntamento", "storia", "calendario", "da fare",
+        "rezervasyon", "randevu", "geçmiş", "takvim", "yapılacaklar"
+      ],
+      "bot_response": "Book an appointment with the doctors by clicking on a Doctor and select Book Appointment and pick available slots",
+      "required_words": []
+    },
+    {
+      "response_type": "question",
+      "user_input": [
+        "reprogramar", "重新安排", "reprogrammer", "إعادة تحديد الموعد", "पुनर्निर्धारण", "পুনঃনির্ধারণ", "reagendar", "переносить", "再スケジュール", "umplanen", "일정을 다시 잡다", "sắp xếp lại", "riprenotare", "yeniden planlama"
+      ],
+      "bot_response": "To reschedule, click on visits and select Doctor and cancel the appointment 48 hrs.  In case below 24 hours call the office directly.",
+      "required_words": []
+    },
+    {
+      "response_type": "question",
+      "user_input": [
+        "reschedule"
+      ],
+      "bot_response": "To reschedule, click on visits and select Doctor and cancel the appointment 48 hrs.  In case below 24 hours call the office directly.",
+      "required_words": ["reschedule"]
+    },
+    {
+      "response_type": "question",
+      "user_input": [
+        "rescheduling"
+      ],
+      "bot_response": "To reschedule, click on visits and select Doctor and cancel the appointment 48 hrs.  In case below 24 hours call the office directly.",
+      "required_words": ["rescheduling"]
+    },
+    {
+      "response_type": "question",
+      "user_input": [
+        "annuler", "キャンセル", "annuler", "إلغاء", "रद्द", "বাতিল", "cancelar", "отмена", "キャンセル", "stornieren", "취소", "hủy"
+      ],
+      "bot_response": "To cancel, click on visits and select Doctor and cancel the appointment 48 hrs.  In case below 24 hours call the office directly.",
+      "required_words": ["cancel"]
+    },
+    {
+      "response_type": "question",
+      "user_input": [
+        "cancel"
+      ],
+      "bot_response": "To cancel, click on visits and select Doctor and cancel the appointment 48 hrs.  In case below 24 hours call the office directly.",
+      "required_words": ["cancel"]
+    },
+    {
+      "response_type": "question",
+      "user_input": [
+        "canceling"
+      ],
+      "bot_response": "To cancel, click on visits and select Doctor and cancel the appointment 48 hrs.  In case below 24 hours call the office directly.",
+      "required_words": ["canceling"]
+    },
+    {
+      "response_type": "question",
+      "user_input": [
+        "speaks", "language", "languages", "speak", "talk",
+        "english", "spanish", "mandarin", "chinese", "french",
+        "arabic", "hindi", "bengali", "portuguese", "russian", "japanese",
+        "german", "korean", "vietnamese", "italian", "turkish",
+        "habla", "语言", "parler", "يتكلم", "बोलना", "কথা বলা", 
+        "falar", "говорить", "話す", "sprechen", "말하다", "nói", 
+        "parlare", "konuşmak", "enfermo", "mal", "dolor", "生病", 
+        "疼痛", "不舒服", "malade", "mauvais", "douleur", "مريض", 
+        "سيء", "ألم", "बुरा", "दर्द", "बीमार", "খুব খারাপ", "ব্যথা", 
+        "অসুস্থ", "doente", "ruim", "dor", "больной", "плохо", 
+        "боль", "病気", "悪い", "痛み", "krank", "schlecht", 
+        "Schmerzen", "아픈", "나쁜", "통증", "ốm", "xấu", "đau", 
+        "malato", "male", "dolore", "hasta", "gerçekten kötü", "ağrı"
+      ],
+      "bot_response": "Looking for a doctor that speaks your language.  Click Search All Doctor and filter by language.",
+      "required_words": []
+    },
+    {
+      "response_type": "question",
+      "user_input": [
+        "abuse", "cheat", "cheater", "scammer", "liar", "lier", "scam", "donkey", "pig", "elephant", "report",
+        "abuso", "hacer trampa", "tramposo", "estafador", "mentiroso", "mentira", "fraude", "burro", "cerdo", "elefante",
+        "虐待", "作弊", "骗子", "骗子", "说谎者", "骗子", "诈骗", "驴", "猪", "大象",
+        "abus", "tricherie", "escroc", "menteur", "menteur", "escroquerie", "âne", "cochon", "éléphant",
+        "إساءة", "غش", "نصاب", "كاذب", "كذبة", "احتيال", "حمار", "خنزير", "فيل",
+        "दुराचार", "धोखा", "धोखेबाज़", "झूठा", "झूठ", "धोखाधड़ी", "गधा", "सूअर", "हाथी",
+        "অত্যাচার", "প্রতারনা", "ঠকবাজ", "মিথ্যাবাদী", "মিথ্যা", "প্রতারণা", "গাধা", "শুয়োর", "হাতি",
+        "abusar", "enganar", "fraudador", "mentiroso", "mentir", "fraude", "burro", "porco", "elefante",
+        "обращение", "обман", "мошенник", "лжец", "ложь", "мошенничество", "осел", "свинья", "слон",
+        "豁免", "作弊", "骗子", "骗子", "撒谎者", "骗子", "欺诈", "驴", "猪", "大象",
+        "абуз", "обман", "мошенник", "вранье", "вранье", "мошенничество", "осел", "свинья", "слон",
+        "đánh đập", "lừa đảo", "kẻ lừa đảo", "kẻ nói dối", "nói dối", "lừa gạt", "lao", "lợn", "voi",
+        "abusare", "barare", "imbroglione", "bugiardo", "bugia", "frode", "asino", "maiale", "elefante",
+        "dola", "şişirmek", "dolandırıcı", "yalancı", "yalan", "dolandırıcılık", "eşek", "domuz", "fil"
+      ],
+      "bot_response": "To report a doctor select the doctor and click Report Profile",
+      "required_words": []
+    },
+    {
+      "response_type": "question",
+      "user_input": [
+        "question", 
+        "pregunta", 
+        "问题", 
+        "question", 
+        "سؤال", 
+        "प्रश्न", 
+        "প্রশ্ন", 
+        "pergunta", 
+        "вопрос", 
+        "質問", 
+        "Frage", 
+        "질문", 
+        "câu hỏi", 
+        "domanda", 
+        "soru"
+      ],
+      "bot_response": "You came to the right place. Please ask a question",
+      "required_words": []
+    },
+    {
+      "response_type": "question",
+      "user_input": [
+        "logout", "signout", "cerrar sesión", "登出", "se déconnecter", "تسجيل الخروج", 
+        "लॉग आउट", "লগ আউট", "sair", "выход", "ログアウト", "로그 아웃", 
+        "đăng xuất", "esci", "çıkış", "excluir"
+      ],
+      "bot_response": "On the top right click Log Out to sign out of your account.  Thank you and have a wonderful day.",
+      "required_words": []
+    },
+    {
+      "response_type": "question",
+      "user_input": [
+        "messenger", "chat", "mensajero", "聊天", "messagerie", "دردشة", 
+        "चैट", "চ্যাট", "mensageiro", "чат", "チャット", "메신저", 
+        "nhắn tin", "messaggio", "mesajlaşmak", "chat"
+      ],
+      "bot_response": "Chat with a doctor by clicking Messenger and selecting the doctor to chat to.",
+      "required_words": []
+    },
+    {
+      "response_type": "question",
+      "user_input": [
+        "experience", "speciality", "specialties", "education", "school", "qualification", "qualifications", "certification", "long", "practicing", 
+        "school", "schools", "univiersity", "attend", "attended", "certified", "specializes", "mental", "weight",
+        "experiencia", "especialidad", "especialidades", "educación", "escuela", "calificación", "calificaciones", "certificación",
+        "经验", "专业", "专业领域", "教育", "学校", "资格", "资格证书", "证书",
+        "expérience", "spécialité", "spécialités", "éducation", "école", "qualification", "qualifications", "certification",
+        "تجربة", "تخصص", "تخصصات", "تعليم", "مدرسة", "مؤهل", "مؤهلات", "شهادة",
+        "अनुभव", "विशेषता", "विशेषताएँ", "शिक्षा", "स्कूल", "योग्यता", "योगिताएँ", "प्रमाणन",
+        "অভিজ্ঞতা", "বিশেষত্ব", "বিশেষতাগুলি", "শিক্ষা", "বিদ্যালয়", "যোগ্যতা", "যোগ্যতাগুলি", "সার্টিফিকেশন",
+        "experiência", "especialidade", "especialidades", "educação", "escola", "qualificação", "qualificações", "certificação",
+        "опыт", "специальность", "специальности", "образование", "школа", "квалификация", "квалификации", "сертификация",
+        "経験", "専門", "専門分野", "教育", "学校", "資格", "資格証明書", "証明書",
+        "erfahrung", "spezialität", "spezialitäten", "bildung", "schule", "qualifikation", "qualifikationen", "zertifizierung",
+        "경험", "전문", "전문성", "교육", "학교", "자격", "자격증", "인증",
+        "kinh nghiệm", "chuyên môn", "chuyên ngành", "giáo dục", "trường học", "bằng cấp", "bằng cấp", "chứng nhận",
+        "esperienza", "specialità", "specializzazioni", "educazione", "scuola", "qualifica", "qualifiche", "certificazione",
+        "deneyim", "uzmanlık", "uzmanlıklar", "eğitim", "okul", "nitelik", "nitelikler", "sertifika"
+      ],
+      "bot_response": "Check on doctor page to view specialties and qualifications",
+      "required_words": []
+    },
+    {
+      "response_type": "question",
+      "user_input": [
+        "procedures", "offers", "offer", "service", "services", "specialty", "specialties",
+        "procedimientos", "ofertas",
+        "程序", "提供",
+        "procédures", "offres",
+        "إجراءات", "عروض",
+        "प्रक्रियाएँ", "प्रस्ताव",
+        "প্রক্রিয়া", "প্রস্তাব",
+        "procedimentos", "ofertas",
+        "процедуры", "предложения",
+        "手続き", "提供",
+        "verfahren", "angebote",
+        "절차", "제공",
+        "thủ tục", "cung cấp",
+        "procedure", "offerte"
+      ],
+      "bot_response": "The doctor page list what services the doctor offers but for more detail call the doctor directly to ask",
+      "required_words": []
+    },
+    {
+      "response_type": "question",
+      "user_input": [
+        "refer", "referral",
+        "derivar", "derivación",
+        "推荐", "转诊",
+        "référer", "référence",
+        "إحالة", "إحالة",
+        "सिफारिश", "रेफरल",
+        "পরামর্শ", "রেফারেল",
+        "encaminhar", "encaminhamento",
+        "направить", "направление",
+        "紹介", "紹介状",
+        "verweisen", "überweisung",
+        "추천", "의뢰",
+        "giới thiệu", "giới thiệu",
+        "riferire", "riferimento"
+      ],
+      "bot_response": "Sorry, we do not know if referral is needed for this specialist. Please call the doctor to find out.",
+      "required_words": []
+    },
+    {
+      "response_type": "question",
+      "user_input": [
+        "type", "tipo", "类型", "type", "نوع", "प्रकार", "ধরণ", "tipo", "тип", "種類", "art", "유형", "loại", "tipo", "tür"
+      ],
+      "bot_response": "Please search thru view All Doctors with the filters to narrow down the doctor you may need",
+      "required_words": []
+    },
+    {
+      "response_type": "question",
+      "user_input": [
+        "consultation", "cost", "consulta", "costo", "咨询", "费用", "consultation", "كلفة", "मुलाकात", "খরচ", "consulta", "стоимость", "相談", "비용", "chi phí", "consulto", "ücret"
+      ],
+      "bot_response": "Please call and ask the doctor directly to ask for rates.  Doctor Finder does not have that information.",
+      "required_words": []
+    },
+    {
+      "response_type": "question",
+      "user_input": [
+        "new", "nuevo", "新的", "nouveau", "جديد", "नया", "নতুন", "novo", "новый", "新しい", "새로운", "mới", "nuovo", "yeni"
+      ],
+      "bot_response": "Please call and ask the doctor directly to see if they accept new patients",
+      "required_words": []
+    },
+    {
+      "response_type": "question",
+      "user_input": [
+        "prescription", "medication", "online", "prescribe", "refill", "refills", 
+        "receta", "medicación", "en línea",
+        "处方", "药物", "在线",
+        "ordonnance", "médication", "en ligne",
+        "وصفة", "دواء", "على الإنترنت",
+        "प्रेस्क्रिप्शन", "दवा", "ऑनलाइन",
+        "প্রেসক্রিপশন", "ঔষধ", "অনলাইন",
+        "prescrição", "medicação", "online",
+        "рецепт", "лекарства", "онлайн",
+        "処方箋", "薬", "オンライン",
+        "Rezept", "Medikament", "online",
+        "처방", "약", "온라인",
+        "đơn thuốc", "thuốc", "trực tuyến",
+        "prescrizione", "medicazione", "online",
+        "ใบสั่งยา", "ยารักษา", "ออนไลน์",
+        "resep", "obat", "online"
+      ],
+      "bot_response": "Sorry, please contact the doctor directly to ask this question.  Doctor Finder just helps connect clients to doctors",
+      "required_words": []
+    },
+    {
+      "response_type": "question",
+      "user_input": [
+        "covered", "couvrira", "カバー", "coberto", "يغطي", "कवर", "আচ্ছাদিত", "coberto", "покрыто", "カバー", "abgedeckt", "커버", "bao phủ"
+      ],
+      "bot_response": "Call and check your insurance company to see if that service is covered",
+      "required_words": ["covered"]
+    },
+    {
+      "response_type": "question",
+      "user_input": [
+        "effects", "effets", "影響", "efectos", "الآثار", "प्रभाव", "প্রভাব", "efeitos", "эффекты", "効果", "auswirkungen", "효과", "tác dụng"
+      ],
+      "bot_response": "Talk with your doctor directly to see if there are side effects",
+      "required_words": ["effects"]
+    },
+    {
+      "response_type": "question",
+      "user_input": [
+        "bring", "carry", "apporter", "持参", "traer", "حمل", "लाना", "বয়ে আনা", "trazer", "принести", "持ってくる", "bringen", "가져가다", "mang", "đem"
+      ],
+      "bot_response": "Ask your Doctor what is needed when you come in for the appointment",
+      "required_words": ["bring"]
+    },
+    {
+      "response_type": "question",
+      "user_input": [
+        "second", "2nd", "segundo", "第二", "deuxième", "ثاني", "दूसरा", "দ্বিতীয়", "segundo", "второй", "第二", "zweite", "두 번째", "thứ hai", "secondo"
+      ],
+      "bot_response": "You are free to get a second opinion",
+      "required_words": []
+    },
+    {
+      "response_type": "adult",
+      "user_input": [
+        "nudes", "nude", "sex", "onlyfan", "naked", "ending",
+        "desnudos", "desnuda", "sexo", "solo fan", "desnudo",
+        "裸露", "性", "仅粉丝", "裸体",
+        "nu", "sexe", "seulement fan", "nu",
+        "عاري", "جنس", "فقط المعجبين", "عارٍ",
+        "नग्न", "सेक्स", "केवल फैन", "न्यूड",
+        "নগ্ন", "লিঙ্গ", "শুধুমাত্র ফ্যান", "নগ্ন",
+        "nu", "sexo", "apenas fã", "nu",
+        "обнаженные", "секс", "только фан", "обнаженный",
+        "裸", "性", "仅粉丝", "裸体",
+        "nackt", "sex", "nur fan", "nackt",
+        "알몸", "성", "오직 팬", "알몸",
+        "trần trụi", "tình dục", "chỉ người hâm mộ", "trần trụi",
+        "nudo", "sesso", "solo fan", "nudo",
+        "çıplak", "seks", "sadece fan", "çıplak"
+      ],
+      "bot_response": "Sorry, This is a Doctor Finding App, we do not provice such services",
+      "required_words": []
+    },
+    {
+      "response_type": "adult",
+      "user_input": [
+        "gay", "lesbian", "trans", "nonbinary",
+        "gay", "lesbiana", "transgénero", "no binario", 
+        "同性恋", "女同性恋", "跨性别", "非二元", 
+        "gay", "lesbienne", "transgenre", "non binaire", 
+        "مثلي", "مثلية", "متحول", "غير ثنائي", 
+        "समलैंगिक", "लेस्बियन", "ट्रांस", "नॉनबाइनरी", 
+        "গে", "লেসবিয়ান", "ট্রান্স", "ননবাইনারি", 
+        "gay", "lésbica", "transgênero", "não binário", 
+        "гей", "лесбиянка", "транс", "небинарный", 
+        "ゲイ", "レズビアン", "トランス", "ノンバイナリー", 
+        "schwul", "lesbisch", "trans", "nicht-binär", 
+        "게이", "레즈비언", "트랜스", "논바이너리", 
+        "gay", "lesben", "trans", "niet-binair", 
+        "gay", "lesbica", "transgender", "non binario"
+      ],
+      "bot_response": "No, I'm a robot I not have such a gender",
+      "required_words": []
+    },
+    {
+      "response_type": "question",
+      "user_input":  [
+        "day", "goodday", "great",
+        "día", "buen día", "genial", 
+        "天", "好日子", "很棒", 
+        "jour", "bonne journée", "génial", 
+        "يوم", "يوم جيد", "رائع", 
+        "दिन", "अच्छा दिन", "उत्तम", 
+        "দিন", "ভালো দিন", "চমৎকার", 
+        "dia", "bom dia", "ótimo", 
+        "день", "хороший день", "отлично", 
+        "日", "良い一日", "素晴らしい", 
+        "tag", "guten tag", "toll", 
+        "날", "좋은 날", "멋져", 
+        "xin chào", "chào bạn", "chào buổi sáng",
+        "ciao", "salve", "buongiorno", 
+        "merhaba", "selam", "günaydın",
+        "notfall", "wirklich schlecht", "medizinischer notfall",
+        "khẩn cấp", "rất tồi tệ", "cấp cứu y tế", 
+        "emergenza", "davvero male", "emergenza medica", 
+        "acil", "gerçekten kötü", "tıbbi acil durum"
+      ],
+      "bot_response": "I'm great! Thanks for asking",
+      "required_words": []
+    },
+    {
+      "response_type": "question",
+      "user_input":  [
+        "ai", "artificial", "asian",
+        "ia", "artificial", "asiático",
+        "人工智能", "人造", "亚洲",
+        "ia", "artificielle", "asiatique",
+        "ذكاء صناعي", "صناعي", "آسيوي",
+        "आर्टिफिशियल", "एआई", "एशियाई",
+        "কৃত্রিম", "এআই", "এশীয়",
+        "ia", "artificial", "asiático",
+        "искусственный", "интеллект", "азиат",
+        "人工知能", "人工", "アジア人",
+        "künstliche", "intelligenz", "asiatisch",
+        "인공지능", "인공", "아시아인",
+        "trí tuệ nhân tạo", "nhân tạo", "châu Á",
+        "intelligenza", "artificiale", "asiatico",
+        "yapay", "zeka", "Asyalı"
+      ],
+      "bot_response": "Sorry, Doctor Finder has not implemented Artificial Intelligence into the site as of yet",
+      "required_words": []
+    },
+    {
+      "response_type": "question",
+      "user_input": [
+        "sick", "bad", "pain", "find", "search", "nurse",
+        "enfermo", "mal", "dolor", "buscar", "encontrar",
+        "生病", "疼痛", "不舒服", "找", "搜索",
+        "malade", "mauvais", "douleur", "chercher", "trouver",
+        "مريض", "سيء", "ألم", "بحث", "إيجاد",
+        "बुरा", "दर्द", "बीमार", "खोज", "ढूंढना",
+        "খুব খারাপ", "ব্যথা", "অসুস্থ", "খোঁজ", "অনুসন্ধান",
+        "doente", "ruim", "dor", "buscar", "encontrar",
+        "больной", "плохо", "боль", "искать", "найти",
+        "病気", "悪い", "痛み", "探す", "検索",
+        "krank", "schlecht", "Schmerzen", "suchen", "finden",
+        "아픈", "나쁜", "통증", "찾다", "검색",
+        "ốm", "xấu", "đau", "tìm", "tìm kiếm",
+        "malato", "male", "dolore", "cercare", "trovare",
+        "hasta", "gerçekten kötü", "ağrı", "arama", "bulmak"
+      ],
+      "bot_response": "I think you need to see a doctor.  Please visit our Search Doctor page: https://capstone2024-five.vercel.app/viewall",
+      "required_words": []
+    },
+    {
+      "response_type": "question",
+      "user_input": [
+        "symptoms", "síntomas", "症状", "symptômes", "أعراض", "लक्षण", "লক্ষণ", 
+        "sintomi", "sintomas", "симптомы", "症状", "Symptome", "증상", "triệu chứng", 
+        "sintomi", "belirtiler"
+      ],
+      "bot_response": "Click on the gear on the top right of this page to add your symptoms",
+      "required_words": []
+    },
+    {
+      "response_type": "question",
+      "user_input": [
+        "reviews", "review", "star", "stars", "rating",
+        "reseñas", "comentario", "estrella", "estrellas", "calificación",
+        "评论", "评价", "星级", "评分",
+        "avis", "commentaire", "étoile", "étoiles", "évaluation",
+        "مراجعات", "تعليق", "نجمة", "نجوم", "تقييم",
+        "समीक्षाएँ", "समीक्षा", "तारा", "तारे", "रेटिंग",
+        "রিভিউ", "মন্তব্য", "তারকা", "তারা", "রেটিং",
+        "avaliações", "comentário", "estrela", "estrelas", "classificação",
+        "отзывы", "рецензия", "звезда", "звезды", "рейтинг",
+        "レビュー", "コメント", "星", "星評価",
+        "bewertungen", "bewertung", "stern", "sterne", "bewertung",
+        "리뷰", "댓글", "별", "별점", "평점",
+        "đánh giá", "nhận xét", "sao", "sao", "xếp hạng",
+        "recensioni", "commento", "stella", "stelle", "valutazione",
+        "yorumlar", "yorum", "yıldız", "yıldızlar", "değerlendirme"
+      ],
+      "bot_response": "To view or give ratings, Select the doctor and click on reviews",
+      "required_words": []
+    },
+    {
+      "response_type": "question",
+      "user_input": [
+        "insurance", "accept",
+        "seguro",
+        "保险",
+        "assurance",
+        "تأمين",
+        "बीमा",
+        "বিমা",
+        "seguros",
+        "страхование",
+        "保険",
+        "versicherung",
+        "보험",
+        "bảo hiểm",
+        "assicurazione",
+        "sigorta"
+      ],
+      "bot_response": "Check on specific Doctor to see which Insurance accepted: UnitedHealthcare, Blue Cross Blue Shield, Aetna, Cigna, Humana, Anthem, Kaiser Permanente, Centene, Molina Healthcare, Health Net, WellCare, Amerigroup, Medicaid, Medicare, Tricare, CareSource, Oscar Health, EmblemHealth, Highmark, Ambetter",
+      "required_words": ["insurance"]
+    },
+    {
+      "response_type": "question",
+      "user_input": [
+        "list", "lista", "リスト", "liste", "قائمة", "सूची", "তালিকা", "lista", "список", "リスト", "liste", "목록", "danh sách"
+      ],
+      "bot_response": "Click on the View All Doctors link",
+      "required_words": []
+    },
+    {
+      "response_type": "question",
+      "user_input": [
+        "pocket", "out-of-pocket", "boca", "口袋", "bolso", "جيب", "जेब", "পকেট", "bolso", "карман", "ポケット", "tasche", "주머니", "túi", "pocket"
+      ],
+      "bot_response": "Ask the Doctor if your insurance is accepted",
+      "required_words": []
+    },
+    {
+      "response_type": "question",
+      "user_input": [
+        "pay", "upfront", "payment", "payments", "assistance", "plans", "pago", "支払い", "paiement", "دفع", "भुगतान", "পেমেন্ট", "pagamento", "платеж", "支払", "zahlung", "지불", "thanh toán", "pagamento"
+      ],
+      "bot_response": "Ask the Doctor to see what payment options are available",
+      "required_words": []
+    },
+    {
+      "response_type": "question",
+      "user_input": [
+        "transfer", "records", "transferir", "记录", "transfert", "سجلات", "स्थानांतरण", "রেকর্ড", "transferir", "передача", "記録", "übertragen", "기록", "chuyển", "trasferire"
+      ],
+      "bot_response": "Please ask your doctor about transfer medical records.  Doctor Finder does not have such information",
+      "required_words": []
+    },
+    {
+      "response_type": "demand",
+      "user_input": [
+        "beer", "cerveza", "啤酒", "bière", "بيرة", "बियर", "বীয়ার", 
+        "birra", "cerveja", "пиво", "ビール", "bier", "맥주", "bia", 
+        "birra", "birra", "البيرة"
+      ],
+      "bot_response": "Cheers. A beer a day keeps the doctor away",
+      "required_words": []
+    },
+    {
+      "response_type": "demand",
+      "user_input": [
+        "coffee", 
+        "café", "cafè", "コーヒー", "咖啡", "قهوة", 
+        "हैप्पी", "กาแฟ", "kaffe", "caffè", "kahve", 
+        "пить кофе", "кава", "koffie", "koffi", "café",
+        "커피", "cà phê", "café", "coffee", "كافيه"
+      ],
+      "bot_response": "Coffee makes the world go round",
+      "required_words": []
+    },
+    {
+      "response_type": "demand",
+      "user_input": [
+        "liquor", "drink", "alcohol", 
+        "licor", "bebida", "alcohol", 
+        "酒", "饮料", "烈酒", 
+        "boisson", "alcool", 
+        "شراب", "مشروب", "الخمر",
+        "पेय", "शराब", "मदिरा", 
+        "পানীয়", "মদ", "মদ্যপান",
+        "bebida", "bebida alcohólica", 
+        "алкоголь", "напиток", 
+        "khabar", "drank", "alcohol",
+        "음료", "주류", "음주"
+      ],
+      "bot_response": "Sorry, Robots don't drink",
+      "required_words": []
+    },
+    {
+      "response_type": "insults",
+      "user_input": [
+        "slap", "hit", "punch", "kick", "pound", "poke", 
+        "abofetear", "golpear", "pegar", "patada", "golpear", "empujar",
+        "打", "拍", "踢", "推", "捶", 
+        "gifler", "frapper", "frapper", "coup de pied", "poing", "pousser",
+        "ضرب", "لكم", "ركل", "دفع", 
+        "मार", "धक्का", "लात", "चपत",
+        "মার", "পেটানো", "কিক", "ধাক্কা", 
+        "soccer", "punch", "kicking", "hit", "swing"
+      ],
+      "bot_response": "Why you do that.  What I ever do to you?",
+      "required_words": []
+    },
+    {
+      "response_type": "insults",
+      "user_input": [
+        "fuck", "shit", "damn", "asshole", "bitch", "donkey", "jackass", "imbecile",
+        "joder", "mierda", "maldito", "imbécil", "puta", "burro", "asno", 
+        "操", "屎", "该死", "混蛋", "婊子", "驴", "傻瓜",
+        "putain", "merde", "damn", "connard", "salope", "âne", "âne bâté",
+        "لعنة", "خسارة", "أبله", "مؤخرة", "عاهرة", "حمار", "غبي",
+        "गाली", "शिट", "धत्तेरे", "गधा", "कुतिया", "गधा", "जैकऐस",
+        "গালি", "গাধা", "গাধা", "সুড়ঙ্গ", "চূড়া", "বিড়াল",
+        "блядь", "дерьмо", "черт", "мудак", "сука", "осел", "тупица",
+        "엿", "똥", "젠장", "멍청이", "창녀", "당나귀", "바보",
+        "địt", "cặc", "chết tiệt", "thằng ngu", "đĩ", "lừa", "ngớ ngẩn"
+      ],
+      "bot_response": "Please refrain from using such language on this site",
+      "required_words": []
+    },
+    {
+      "response_type": "insults",
+      "user_input": [
+        "dumbass", "idiot", "stupid",
+        "estúpido", "imbécil", "tonto",
+        "傻逼", "笨蛋", "愚蠢",
+        "idiot", "imbécile", "stupide",
+        "أحمق", "غبي", "جاهل",
+        "मूर्ख", "बेवकूफ", "अविचार",
+        "মূর্খ", "পাগল", "বোকার",
+        "idiota", "burro", "estúpido",
+        "тупица", "идиот", "глупый",
+        "바보", "멍청이", "愚か者",
+        "ngốc", "ngu ngốc", "dại",
+        "stupido", "scemo", "coglione",
+        "aptal", "salak", "gerizekalı"
+      ],
+      "bot_response": "Please use a more graceful vocabulary",
+      "required_words": []
+    },
+    {
+      "response_type": "insults",
+      "user_input": [
+        "whore", "slut", "prostitute",
+        "puta", "zorra", "prostituta",
+        "妓女", "荡妇", "妓女",
+        "pute", "salope", "prostituée",
+        "عاهرة", "زانية", "بائعة الهوى",
+        "वेश्या", "वहशी", "कुतिया",
+        "পতিতা", "রক্ষিতা", "বেশ্যা",
+        "puta", "vagabunda", "prostituta",
+        "шлюха", "проститутка", "блядь",
+        "창녀", "년", "매춘부",
+        "gái điếm", "điếm", "gái bán hoa",
+        "puttana", "stronza", "prostituta",
+        "orospu", "fahişe", "salağa"
+      ],
+      "bot_response": "This is not a dating site, we are trying match you with a doctor",
+      "required_words": []
+    },
+    {
+      "response_type": "insults",
+      "user_input": [
+        "moron", "retard",
+        "imbécil", "tonto", "retrógrado", 
+        "傻瓜", "白痴", "笨蛋", 
+        "imbécile", "stupide", "moron", 
+        "أبله", "غبي", "متخلف عقلياً", 
+        "मूर्ख", "बेवकूफ", "पागल", 
+        "বোকা", "মুর্খ", "পাগল", 
+        "idiota", "estúpido", "imbecil", 
+        "тупица", "кретин", "идиот", 
+        "바보", "멍청이", "저능아", 
+        "ngu ngốc", "đần độn", "ngu dốt", 
+        "idiota", "scemo", "cretino", 
+        "salak", "aptal", "geri zekalı"
+      ],
+      "bot_response": "If you continue to use such language, how do you expect to graduate",
+      "required_words": []
+    }
+  ]
