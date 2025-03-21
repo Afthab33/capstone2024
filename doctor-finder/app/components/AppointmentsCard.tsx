@@ -2,7 +2,6 @@
 import { Button } from '@/components/ui/button';
 import { Star, Shield, MessageCircle, MapPin } from 'lucide-react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 
 import { use, useCallback, useMemo, useState } from 'react';
@@ -11,29 +10,8 @@ import { db as getFirebaseDb, useAuth } from '../authcontext';
 import { useToast } from '@/hooks/use-toast';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { format } from 'date-fns';
+import { DialogTrigger } from '@radix-ui/react-dialog';
 
-interface AppointmentsCardProps {
-  firstName: string;
-  lastName: string;
-  specialty: string;
-  degree: string;
-  id: string;
-  streetAddress: string;
-  clinicName:string;
-  city: string;
-  state: string;
-  zipCode: string;
-  acceptedInsurances: string[];
-  spokenLanguages: string[];
-  rating?: number;
-  reviewCount?: number;
-  scheduled: Timestamp;
-  availability?: {
-    [date: string]: string[];
-  };
-  previewImage?: string | null;
-
-}
 
 // interface AppointmentProps {
 //   id: string;
@@ -62,50 +40,84 @@ interface AppointmentsCardProps {
 // }
 
 
+interface AppointmentsCardProps {
+  id: string;
+  doctorId: string;
+  patientId: string;
+  acceptedInsurances: string[];
+  spokenLanguages: string[];
+  rating?: number;
+  reviewCount?: number;
+  datetime: Timestamp;
+  status: 'scheduled' | 'completed' | 'cancelled' | 'no-show';
+  availability: {
+    [date: string]: string[];
+  };
+  previewImage?: string | null;
+  doctorInfo: {
+    name: string;
+    specialty: string;
+    degree: string;
+    location: string;
+  };
+  visitDetails: {
+    reason: string;
+    insurance: string;
+    patientType: 'new' | 'returning';
+    notes?: string;
+  };
+  patientInfo: {
+    name: string;
+    email: string;
+  };
+
+}
+
+
 export default function AppointmentsCard({
-  firstName,
-  lastName,
-  specialty,
-  degree,
+  doctorInfo,
+  patientInfo,
   id,
-  streetAddress,
-  clinicName,
-  city,
-  state,
-  zipCode,
-  acceptedInsurances,
-  spokenLanguages,
+  visitDetails,
+  doctorId,
+  patientId,
+  status,
+  acceptedInsurances = [],
+  spokenLanguages = [],
   rating = 0,
   reviewCount = 0,
-  scheduled,
+  datetime = new Timestamp(0, 0),
   availability,
   previewImage
 }: AppointmentsCardProps) {
 
-  const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-  const day = weekday[scheduled.toDate().getDay()];
-  const month = months[scheduled.toDate().getMonth()];
-  const date = scheduled.toDate().getDate();
-  const year = scheduled.toDate().getFullYear();
+  const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+  const day = weekday[datetime.toDate().getDay()];
+  const month = months[datetime.toDate().getMonth()];
+  const date = datetime.toDate().getDate();
+  const year = datetime.toDate().getFullYear();
   const [loading, setLoading] = useState(false);
   const [booked, setBooked] = useState('');
-  const [open, setOpen] = useState(false);
+  const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
+  const [visitsDialogOpen, setVisitsDialogOpen] = useState(false);
   const [starCount, setStarCount] = useState(0);
   const [review, setReview] = useState('');
-  const { user, loading: authLoading } = useAuth();
-  const [doctor, setDoctor] = useState<any>(null);
+  const { user } = useAuth();
+  // const [doctor, setDoctor] = useState<any>(null);
   const { toast } = useToast();
 
-  const displayName = `${degree === 'MD' ? 'Dr. ' : ''}${firstName + ' ' + lastName}${degree ? `, ${degree}` : ''}`;
+  // const displayName = `${degree === 'MD' ? 'Dr. ' : ''}${firstName + ' ' + lastName }${degree ? `, ${degree}` : ''}`;
+  // const displayName = `${doctorInfo.name}`;
 
-  const displayInsurances = acceptedInsurances.length > 4
-    ? `${acceptedInsurances.slice(0, 4).join(', ')} `
-    : acceptedInsurances.join(', ');
+  // const displayInsurances = acceptedInsurances.length > 4
+  //   ? `${acceptedInsurances.slice(0, 4).join(', ')} `
+  //   : acceptedInsurances.join(', ');
 
-  const remainingCount = acceptedInsurances.length > 4
-    ? acceptedInsurances.length - 4
-    : 0;
+  // const remainingCount = acceptedInsurances.length > 4
+  //   ? acceptedInsurances.length - 4
+  //   : 0;
 
 
   const getVisits = async () => {
@@ -177,36 +189,12 @@ export default function AppointmentsCard({
     }
     return null;
   };
-    const nextAvailableAppointment = getNextAvailable();
-    const nextAvailableText = nextAvailableAppointment 
-      ? format(new Date(`${nextAvailableAppointment.date}T${nextAvailableAppointment.time}`), 'EEE, MMM d')
-      : 'No availability';
+  const nextAvailableAppointment = getNextAvailable();
+  const nextAvailableText = nextAvailableAppointment
+    ? format(new Date(`${nextAvailableAppointment.date}T${nextAvailableAppointment.time}`), 'EEE, MMM d')
+    : 'No availability';
 
-  // const appointmentData: Omit<Appointment, 'id'> = {
-  // doctorId: id,
-  //   patientId: user!.uid,
-  //   datetime: Timestamp.fromDate(appointmentDate),
-  //   status: 'scheduled',
-  //   visitDetails: {
-  //     reason: bookingPrereqs.reason,
-  //     insurance: bookingPrereqs.insurance,
-  //     patientType: bookingPrereqs.patientType as 'new' | 'returning',
-  //     ...(appointmentNotes.trim() && { notes: appointmentNotes.trim() })
-  //   },
-  //   doctorInfo: {
-  //     name: displayName,
-  //     specialty: doctor?.specialty,
-  //     degree: doctor?.degree,
-  //     location: `${doctor?.streetAddress}, ${doctor?.city}, ${doctor?.state} ${doctor?.zipCode}`
-  //   },
-  //   patientInfo: {
-  //     name: patientName,
-  //     email: user?.email || 'Unknown'
-  //   },
-  //   createdAt: Timestamp.now(),
-  //   updatedAt: Timestamp.now()
-  // };
-  // const newAppointmentRef = doc(appointmentsRef);
+  
 
   const handleReviewSubmit = async () => {
     if (review.length === 0 && starCount === 0) {
@@ -221,8 +209,8 @@ export default function AppointmentsCard({
       await addDoc(reviewsRef, {
         rating: starCount,
         review: review.trim(),
-        doctorId: id,
-        doctorName: displayName,
+        appointmentId: id,
+        doctorName: doctorInfo.name,
         reviewedBy: user?.uid,
         reviewerEmail: user?.email,
         createdAt: Timestamp.now(),
@@ -235,7 +223,7 @@ export default function AppointmentsCard({
         className: "bg-primary text-white",
       });
 
-      setOpen(false);
+      setReviewDialogOpen(false);
       setReview('');
     } catch (error) {
       console.error('Error submitting report:', error);
@@ -253,17 +241,9 @@ export default function AppointmentsCard({
     try {
       const db = getFirebaseDb();
       const docRef = await addDoc(collection(db, 'appointmentHistory'), {
-        firstName,
-        lastName,
-        specialty,
-        degree,
+        doctorInfo,
+        visitDetails,
         id,
-        //  nextAvailable,
-        clinicName,
-        streetAddress,
-        city,
-        state,
-        zipCode,
         acceptedInsurances,
         spokenLanguages,
         rating,
@@ -282,8 +262,8 @@ export default function AppointmentsCard({
   const fillStars = () => {
     const starMap = new Map();
     //unfill stars
-    for(let i =1; i<=5; i++){
-    starMap.set(i, <Star className="w-2 h-2 sm:w-14 sm:h-14 text-blue-400 unfill-current " strokeWidth={1.5}/>);
+    for (let i = 1; i <= 5; i++) {
+      starMap.set(i, <Star className="w-2 h-2 sm:w-14 sm:h-14 text-blue-400 unfill-current " strokeWidth={1.5} />);
     }
     //add fill stars
     for (let index = 1; index <= starCount; index++) {
@@ -338,8 +318,8 @@ export default function AppointmentsCard({
             <div className='flex justify-left text-gray-500 mb-2' style={{ position: "relative", right: "80px", fontSize: "15px" }}>
               {day}, {month} {date} {year}
             </div>
-            <span className="text-lg font-semibold text-gray-800">DR {firstName} {lastName}, {degree}</span>
-            <h3 className="text-gray-500 text-sm 1px mb-2">{specialty}</h3>
+            <span className="text-lg font-semibold text-gray-800"> {doctorInfo.name}</span>
+            <h3 className="text-gray-500 text-sm 1px mb-2">{doctorInfo.specialty}</h3>
             <div className="flex flex-col items-left text-sm mb-2"  >
 
               <Star className="w-5 h-5 text-yellow-400 fill-current mb-2" />
@@ -351,8 +331,8 @@ export default function AppointmentsCard({
             <div className='flex flex-col mb-2 space-y-1 space' style={{ position: "relative", top: "-122px", left: "25px", marginRight: "175px", marginBottom: "-110px" }}>
 
               <div > {rating} · {reviewCount} · Reviews</div>  {/*add distance*/}
-              <div > {streetAddress}, {city}, {state} {zipCode}</div>  {/*add distance*/}
-              <div >Accepts {acceptedInsurances.join(', ')} </div>
+              <div > {doctorInfo.location}</div>  {/*add distance*/}
+              <div >Accepts  {visitDetails.insurance} </div>
               <div >Speaks {spokenLanguages.join(', ')}</div>
             </div>
           </div>
@@ -365,23 +345,23 @@ export default function AppointmentsCard({
               pathname: "/appointments",
               query: {
                 id,
-                firstName,
-                lastName,
-                specialty,
-                degree,
-                streetAddress,
-                city,
-                state,
-                zipCode,
+                // firstName,
+                // lastName,
+                // specialty,
+                // degree,
+                // streetAddress,
+                // city,
+                // state,
+                // zipCode,
               }
             }}> */}
             {/* </Link >  */}
 
-            <Link href={`/viewDoctor/${id}`}>
+            <Link href={`/viewDoctor/${doctorId}`}>
               <Button className=" mb-2" style={{
                 width: 175
-              }} 
-              // onClick={handleAppointment} disabled={loading} 
+              }}
+                onClick={handleAppointment} disabled={loading}
               >
                 Book Again
               </Button>
@@ -389,9 +369,9 @@ export default function AppointmentsCard({
 
 
             <Dialog
-              open={open}
+              open={reviewDialogOpen}
               onOpenChange={(open) => {
-                setOpen(open);
+                setReviewDialogOpen(open);
                 if (!open) {
                   setReview('');
                   setStarCount(0);
@@ -399,7 +379,7 @@ export default function AppointmentsCard({
                 }
               }}
             >
-              <Button onClick={() => setOpen(!open)} className="mb-2 " style={{
+              <Button onClick={() => setReviewDialogOpen(!reviewDialogOpen)} className="mb-2 " style={{
                 backgroundColor: "#829eb5",
                 width: 175
               }} >
@@ -432,10 +412,10 @@ export default function AppointmentsCard({
                         )}
                       </div>
                     </div>
-                    <div className='flex flex-col space-x-6  '>
-                      <h3 className="flex justify-start  text-xl font-semibold text-gray-800 mt-4 ml-6 "> {displayName}</h3>
-                      <h3 className="text-gray-500 text-lg 1px  ">{specialty}</h3>
-                      <div > {streetAddress}, {city}, {state} {zipCode}</div>
+                    <div className='flex flex-col space-x-6 mb-2  '>
+                      <h3 className="flex justify-start  text-xl font-semibold text-gray-800 mt-4 ml-6  "> {doctorInfo.name}</h3>
+                      <h3 className="text-gray-500 text-lg 1px  ">{doctorInfo.specialty}</h3>
+                      <div > {doctorInfo.location}</div>
                     </div>
                   </div>
 
@@ -457,6 +437,29 @@ export default function AppointmentsCard({
                   >
                     Submit
                   </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
+
+            <Dialog
+            // open={visitsDialogOpen}
+            // onOpenChange={(visitsDialogOpen) => {
+            //   setVisitsDialogOpen(visitsDialogOpen);
+            //   if (!open) {
+            //     setReview('');
+            //     setStarCount(0);
+            //   }
+            // }}
+            >
+              <DialogTrigger>Visit Details</DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Visit Details</DialogTitle>
+                  <hr className="border-gray-200 mb-2" />
+                </DialogHeader>
+                <div className='flex justify-center flex-col'>
+                  <div>Reason: {visitDetails.reason != null ? `${visitDetails.reason}` : 'None'}</div>
+                  <div>Notes:  {visitDetails.notes != null ? `${visitDetails.notes}` : 'None'}</div>
                 </div>
               </DialogContent>
             </Dialog>

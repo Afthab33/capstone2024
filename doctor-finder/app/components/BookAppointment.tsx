@@ -171,11 +171,10 @@ function BookAppointment({
         spokenLanguages,
         rating,
         reviewCount ,
-       scheduled:  noteDate,
-        docId:documentId()
+       scheduled:  noteDate,  
        });
-       
        setBooked(`Document added with ID: ${docRef.id}`);
+       console.log(booked)
      } catch (error) {
          console.error('Error fetching appointment data:', error);
      } finally {
@@ -191,7 +190,7 @@ function BookAppointment({
       
             // const appointmentsQuery = query(collection(db2,'testing'),where('doctorId','==',doc_id), where ('clinicName','==',clinic));
 
-            const doctorQuery = query(collection(db2, 'appointmentsHistory'));
+            const doctorQuery = query(collection(db2, 'appointmentHistory'));
 
             try {
                 const userSnapshot = await getDocs(doctorQuery);
