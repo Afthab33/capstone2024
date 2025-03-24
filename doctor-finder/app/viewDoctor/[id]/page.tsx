@@ -91,6 +91,11 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
     setShowReportDialog(true);
   }, []);
 
+const handleCompareClick = useCallback(() => { 
+
+  console.log('Compare the Doctors');
+              }, []); 
+  
   // if user is not logged in, redirect to login page
   useEffect(() => {
     if (!authLoading && !user) {
@@ -508,7 +513,7 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
               </div>
               <hr className="border-gray-200" />
 
-              <ActionButtons onReportClick={handleReportClick} />
+              <ActionButtons onReportClick={handleReportClick} onCompareClick={handleCompareClick} />
             </div>
           </div>
         </div>
