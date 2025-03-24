@@ -4,7 +4,6 @@ import { MessageCircleWarning, Users } from 'lucide-react';
 
 interface ActionButtonsProps {
   onReportClick: () => void;
-}
   onCompareClick: () => void;
 }
 
