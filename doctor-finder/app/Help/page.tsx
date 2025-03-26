@@ -106,12 +106,15 @@ export default function Help() {
     const voices = window.speechSynthesis.getVoices();
     // Get a female voice from the loaded voices
     const femaleVoice = voices.find(voice => voice.name.toLowerCase().includes("female"));
-    utterance.voice = voices[7];
+    if (femaleVoice)
+      utterance.voice = femaleVoice;
+    else
+      utterance.voice = voices[1];
     
     // Set rate (speed), pitch (tone), and language
     utterance.lang = "en-US";                                     // Change to your desired language
-    utterance.rate = 1.5;                                         // Slightly faster than normal speed
-    utterance.pitch = 1.8;                                        // Higher tone (value between 0 and 2)
+    utterance.rate = 1.4;                                         // Slightly faster than normal speed
+    utterance.pitch = 1.8;                                          // Higher tone (value between 0 and 2)
 
     window.speechSynthesis.speak(utterance);                      // Speak the response
   };
