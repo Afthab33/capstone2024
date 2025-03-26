@@ -10,6 +10,8 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
+import { useTheme } from "next-themes";                     // Dark/Light Mode
+import { Moon, Sun } from "lucide-react";                   // Dark/Light Mode
 
 interface UserData {
   role?: string;
@@ -22,7 +24,8 @@ const Navbar = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
-
+  const { theme, setTheme } = useTheme();
+  
   useEffect(() => {
     const fetchUserData = async () => {
       if (!user) return;
@@ -161,6 +164,16 @@ const Navbar = () => {
             </div>
           </div>
           <div className="flex items-center space-x-4 lg:pr-10">
+          <>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition p-2"
+            >
+              {theme === "dark" ? <Sun className="h-5 w-5 text-yellow-500" /> : <Moon className="h-5 w-5 text-gray-800" />}
+            </Button>
+          </>
             {loading ? (
               <>
                 <Skeleton className="h-10 w-20" />

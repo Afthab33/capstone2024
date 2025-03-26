@@ -5,6 +5,7 @@ import Navbar from "./components/navbar";
 import { AuthProvider } from "./authcontext";
 import { Toaster as HotToaster } from "react-hot-toast"
 import { Toaster as ShadcnToaster } from "@/components/ui/toaster"
+import { ThemeProvider } from "next-themes";            // Dark/Light Mode
 
 export const metadata: Metadata = {
   title: "Doctor Finder",
@@ -17,14 +18,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${GeistSans.className}`}>
-        <AuthProvider>
-          <Navbar />
-          <HotToaster position="top-center" />
-          <ShadcnToaster />
-          <main>{children}</main>
-        </AuthProvider>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <AuthProvider>
+            <Navbar />
+            <HotToaster position="top-center" />
+            <ShadcnToaster />
+            <main>{children}</main>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
