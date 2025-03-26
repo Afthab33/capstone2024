@@ -143,7 +143,7 @@ function ChatRoom({ selectedChatroom }: ChatRoomProps) {
       <div className='flex flex-col h-screen'>
         <div className='text-xl font-bold py-4 pl-4'>{other.firstName + " " + other.lastName}</div>
         <hr></hr>
-        <div className='flex-1 overflow-y-auto p-10'>
+        <div className='flex-1 overflow-y-auto p-10 max-h-[70vh]'>
           {/* Messages container with overflow and scroll */}
           {messages?.map((message) => (
             <MessageCard key={message.id} message={message} me={me} other={other}/>
