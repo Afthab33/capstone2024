@@ -98,6 +98,31 @@ export default function Help() {
     setUserInput('');
   };
 
+  // Function to read bot's response aloud
+  const speakResponse = (text: string) => {
+    const utterance = new SpeechSynthesisUtterance(text);
+
+    // Get available voices and select a female voice
+    const voices = window.speechSynthesis.getVoices();
+    // Get a female voice from the loaded voices
+    const femaleVoice = voices.find(voice => voice.name.toLowerCase().includes("female"));
+    utterance.voice = voices[7];
+    
+    // Set rate (speed), pitch (tone), and language
+    utterance.lang = "en-US";                                     // Change to your desired language
+    utterance.rate = 1.5;                                         // Slightly faster than normal speed
+    utterance.pitch = 1.8;                                        // Higher tone (value between 0 and 2)
+
+    window.speechSynthesis.speak(utterance);                      // Speak the response
+  };
+
+  // UseEffect to speak bot response when botResponse is updated
+  useEffect(() => {
+    if (botResponse) {
+      speakResponse(botResponse);
+    }
+  }, [botResponse]);                                              // This effect will run whenever botResponse changes
+
   return (
     <div className="flex flex-col items-center p-6 bg-background text-foreground min-h-screen">
       <h1 className="text-4xl font-semibold mb-6">Doctor Finder Help Desk</h1>
