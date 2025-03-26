@@ -88,23 +88,26 @@ export default function Home() {
   };
 
   // Event handler for form submit
+  // Sponsor wanted to clear top box after press Ask
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     const response = getResponse(userInput);
     setBotResponse(response);
+
+    // Clear input field after submission with hook
+    setUserInput('');
   };
 
   return (
     <div className="flex flex-col items-center p-6 bg-gray-50 min-h-screen">
-      <h1 className="text-4xl font-semibold mb-6">Code1 Help Desk</h1>
+      <h1 className="text-4xl font-semibold mb-6">Doctor Finder Help Desk</h1>
       <div className="mb-4">
-        <input
-          type="text"
-          value={userInput}
-          onChange={handleInputChange}
-          placeholder="Code1 Doctor at your service? Ask me anything?"
-          className="px-4 py-2 w-100 h-40 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 text-center"
-        />
+      <textarea
+        value={userInput}
+        onChange={(e) => setUserInput(e.target.value)}
+        placeholder={`Doctor Finder at your service?\nAsk me anything in English, Spanish, Mandarin, French, Arabic, Hindi, Bengali, Portuguese, Russian, Japanese, German, Korean, Vietnamese, Italian, Turkish. Future update respond back in native language.`}
+        className="px-4 py-2 w-[500px] h-[150px] border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 text-center resize-none"
+      />
       </div>
       <div className="mb-6">
         <button
@@ -114,7 +117,7 @@ export default function Home() {
           Ask
         </button>
       </div>
-      <div className="mt-6 p-4 w-150 h-80 bg-white border border-gray-300 rounded-lg shadow-md w-80">
+      <div className="mt-6 p-4 w-[700px] h-[250px] bg-white border border-gray-300 rounded-lg shadow-md">
         <p className="mt-2">{botResponse}</p>
       </div>
     </div>
