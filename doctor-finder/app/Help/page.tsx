@@ -21,7 +21,7 @@ interface BotResponse {
   required_words: string[];
 }
 
-export default function Home() {
+export default function Help() {
   const [userInput, setUserInput] = useState<string>('');
   const [botResponse, setBotResponse] = useState<string>('');
   const [responseData, setResponseData] = useState<BotResponse[]>([]);
