@@ -1,10 +1,17 @@
 {
-  "extends": ["next/core-web-vitals", "next/typescript", "prettier"],
+  "extends": [
+    "next/core-web-vitals", 
+    "next/typescript", 
+    "prettier",
+    "plugin:testing-library/react",
+    "plugin:jest-dom/recommended"
+  ],
   "rules": {
     "react/no-unescaped-entities": "off",           // Du hates you ' vs ", bypass you also
     "@typescript-eslint/no-explicit-any": "off",    // DU bypass this so can use any type
     "@typescript-eslint/no-unused-vars": "off",     // Change to "warn" instead of "error" risky, DU Delete Later
     "@next/next/no-img-element": "off",
-    "jsx-a11y/alt-text": "off"
+    "jsx-a11y/alt-text": "off",
+    "@typescript-eslint/no-require-imports": "off"  // Du bypass messing with Unit Testing
   }
 }
