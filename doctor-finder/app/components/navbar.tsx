@@ -98,21 +98,21 @@ const Navbar = () => {
 
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
               {
-                user ? (<Link href="/visits" className="text-gray-900 inline-flex items-center px-1 pt-1 hover:text-gray-600 relative group">
+                user ? (<Link href="/visits" className="text-foreground inline-flex items-center px-1 pt-1 hover:text-gray-600 relative group">
                   <span className="relative">
                     Visits
                     <span className="absolute left-0 bottom-0 w-full h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
                   </span>
                 </Link>) : <></>
               } 
-              <Link href="/viewall" className="text-gray-900 inline-flex items-center px-1 pt-1 hover:text-gray-600 relative group">
+              <Link href="/viewall" className="text-foreground inline-flex items-center px-1 pt-1 hover:text-gray-600 relative group">
              
                 <span className="relative">
                   View All Doctors
                   <span className="absolute left-0 bottom-0 w-full h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
                 </span>
               </Link>
-              <Link href="/aboutus" className="text-gray-900 inline-flex items-center px-1 pt-1 hover:text-gray-600 relative group">
+              <Link href="/aboutus" className="text-foreground inline-flex items-center px-1 pt-1 hover:text-gray-600 relative group">
                 <span className="relative">
                   About Us
                   <span className="absolute left-0 bottom-0 w-full h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
@@ -143,7 +143,7 @@ const Navbar = () => {
               */}
               {
                 user ?(
-                  <Link href="/DoctorChat" className="text-gray-900 inline-flex items-center px-1 pt-1 hover:text-gray-600 relative group">
+                  <Link href="/DoctorChat" className="text-foreground inline-flex items-center px-1 pt-1 hover:text-gray-600 relative group">
                     <span className="relative">
                       Messenger
                       <span className="absolute left-0 bottom-0 w-full h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
@@ -153,7 +153,7 @@ const Navbar = () => {
             }
             {
                 user ?(
-                  <Link href="/Help" className="text-gray-900 inline-flex items-center px-1 pt-1 hover:text-gray-600 relative group">
+                  <Link href="/Help" className="text-foreground inline-flex items-center px-1 pt-1 hover:text-gray-600 relative group">
                     <span className="relative">
                       Help
                       <span className="absolute left-0 bottom-0 w-full h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>

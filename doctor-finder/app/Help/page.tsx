@@ -99,7 +99,7 @@ export default function Help() {
   };
 
   return (
-    <div className="flex flex-col items-center p-6 bg-gray-50 min-h-screen">
+    <div className="flex flex-col items-center p-6 bg-background text-foreground min-h-screen">
       <h1 className="text-4xl font-semibold mb-6">Doctor Finder Help Desk</h1>
       <div className="mb-4">
       <textarea
@@ -112,12 +112,12 @@ export default function Help() {
       <div className="mb-6">
         <button
           onClick={handleSubmit}
-          className="bg-blue-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="bg-primary text-primary-foreground px-6 py-2 rounded-lg shadow-md hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-primary"
         >
           Ask
         </button>
       </div>
-      <div className="mt-6 p-4 w-[700px] h-[250px] bg-white border border-gray-300 rounded-lg shadow-md">
+      <div className="mt-6 p-4 w-[700px] h-[250px] bg-card border-2 border-blue-400 rounded-lg shadow-md text-card-foreground focus:outline-none focus:ring-2 focus:ring-primary">
         <p className="mt-2">{botResponse}</p>
       </div>
     </div>
