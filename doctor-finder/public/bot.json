@@ -171,6 +171,22 @@
   {
     "response_type": "question",
     "user_input": [
+      "near"
+    ],
+    "bot_response": "Looking for the closest doctor using Google API or search our View all doctors",
+    "required_words": ["near"]
+  },
+  {
+    "response_type": "question",
+    "user_input": [
+      "closest"
+    ],
+    "bot_response": "Looking for the closest doctor using Google API or search our View all doctors",
+    "required_words": ["closest"]
+  },
+  {
+    "response_type": "question",
+    "user_input": [
       "hour", "hours", "minutes", "minute", "hr", "hrs", "time", "open", "close", "opened", "closed",
       "hora", "horas", "minutos", "minuto", "tiempo", "abrir", "cerrar", "abierto", "cerrado",
       "小时", "分钟", "分钟", "时", "时数", "时间", "打开", "关闭", "开", "关",
@@ -1110,7 +1126,7 @@
   {
     "response_type": "insults",
     "user_input": [
-      "fuck", "fucking", "fucked", "shit", "damn", "asshole", "bitch", "donkey", "jackass", "imbecile",
+      "fuck", "fucking", "fucked", "shit", "damn", "asshole", "bitch", "bitchy", "donkey", "jackass", "imbecile",
       "joder", "mierda", "maldito", "imbécil", "puta", "burro", "asno", 
       "操", "屎", "该死", "混蛋", "婊子", "驴", "傻瓜",
       "putain", "merde", "damn", "connard", "salope", "âne", "âne bâté",
