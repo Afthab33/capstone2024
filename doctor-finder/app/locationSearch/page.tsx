@@ -43,8 +43,8 @@ const MemoizedDoctorCard = memo(({ doctor, isHovered, onHover }: {
       onClick={() => window.location.href = `/viewDoctor/${doctor.id}`}
       className={`cursor-pointer ${
         isHovered 
-          ? 'bg-gray-100' 
-          : 'bg-white'
+          ? 'bg-gray-100 dark:bg-gray-900' 
+          : 'bg-white dark:bg-black'
       } transition-colors duration-200 [&_.doctor-name]:after:absolute [&_.doctor-name]:after:left-0 [&_.doctor-name]:after:bottom-0 [&_.doctor-name]:after:w-full [&_.doctor-name]:after:h-0.5 [&_.doctor-name]:after:bg-primary [&_.doctor-name]:after:transform [&_.doctor-name]:after:transition-transform [&_.doctor-name]:after:origin-left [&_.doctor-name]:relative ${
         isHovered 
           ? '[&_.doctor-name]:after:scale-x-100' 
@@ -160,7 +160,7 @@ export default function LocationSearch() {
           <div className="space-y-4 pb-6">
             {[1, 2, 3, 4, 5, 6, 7].map((i) => (
               <div key={i} className="mt-4">
-                <div className="flex flex-col sm:flex-row w-full p-4 bg-white rounded-lg">
+                <div className="flex flex-col sm:flex-row w-full p-4 rounded-lg">
                   <div className="flex flex-col sm:flex-row items-start sm:items-center sm:space-x-6 w-full">
                     {/* profile image skeleton */}
                     <div className="profile-image mb-4 sm:mb-0">
@@ -216,7 +216,7 @@ export default function LocationSearch() {
                   onHover={setHoveredDoctorId}
                 />
                 {index < doctors.length - 1 && (
-                  <div className="border-b border-gray-200" />
+                  <div className="border-b border-gray-200 dark:border-gray-800" />
                 )}
               </Fragment>
             ))}
@@ -276,15 +276,15 @@ export default function LocationSearch() {
                           <h3 className="text-sm">
                             {doctor.clinicName || `${doctor.degree === 'MD' ? 'Dr.' : ''} ${doctor.firstName} ${doctor.lastName}'s Clinic`}
                           </h3>
-                          <p className="text-gray-600">
+                          <p className="text-gray-600 dark:text-gray-300">
                             {doctor.streetAddress}
                           </p>
-                          <p className="text-gray-600">
+                          <p className="text-gray-600 dark:text-gray-300">
                             {doctor.city}, {doctor.state} {doctor.zipCode}
                           </p>
                         </div>
                         <div className="flex items-center gap-3 ml-3">
-                          <div className="h-16 w-px bg-gray-200"></div>
+                          <div className="h-16 w-px bg-gray-200 dark:bg-gray-800"></div>
                           <a
                             href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
                               `${doctor.streetAddress}, ${doctor.city}, ${doctor.state} ${doctor.zipCode}`
@@ -303,7 +303,7 @@ export default function LocationSearch() {
                     // default overlay showing doctor count
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
-                      <h3 className="text-gray-600">
+                      <h3 className="text-gray-600 dark:text-gray-200">
                         Showing {doctors.length} {doctors.length === 1 ? 'Doctor' : 'Doctors'}
                       </h3>
                     </div>

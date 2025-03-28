@@ -337,17 +337,17 @@ const handleCompareClick = useCallback(() => {
                 </div>
               </div>
 
-              <div className="mt-8 sm:mt-12 bg-gray-100 rounded-lg p-4 sm:p-5">
+              <div className="mt-8 sm:mt-12 bg-gray-100 dark:bg-zinc-900 rounded-lg p-4 sm:p-5">
                 <div className="flex flex-col sm:flex-row">
                   <div className="w-full sm:w-1/3 flex flex-col items-center sm:items-center justify-center sm:pr-5 mb-4 sm:mb-0">
                     <div className="flex flex-row sm:flex-col items-center gap-3 sm:gap-2">
                       <Skeleton className="h-12 w-16 sm:h-12 sm:w-16" />
                       <Skeleton className="h-6 w-32 sm:h-5 sm:w-28" />
                     </div>
-                    <div className="w-full h-px bg-gray-300 mt-4 mb-4 block sm:hidden" />
+                    <div className="w-full h-px bg-gray-300 dark:bg-zinc-800 mt-4 mb-4 block sm:hidden" />
                   </div>
                   
-                  <div className="w-full sm:w-2/3 sm:pl-5 sm:border-l border-gray-300">
+                  <div className="w-full sm:w-2/3 sm:pl-5 sm:border-l border-gray-300 dark:border-zinc-800">
                     <Skeleton className="h-16 w-full mb-2" />
                     <div className="text-right">
                       <Skeleton className="h-4 w-24 ml-auto" />
@@ -361,13 +361,13 @@ const handleCompareClick = useCallback(() => {
                   <Skeleton className="h-8 w-48 mb-2" />
                   <Skeleton className="h-4 w-64" />
                 </div>
-                <hr className="border-gray-200" />
+                <hr className="border-gray-200 dark:border-zinc-800" />
                 
                 <div className="space-y-1">
                   <Skeleton className="h-8 w-48 mb-2" />
                   <Skeleton className="h-4 w-64" />
                 </div>
-                <hr className="border-gray-200" />
+                <hr className="border-gray-200 dark:border-zinc-800" />
 
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                   <Skeleton className="h-12 flex-1" />
@@ -378,7 +378,7 @@ const handleCompareClick = useCallback(() => {
           </div>
 
           <div className="w-full lg:w-1/2">
-            <div className="bg-white rounded-lg border p-4 sm:p-6 lg:px-12">
+            <div className="bg-white dark:bg-zinc-900 rounded-xl border border-gray-200 dark:border-gray-800 p-4 sm:p-6 lg:px-12">
               <Skeleton className="h-8 w-64 mb-4" />
               <Skeleton className="h-4 w-48 mb-6" />
               
@@ -454,7 +454,7 @@ const handleCompareClick = useCallback(() => {
               </div>
             </div>
 
-            <div className="mt-8 sm:mt-12 bg-gray-100 rounded-lg p-4 sm:p-5">
+            <div className="mt-8 sm:mt-12 bg-gray-100 dark:bg-zinc-900 rounded-lg p-4 sm:p-5">
               <div className="flex flex-col sm:flex-row">
                 <div className="w-full sm:w-1/3 flex flex-col items-center sm:items-center justify-center sm:pr-5 mb-4 sm:mb-0">
                   <div className="flex flex-row sm:flex-col items-center gap-3 sm:gap-2">
@@ -463,15 +463,15 @@ const handleCompareClick = useCallback(() => {
                         <StarRating rating={doctor?.rating ?? 0} />
                       </div>
                   </div>
-                  <div className="w-full h-px bg-gray-300 mt-4 mb-4 block sm:hidden" />
+                  <div className="w-full h-px bg-gray-300 dark:bg-zinc-800 mt-4 mb-4 block sm:hidden" />
                 </div>
                 {/* TODO: add real reviews and ratings */}
-                <div className="w-full sm:w-2/3 sm:pl-5 sm:border-l border-gray-300">
-                  <p className="text-gray-600 text-md italic">
+                <div className="w-full sm:w-2/3 sm:pl-5 sm:border-l border-gray-300 dark:border-zinc-800">
+                  <p className="text-gray-600 dark:text-gray-400 text-md italic">
                     "Dr. {doctor?.lastName} is an exceptional physician. Their expertise and caring approach made me feel comfortable throughout my entire visit. Highly recommended!"
                   </p>
                   <div className="text-right">
-                    <span className="font-semibold text-sm underline cursor-pointer hover:text-gray-700">
+                    <span className="font-semibold text-sm underline cursor-pointer hover:text-gray-700 dark:hover:text-gray-300">
                       {/* link to reviews maybe? */}
                       See all {doctor?.reviewCount} reviews
                     </span>
@@ -487,15 +487,15 @@ const handleCompareClick = useCallback(() => {
                   <h3 className="text-lg sm:text-xl font-semibold ml-12 sm:ml-16">Accepted Insurance</h3>
                 </div>
                 <div className="ml-12 sm:ml-16">
-                  <span className="text-md sm:text-md text-gray-500">
+                  <span className="text-md sm:text-md text-gray-500 dark:text-gray-400">
                     Accepts {doctor?.acceptedInsurances?.slice(0, 3).join(', ')}
                     {doctor?.acceptedInsurances?.length > 3 && (
-                      <span className="text-gray-500"> + {doctor.acceptedInsurances.length - 3} more</span>
+                      <span className="text-gray-500 dark:text-gray-400"> + {doctor.acceptedInsurances.length - 3} more</span>
                     )}
                   </span>
                 </div>
               </div>
-              <hr className="border-gray-200" />
+              <hr className="border-gray-200 dark:border-zinc-800" />
 
               <div className="space-y-1 relative">
                 <div className="flex items-center gap-2 sm:gap-3">
@@ -503,15 +503,15 @@ const handleCompareClick = useCallback(() => {
                   <h3 className="text-lg sm:text-xl font-semibold ml-12 sm:ml-16">Spoken Languages</h3>
                 </div>
                 <div className="ml-12 sm:ml-16">
-                  <span className="text-md sm:text-md text-gray-500">
+                  <span className="text-md sm:text-md text-gray-500 dark:text-gray-400">
                     Speaks {doctor?.spokenLanguages?.slice(0, 3).join(', ')}
                     {doctor?.spokenLanguages?.length > 3 && (
-                      <span className="text-gray-500"> + {doctor.spokenLanguages.length - 3} more</span>
+                      <span className="text-gray-500 dark:text-gray-400"> + {doctor.spokenLanguages.length - 3} more</span>
                     )}
                   </span>
                 </div>
               </div>
-              <hr className="border-gray-200" />
+              <hr className="border-gray-200 dark:border-zinc-800" />
 
               <ActionButtons onReportClick={handleReportClick} onCompareClick={handleCompareClick} />
             </div>
@@ -552,7 +552,7 @@ const handleCompareClick = useCallback(() => {
           }
         }}
       >
-        <DialogContent className="fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] w-[calc(100%-32px)] sm:w-[600px] rounded-lg border bg-white p-0 shadow-lg">
+        <DialogContent className="fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] w-[calc(100%-32px)] sm:w-[600px] rounded-lg border border-gray-200 dark:border-zinc-900 bg-white dark:bg-zinc-950 p-0 shadow-lg">
           <DialogHeader className="p-6 pb-2">
             <DialogTitle className="mb-4 text-left">
               Confirm Appointment
@@ -608,8 +608,8 @@ const handleCompareClick = useCallback(() => {
                         variant="outline"
                         className={`w-full ${
                           selectedTimeSlot === time 
-                            ? 'bg-primary text-white hover:bg-primary hover:text-white' 
-                            : 'hover:bg-gray-100'
+                            ? 'bg-primary text-white hover:bg-primary hover:text-white dark:bg-primary/90 dark:hover:bg-primary/90' 
+                            : 'hover:bg-gray-100 dark:hover:bg-zinc-800'
                         }`}
                         onClick={() => handleTimeSlotSelect(time)}
                       >
@@ -633,7 +633,7 @@ const handleCompareClick = useCallback(() => {
 
             <div className="mt-6">
               <textarea
-                className="w-full min-h-[100px] p-3 rounded-md border border-gray-200 focus:outline-none focus:border-gray-300"
+                className="w-full min-h-[100px] p-3 rounded-md border border-gray-200 dark:border-zinc-800 focus:outline-none focus:border-gray-300 dark:focus:border-zinc-700"
                 placeholder={`Write any notes for ${doctor?.degree === 'MD' ? 'Dr.' : ''} ${doctor?.firstName} ${doctor?.lastName}...`}
                 value={appointmentNotes}
                 onChange={(e) => setAppointmentNotes(e.target.value)}
@@ -798,7 +798,7 @@ const handleCompareClick = useCallback(() => {
           }
         }}
       >
-        <DialogContent className="fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] w-[calc(100%-32px)] sm:w-[600px] rounded-lg border bg-white p-0 shadow-lg">
+        <DialogContent className="fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] w-[calc(100%-32px)] sm:w-[600px] rounded-lg border border-gray-200 dark:border-zinc-900 bg-white dark:bg-zinc-950 p-0 shadow-lg">
           <DialogHeader className="p-6 pb-0">
             <DialogTitle className="text-xl font-semibold">Report Abuse</DialogTitle>
             <DialogDescription className="text-gray-500 mt-1.5 mb-0">
@@ -836,14 +836,14 @@ const handleCompareClick = useCallback(() => {
             </div>
 
             <textarea
-              className="w-full min-h-[100px] p-3 rounded-md border border-gray-200 focus:outline-none focus:border-gray-300"
+              className="w-full min-h-[100px] p-3 rounded-md border border-gray-200 dark:border-zinc-800 focus:outline-none focus:border-gray-300 dark:focus:border-zinc-700"
               placeholder="Other reasons write here..."
               value={otherReportReason}
               onChange={(e) => setOtherReportReason(e.target.value)}
             />
 
             <Button 
-              className="w-full"
+              className="w-full mt-2"
               onClick={handleReportSubmit}
               disabled={reportReasons.length === 0 && !otherReportReason.trim()}
             >

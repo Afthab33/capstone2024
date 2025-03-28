@@ -468,8 +468,8 @@ export default function SettingsPage() {
                 onClick={goToPreviousWeek}
                 className={`p-2 rounded-full ${
                   weekOffset === 0 
-                    ? 'text-gray-300' 
-                    : 'hover:bg-gray-100'
+                    ? 'text-gray-300 dark:text-gray-600' 
+                    : 'hover:bg-gray-100 dark:hover:bg-zinc-800'
                 }`}
                 disabled={weekOffset === 0}
                 aria-label="Previous week"
@@ -479,7 +479,7 @@ export default function SettingsPage() {
               
               <button
                 onClick={goToNextWeek}
-                className="p-2 hover:bg-gray-100 rounded-full"
+                className="p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-full"
                 aria-label="Next week"
               >
                 →
@@ -508,6 +508,7 @@ export default function SettingsPage() {
                         onSelect={handleDateSelect}
                         availableSlots={slotsCount}
                         currentTime={now}
+                        isFromSettings={true}
                       />
                     </div>
                   );
@@ -619,17 +620,17 @@ export default function SettingsPage() {
                     className={`p-8 border-2 border-dashed rounded-lg cursor-pointer
                       ${isDragActive 
                         ? 'border-blue-500 bg-blue-50' 
-                        : 'border-gray-300 bg-gray-50'
+                        : 'border-gray-300 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800'
                       }
                       hover:border-blue-500 hover:bg-blue-50 transition-colors`}
                   >
                     <input {...getInputProps()} />
                     {uploading ? (
-                      <p className="text-center text-gray-500">Uploading...</p>
+                      <p className="text-center text-gray-500 dark:text-gray-400">Uploading...</p>
                     ) : isDragActive ? (
-                      <p className="text-center text-blue-500">Drop the file here...</p>
+                      <p className="text-center text-blue-500 dark:text-blue-400">Drop the file here...</p>
                     ) : (
-                      <p className="text-center text-gray-500">
+                      <p className="text-center text-gray-500 dark:text-gray-400">
                         Drag and drop your profile picture here, or click to select
                       </p>
                     )}

@@ -58,7 +58,7 @@ const BookingForm: React.FC<BookingFormProps> = React.memo(({
   }), [goToPreviousWeek, goToNextWeek]);
 
   return (
-    <Card className="mb-8">
+    <Card className="mb-8 dark:bg-zinc-900">
       <CardContent className="p-4 sm:p-6 lg:px-12">
         <h1 className="text-2xl font-semibold mb-2 pt-4">Book an Appointment Today</h1>
         <h2 className="text-md font-regular text-gray-400 mb-4">Reason for Visit</h2>

@@ -130,7 +130,7 @@ export default function Home() {
 
               {/* doctor card skeletons */}
               {[1, 2, 3].map((i) => (
-                <div key={i} className="flex flex-col sm:flex-row w-full p-4 bg-white rounded-lg">
+                <div key={i} className="flex flex-col sm:flex-row w-full p-4 rounded-lg">
                   <div className="flex flex-col sm:flex-row items-start sm:items-center sm:space-x-6 w-full">
                     {/* profile image skeleton */}
                     <div className="profile-image mb-4 sm:mb-0">
@@ -198,7 +198,7 @@ export default function Home() {
                       availability={doctor.availability}
                       coordinates={doctor.coordinates} />
                     {index < doctors.length - 1 && (
-                      <div className="border-b border-gray-200 my-4" />
+                      <div className="border-b border-gray-200 dark:border-zinc-800 my-4" />
                     )}
                   </div>
                 ))}
@@ -216,12 +216,12 @@ export default function Home() {
               <div className={`absolute top-8 left-1/2 transform -translate-x-1/2 z-10 transition-opacity duration-300 hidden lg:block ${mapLoaded ? 'opacity-100' : 'opacity-0'}`}>
                 <Link
                   href={'/locationSearch'}
-                  className="bg-white px-3 py-2 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200 flex items-center space-x-2 whitespace-nowrap text-sm"
+                  className="bg-white px-3 py-2 dark:bg-zinc-900 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200 flex items-center space-x-2 whitespace-nowrap text-sm"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-accent" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
                   </svg>
-                  <span className="text-accent">Search by location</span>
+                  <span className="text-accent dark:text-zinc-200">Search by location</span>
                 </Link>
               </div>
               {mapsKey && (

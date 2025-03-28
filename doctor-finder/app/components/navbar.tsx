@@ -67,18 +67,26 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-background border-b border-gray-200 relative z-50">
+    <nav className="bg-background border-b border-gray-200 dark:border-zinc-800 relative z-50">
       <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center lg:pl-10">
             <div className="flex-shrink-0 flex items-center pr-5">
               <Link href="/" className="flex items-center">
                 <Image
-                  src="/logonew.svg"
+                  src={"/logonew.svg"}
                   alt="Doctor Finder Logo"
                   width={95}
                   height={95}
-                  className="pt-2"
+                  className="pt-2 dark:hidden"
+                  priority
+                />
+                <Image
+                  src={"/logodark.svg"}
+                  alt="Doctor Finder Logo"
+                  width={95}
+                  height={95}
+                  className="pt-2 hidden dark:block"
                   priority
                 />
               </Link>
@@ -98,21 +106,21 @@ const Navbar = () => {
 
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
               {
-                user ? (<Link href="/visits" className="text-foreground inline-flex items-center px-1 pt-1 hover:text-gray-600 relative group">
+                user ? (<Link href="/visits" className="text-foreground inline-flex items-center px-1 pt-1 hover:text-gray-600 dark:hover:text-gray-300 relative group">
                   <span className="relative">
                     Visits
                     <span className="absolute left-0 bottom-0 w-full h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
                   </span>
                 </Link>) : <></>
               } 
-              <Link href="/viewall" className="text-foreground inline-flex items-center px-1 pt-1 hover:text-gray-600 relative group">
+              <Link href="/viewall" className="text-foreground inline-flex items-center px-1 pt-1 hover:text-gray-600 dark:hover:text-gray-300 relative group">
              
                 <span className="relative">
                   View All Doctors
                   <span className="absolute left-0 bottom-0 w-full h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
                 </span>
               </Link>
-              <Link href="/aboutus" className="text-foreground inline-flex items-center px-1 pt-1 hover:text-gray-600 relative group">
+              <Link href="/aboutus" className="text-foreground inline-flex items-center px-1 pt-1 hover:text-gray-600 dark:hover:text-gray-300 relative group">
                 <span className="relative">
                   About Us
                   <span className="absolute left-0 bottom-0 w-full h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
@@ -143,7 +151,7 @@ const Navbar = () => {
               */}
               {
                 user ?(
-                  <Link href="/DoctorChat" className="text-foreground inline-flex items-center px-1 pt-1 hover:text-gray-600 relative group">
+                  <Link href="/DoctorChat" className="text-foreground inline-flex items-center px-1 pt-1 hover:text-gray-600 dark:hover:text-gray-300 relative group">
                     <span className="relative">
                       Messenger
                       <span className="absolute left-0 bottom-0 w-full h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
@@ -153,7 +161,7 @@ const Navbar = () => {
             }
             {
                 user ?(
-                  <Link href="/Help" className="text-foreground inline-flex items-center px-1 pt-1 hover:text-gray-600 relative group">
+                  <Link href="/Help" className="text-foreground inline-flex items-center px-1 pt-1 hover:text-gray-600 dark:hover:text-gray-300 relative group">
                     <span className="relative">
                       Help
                       <span className="absolute left-0 bottom-0 w-full h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
@@ -166,12 +174,13 @@ const Navbar = () => {
           <div className="flex items-center space-x-4 lg:pr-10">
           <>
             <Button
-              variant="ghost"
+              variant="outline"
               size="icon"
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition p-2"
+              className="rounded-full hover:opacity-80 transition p-0.5 h-10 w-10"
             >
-              {theme === "dark" ? <Sun className="h-5 w-5 text-yellow-500" /> : <Moon className="h-5 w-5 text-gray-800" />}
+              <Sun className="h-5 w-5 text-yellow-500 dark:hidden" />
+              <Moon className="h-5 w-5 text-primary hidden dark:block" />
             </Button>
           </>
             {loading ? (
@@ -187,12 +196,19 @@ const Navbar = () => {
                     alt="Settings"
                     width={40}
                     height={40}
-                    className="cursor-pointer hover:opacity-80 shadow-[0_0_3px_rgba(0,0,0,0.3)] rounded-full p-0.5"
+                    className="cursor-pointer hover:opacity-80 shadow-[0_0_3px_rgba(0,0,0,0.3)] rounded-full p-0.5 dark:hidden"
+                  />
+                  <Image
+                    src="/settings2dark.svg"
+                    alt="Settings"
+                    width={40}
+                    height={40}
+                    className="cursor-pointer bg-zinc-800 hover:opacity-80 shadow-[0_0_3px_rgba(0,0,0,0.3)] rounded-full p-0.5 hidden dark:block"
                   />
                 </Link>
                 <Dialog open={isLogoutDialogOpen} onOpenChange={setIsLogoutDialogOpen}>
                   <DialogTrigger asChild>
-                    <Button>Log Out</Button>
+                    <Button className="dark:text-black">Log Out</Button>
                   </DialogTrigger>
                   <DialogContent className="top-1/4 sm:max-w-[425px] w-[90vw] max-w-[90vw] rounded-lg">
                     <DialogHeader>

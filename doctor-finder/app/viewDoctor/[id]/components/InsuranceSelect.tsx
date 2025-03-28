@@ -21,7 +21,7 @@ const InsuranceSelect: React.FC<InsuranceSelectProps> = React.memo(({
       value={value}
     >
       <SelectTrigger 
-        className={`${showError ? 'border-red-300 border-2' : ''}`}
+        className={`${showError ? 'border-red-300 dark:border-red-800 border-2' : ''}`}
         variant="grey"
       >
         <div className="flex items-center gap-2">
@@ -41,7 +41,7 @@ const InsuranceSelect: React.FC<InsuranceSelectProps> = React.memo(({
       </SelectContent>
     </Select>
     {showError && (
-      <span className="absolute -right-4 top-3 text-red-500 text-lg">*</span>
+      <span className="absolute -right-4 top-3 text-red-500 dark:text-red-800 text-lg">*</span>
     )}
   </div>
 ));

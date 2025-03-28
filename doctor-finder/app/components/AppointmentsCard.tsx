@@ -284,7 +284,7 @@ export default function AppointmentsCard({
   return (
     <>
 
-      <div className="flex items-center justify-between w-full max-w p-4 bg-white rounded-lg ">
+      <div className="flex items-center justify-between w-full max-w p-4 rounded-lg ">
         <div className="flex items-center space-x-4">
           <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0 relative">
             {/* Placeholder for 's image */}
@@ -318,7 +318,7 @@ export default function AppointmentsCard({
             <div className='flex justify-left text-gray-500 mb-2' style={{ position: "relative", right: "80px", fontSize: "15px" }}>
               {day}, {month} {date} {year}
             </div>
-            <span className="text-lg font-semibold text-gray-800"> {doctorInfo.name}</span>
+            <span className="text-lg font-semibold text-gray-800 dark:text-gray-200"> {doctorInfo.name}</span>
             <h3 className="text-gray-500 text-sm 1px mb-2">{doctorInfo.specialty}</h3>
             <div className="flex flex-col items-left text-sm mb-2"  >
 

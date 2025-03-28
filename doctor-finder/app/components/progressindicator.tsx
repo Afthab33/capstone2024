@@ -12,7 +12,7 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ totalSteps, curre
         <div
           key={index}
           className={`w-2 h-2 rounded-full ${
-            index < currentStep ? 'bg-primary' : 'bg-gray-300'
+            index < currentStep ? 'bg-primary' : 'bg-gray-300 dark:bg-zinc-700'
           }`}
         />
       ))}

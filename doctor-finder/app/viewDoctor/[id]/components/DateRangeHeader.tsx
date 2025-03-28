@@ -37,8 +37,8 @@ const DateRangeHeader: React.FC<DateRangeHeaderProps> = React.memo(({
         onClick={onPrevious}
         className={`p-2 rounded-full ${
           weekOffset === 0 
-            ? 'text-gray-300' 
-            : 'hover:bg-gray-100'
+            ? 'text-gray-300 dark:text-gray-600' 
+            : 'hover:bg-gray-100 dark:hover:bg-zinc-800'
         }`}
         disabled={weekOffset === 0}
         aria-label="Previous week"
@@ -48,7 +48,7 @@ const DateRangeHeader: React.FC<DateRangeHeaderProps> = React.memo(({
       
       <button
         onClick={onNext}
-        className="p-2 hover:bg-gray-100 rounded-full"
+        className="p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-full"
         aria-label="Next week"
       >
         →

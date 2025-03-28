@@ -360,7 +360,7 @@ const ViewAllDoctors = () => {
             {/* doctor card skeletons */}
             <div className="space-y-4">
               {[1, 2, 3, 4, 5].map((i) => (
-                <div key={i} className="flex flex-col sm:flex-row w-full p-4 bg-white rounded-lg">
+                <div key={i} className="flex flex-col sm:flex-row w-full p-4 rounded-lg">
                   <div className="flex flex-col sm:flex-row items-start sm:items-center sm:space-x-6 w-full">
                     {/* profile image skeleton */}
                     <div className="profile-image mb-4 sm:mb-0">
@@ -477,7 +477,7 @@ const ViewAllDoctors = () => {
                               >
                                 {option.label}
                                 {sortBy === option.value && 
-                                  <Check className="h-4 w-4 text-primary group-hover:text-white transition-colors" />
+                                  <Check className="h-4 w-4 text-primary group-hover:text-white transition-colors dark:text-primary" />
                                 }
                               </DropdownMenuItem>
                             ))}
@@ -496,7 +496,7 @@ const ViewAllDoctors = () => {
                           variant="grey"
                           className="flex items-center gap-1 pl-2 pr-1 py-1"
                         >
-                          <span className="text-xs font-medium text-muted-foreground mr-1">
+                          <span className="text-xs font-medium text-muted-foreground dark:text-zinc-400 mr-1">
                             {filterLabels[filter.type]}:
                           </span>
                           {filter.type === "sex" 
@@ -519,7 +519,7 @@ const ViewAllDoctors = () => {
                           variant="grey"
                           className="flex items-center gap-1 pl-2 pr-1 py-1"
                         >
-                          <span className="text-xs font-medium text-muted-foreground mr-1">
+                          <span className="text-xs font-medium text-muted-foreground dark:text-zinc-400 mr-1">
                             Sort:
                           </span>
                           {sortOptions.find(option => option.value === sortBy)?.label}
@@ -581,7 +581,7 @@ const ViewAllDoctors = () => {
                           availability={doctor.availability}
                           coordinates={doctor.coordinates} />
                         {index < filteredDoctors.length - 1 && (
-                          <div className="border-b border-gray-200 my-4" />
+                          <div className="border-b border-gray-200 dark:border-zinc-800 my-4" />
                         )}
                       </div>
                     ))

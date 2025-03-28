@@ -207,15 +207,15 @@ export default function DoctorProfileCard({
                     setIsDialogOpen(true);
                   }}
                 >
-                  <Pencil className="w-5 h-5 text-white" />
+                  <Pencil className="w-5 h-5 text-white dark:text-black" />
                 </div>
               )}
             </div>
           </div>
           <div className="w-full relative">
             <div>
-              <span className="doctor-name text-base sm:text-lg font-semibold text-gray-800">{displayName}</span>
-              <h3 className="text-md sm:text-md text-gray-500 mb-1">
+              <span className="doctor-name text-base sm:text-lg font-semibold text-gray-800 dark:text-gray-200">{displayName}</span>
+              <h3 className="text-md sm:text-md text-gray-500 mb-1 dark:text-gray-400">
                 {specialty}
               </h3>
             </div>
@@ -259,7 +259,7 @@ export default function DoctorProfileCard({
             {id && (
               <div className="xl:absolute relative mt-4 xl:mt-0 xl:right-0 xl:top-0">
                 {/* hide on mobile/tablet, show on desktop */}
-                <div className="hidden xl:block text-sm text-gray-500 mb-3 text-center">
+                <div className="hidden xl:block text-sm text-gray-500 mb-3 text-center dark:text-gray-400">
                   Next available: {nextAvailableText}
                 </div>
                 <Link 
@@ -269,7 +269,7 @@ export default function DoctorProfileCard({
                   Book Online
                 </Link>
                 {/* show on mobile/tablet, hide on desktop */}
-                <div className="xl:hidden text-xs text-gray-500 mt-2 text-center">
+                <div className="xl:hidden text-xs text-gray-500 mt-2 text-center dark:text-gray-400">
                   Next available: {nextAvailableText}
                 </div>
               </div>

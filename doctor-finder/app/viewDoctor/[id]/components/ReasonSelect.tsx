@@ -17,7 +17,7 @@ const ReasonSelect: React.FC<ReasonSelectProps> = React.memo(({
   <div className="relative">
     <Select onValueChange={onValueChange} value={value}>
       <SelectTrigger 
-        className={`${showError ? 'border-red-300 border-2' : ''}`}
+        className={`${showError ? 'border-red-300 dark:border-red-800 border-2' : ''}`}
         variant="grey"
       >
         <SelectValue placeholder="Select Reason for Visit" />
@@ -34,7 +34,7 @@ const ReasonSelect: React.FC<ReasonSelectProps> = React.memo(({
       </SelectContent>
     </Select>
     {showError && (
-      <span className="absolute -right-4 top-3 text-red-500 text-lg">*</span>
+      <span className="absolute -right-4 top-3 text-red-500 dark:text-red-800 text-lg">*</span>
     )}
   </div>
 ));
