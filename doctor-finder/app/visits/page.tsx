@@ -1,25 +1,15 @@
 'use client'
 import { useEffect, useState } from "react";
 import AppointmentsCard from "../components/AppointmentsCard";
-import { getFirestore, collection, getDocs, query, where, Timestamp, orderBy } from 'firebase/firestore';
+import { collection, getDocs, query, where, Timestamp, orderBy } from 'firebase/firestore';
 import { useAuth } from '../authcontext';
 import { db as getFirebaseDb } from '../authcontext';
 
-
 interface AppointmentHistoryprops {
-  
   id: string;
   doctorId: string;
-  patientId: string;
-  acceptedInsurances: string[];
-  spokenLanguages: string[];
-  rating?: number;
-  reviewCount?: number;
   datetime: Timestamp;
   status: 'scheduled' | 'completed' | 'cancelled' | 'no-show';
-  availability: {
-    [date: string]: string[];
-  };
   doctorInfo: {
     name: string;
     specialty: string;
@@ -32,10 +22,7 @@ interface AppointmentHistoryprops {
     patientType: 'new' | 'returning';
     notes?: string;
   };
-  patientInfo: {
-    name: string;
-    email: string;
-  };
+
 }
 
 export default function AppointmentsHistory() {
@@ -53,10 +40,10 @@ export default function AppointmentsHistory() {
 
       //find doctor and clinic patient has booked 
       const appointmentsQuery = query(collection(db, 'appointments')
-      // ,where('status','==','complete')
-      ,where('status','==','scheduled') 
-      ,where('datetime','<=',ts)
-      ,orderBy('datetime','desc')
+        // ,where('status','==','complete')
+        , where('status', '==', 'scheduled')
+        , where('datetime', '<=', ts)
+        , orderBy('datetime', 'desc')
 
       );
 
@@ -101,16 +88,9 @@ export default function AppointmentsHistory() {
                 key={index}
                 id={appointment.id}
                 doctorInfo={appointment.doctorInfo}
-                patientInfo={appointment.patientInfo}
                 visitDetails={appointment.visitDetails}
                 datetime={appointment.datetime}
-                availability={appointment.availability}
-                acceptedInsurances={appointment.acceptedInsurances}
-                spokenLanguages={appointment.spokenLanguages}
-                rating={appointment.rating}
-                reviewCount={appointment.reviewCount}
                 doctorId={appointment.doctorId}
-                patientId={appointment.patientId}
                 status={appointment.status}
               />
 

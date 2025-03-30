@@ -2,58 +2,23 @@
 import { Button } from '@/components/ui/button';
 import { Star, Shield, MessageCircle, MapPin } from 'lucide-react';
 import Link from 'next/link';
-import Image from 'next/image';
-
-import { use, useCallback, useMemo, useState } from 'react';
-import { collection, addDoc, getFirestore, Timestamp, serverTimestamp, CollectionReference, DocumentData, getDoc, doc, documentId } from 'firebase/firestore';
+import {  useEffect, useMemo, useState } from 'react';
+import { collection, addDoc, Timestamp, getDoc, doc } from 'firebase/firestore';
 import { db as getFirebaseDb, useAuth } from '../authcontext';
 import { useToast } from '@/hooks/use-toast';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { format } from 'date-fns';
+import { format, isBefore, startOfDay } from 'date-fns';
 import { DialogTrigger } from '@radix-ui/react-dialog';
+import DoctorProfileImage from '../viewDoctor/[id]/components/DoctorProfileImage';
 
 
-// interface AppointmentProps {
-//   id: string;
-//   doctorId: string;
-//   patientId: string;
-//   datetime: Timestamp;
-//   status: 'scheduled' | 'completed' | 'cancelled' | 'no-show';
-//   visitDetails: {
-//     reason: string;
-//     insurance: string;
-//     patientType: 'new' | 'returning';
-//     notes?: string;
-//   };
-//   doctorInfo: {
-//     name: string;
-//     specialty: string;
-//     degree: string;
-//     location: string;
-//   };
-//   patientInfo: {
-//     name: string;
-//     email: string;
-//   };
-//   createdAt: Timestamp;
-//   updatedAt: Timestamp;
-// }
 
 
 interface AppointmentsCardProps {
   id: string;
   doctorId: string;
-  patientId: string;
-  acceptedInsurances: string[];
-  spokenLanguages: string[];
-  rating?: number;
-  reviewCount?: number;
   datetime: Timestamp;
   status: 'scheduled' | 'completed' | 'cancelled' | 'no-show';
-  availability: {
-    [date: string]: string[];
-  };
-  previewImage?: string | null;
   doctorInfo: {
     name: string;
     specialty: string;
@@ -66,29 +31,17 @@ interface AppointmentsCardProps {
     patientType: 'new' | 'returning';
     notes?: string;
   };
-  patientInfo: {
-    name: string;
-    email: string;
-  };
 
 }
 
 
 export default function AppointmentsCard({
-  doctorInfo,
-  patientInfo,
   id,
+  doctorInfo,
   visitDetails,
   doctorId,
-  patientId,
   status,
-  acceptedInsurances = [],
-  spokenLanguages = [],
-  rating = 0,
-  reviewCount = 0,
   datetime = new Timestamp(0, 0),
-  availability,
-  previewImage
 }: AppointmentsCardProps) {
 
   const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -98,58 +51,102 @@ export default function AppointmentsCard({
   const month = months[datetime.toDate().getMonth()];
   const date = datetime.toDate().getDate();
   const year = datetime.toDate().getFullYear();
-  const [loading, setLoading] = useState(false);
-  const [booked, setBooked] = useState('');
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
   const [visitsDialogOpen, setVisitsDialogOpen] = useState(false);
+  const [doctor, setDoctor] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [starCount, setStarCount] = useState(0);
   const [review, setReview] = useState('');
   const { user } = useAuth();
-  // const [doctor, setDoctor] = useState<any>(null);
+  const currentTime = useMemo(() => new Date(), []);
+  const [availabilityData, setAvailabilityData] = useState<{ [key: string]: string[] }>({});
   const { toast } = useToast();
 
-  // const displayName = `${degree === 'MD' ? 'Dr. ' : ''}${firstName + ' ' + lastName }${degree ? `, ${degree}` : ''}`;
-  // const displayName = `${doctorInfo.name}`;
 
-  // const displayInsurances = acceptedInsurances.length > 4
-  //   ? `${acceptedInsurances.slice(0, 4).join(', ')} `
-  //   : acceptedInsurances.join(', ');
+  // fetch doctor data
+  useEffect(() => {
+    const fetchDoctor = async () => {
+      const db = getFirebaseDb();
+      const doctorRef = doc(db, 'users', doctorId);
+      try {
+        const doctorSnap = await getDoc(doctorRef);
+        if (doctorSnap.exists()) {
+          setDoctor(doctorSnap.data());
+        } else {
+          console.error(`No doctor found with id: ${doctorId}`);
+          setError('Doctor not found');
+        }
+      } catch (err) {
+        console.error('Error fetching doctor:', err);
+        setError('Failed to fetch doctor');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  // const remainingCount = acceptedInsurances.length > 4
-  //   ? acceptedInsurances.length - 4
-  //   : 0;
-
-
-  const getVisits = async () => {
-    const db = getFirestore()
-    try {
-      const docRef = doc(db, "appointmentHistory", "docId");
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists())
-        console.log("document data", docSnap.data())
-      else console.log("No such document")
-    } catch (error) {
-      console.log(error)
+    // if user is logged in, fetch doctor data
+    if (user) {
+      fetchDoctor();
+    } else {
+      setLoading(false);
     }
+  }, [doctorId, user]);
 
-  }
-  // const getAppointmentVisit = async () => {
 
-  //   try {
-  //     // const db = getFirebaseDb();
-  //     // const appointmentsRef = collection(db, 'appointments');
-  //     // const userDoc = await getDoc(doc(db, 'users', user!.uid));
-  //     // const userData = userDoc.data();
-  //     // const patientName = userData ?
-  //     //   `${userData.firstName} ${userData.lastName}` :
-  //     //   'Unknown';
-  //   } catch (error) {
-  //     console.error('Error retrieving appiontments:', error);
-  //     // });
-  //   }
-  // }
+  // // fetch availability data
+  useEffect(() => {
+    const fetchAvailability = async () => {
+      if (!doctorId) return;
+      try {
+        const db = getFirebaseDb();
+        if (!db) {
+          console.error('Firebase DB not initialized');
+          return;
+        }
+
+        const availabilityRef = doc(db, 'availability', doctorId);
+        const availabilityDoc = await getDoc(availabilityRef);
+
+        if (availabilityDoc.exists()) {
+          const data = availabilityDoc.data() as { [key: string]: string[] };
+          const filteredData: { [key: string]: string[] } = {};
+
+          Object.entries(data).forEach(([dateStr, timeSlots]) => {
+            const [year, month, day] = dateStr.split('-').map(Number);
+            const date = new Date(year, month - 1, day);
+
+            if (!isBefore(startOfDay(date), startOfDay(currentTime))) {
+              if (format(date, 'yyyy-MM-dd') === format(currentTime, 'yyyy-MM-dd')) {
+                const futureSlots = timeSlots.filter(timeStr => {
+                  const [hours, minutes] = timeStr.split(':').map(Number);
+                  const slotTime = new Date(year, month - 1, day, hours, minutes);
+                  return !isBefore(slotTime, currentTime);
+                });
+                if (futureSlots.length > 0) {
+                  filteredData[dateStr] = futureSlots;
+                }
+              } else {
+                filteredData[dateStr] = timeSlots;
+              }
+            }
+          });
+
+          setAvailabilityData(filteredData);
+        }
+      } catch (error) {
+        console.error('Error fetching availability:', error);
+      }
+    };
+
+    if (user) {
+      fetchAvailability();
+    }
+  }, [doctorId, user, currentTime]);
+
+
   const getNextAvailable = () => {
-    if (!availability) return null;
+    if (!availabilityData) return null;
 
     const now = new Date();
     const today = format(now, 'yyyy-MM-dd');
@@ -158,13 +155,13 @@ export default function AppointmentsCard({
     const isAfterWorkday = currentHour >= 17; // 5 PM 
 
     // sort dates
-    const dates = Object.keys(availability).sort();
+    const dates = Object.keys(availabilityData).sort();
 
     for (const date of dates) {
       // skip dates before today
       if (date < today) continue;
 
-      const times = availability[date];
+      const times = availabilityData[date];
 
       // if it's today and after work hours, skip today entirely
       if (date === today && isAfterWorkday) {
@@ -194,7 +191,7 @@ export default function AppointmentsCard({
     ? format(new Date(`${nextAvailableAppointment.date}T${nextAvailableAppointment.time}`), 'EEE, MMM d')
     : 'No availability';
 
-  
+
 
   const handleReviewSubmit = async () => {
     if (review.length === 0 && starCount === 0) {
@@ -203,7 +200,7 @@ export default function AppointmentsCard({
 
 
     try {
-      const db = getFirebaseDb();
+      const db: any = getFirebaseDb();
       const reviewsRef = collection(db, 'reviews');
 
       await addDoc(reviewsRef, {
@@ -234,30 +231,6 @@ export default function AppointmentsCard({
       });
     }
   };
-  // Function to a appointment to history Firestore
-  const handleAppointment = async () => {
-    getVisits();
-    setLoading(true);
-    try {
-      const db = getFirebaseDb();
-      const docRef = await addDoc(collection(db, 'appointmentHistory'), {
-        doctorInfo,
-        visitDetails,
-        id,
-        acceptedInsurances,
-        spokenLanguages,
-        rating,
-        reviewCount,
-      }
-      );
-
-      setBooked(`Document added with ID: ${docRef.id}`);
-    } catch (error) {
-      console.error('Error fetching appointment data:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const fillStars = () => {
     const starMap = new Map();
@@ -269,60 +242,45 @@ export default function AppointmentsCard({
     for (let index = 1; index <= starCount; index++) {
       starMap.set(index, <Star className="w-4 h-4 sm:w-14 sm:h-14 text-blue-400 fill-current" />);
     }
-    console.log(starCount, booked);
-
+    console.log(starCount);
     return <>
       <div className='flex flex-row gap-4 items-center'>
         {
           Array.from(starMap.values(), (star, index: number) =>
-            <div key={index}> <button onClick={() => setStarCount(index + 1)}> {star}</button></div>,
+            <div key={index} >
+              <button
+               onClick={() => setStarCount(index + 1)}
+                // onMouseEnter={() => setStarCount(index + 1)}
+              > {star}
+              </button>
+              
+            </div>,
           )
         }
       </div>
     </>
   }
+
+
   return (
     <>
 
       <div className="flex items-center justify-between w-full max-w p-4 rounded-lg ">
         <div className="flex items-center space-x-4">
-          <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0 relative">
+          <DoctorProfileImage profileImage={doctor?.profileImage} />
+          <div className="w-26 h-26 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0 relative">
             {/* Placeholder for 's image */}
-            {previewImage ? (
-              <div className="relative w-full h-full rounded-full overflow-hidden">
-                <Image
-                  src={previewImage}
-                  alt="Profile"
-                  fill
-                  sizes="112px"
-                  quality={95}
-                  className="object-cover rounded-full"
-                  priority
-                />
-              </div>
-            ) : (
-              <div className="w-full h-full bg-gray-200 flex items-center justify-center relative rounded-full overflow-hidden">
-                <Image
-                  src="/profpic.png"
-                  alt="Profile placeholder"
-                  fill
-                  sizes="112px"
-                  quality={95}
-                  className="object-cover rounded-full"
-                  priority
-                />
-              </div>
-            )}
+
           </div>
           <div>
-            <div className='flex justify-left text-gray-500 mb-2' style={{ position: "relative", right: "80px", fontSize: "15px" }}>
+            <div className='flex justify-left text-gray-500 mb-2 text-[15px] -indent-36' >
               {day}, {month} {date} {year}
             </div>
             <span className="text-lg font-semibold text-gray-800 dark:text-gray-200"> {doctorInfo.name}</span>
             <h3 className="text-gray-500 text-sm 1px mb-2">{doctorInfo.specialty}</h3>
             <div className="flex flex-col items-left text-sm mb-2"  >
 
-              <Star className="w-5 h-5 text-yellow-400 fill-current mb-2" />
+              <Star className="w-5 h-5 text-yellow-400 unfill-current mb-2" />
               <MapPin className="w-5 h-5 text-black-500 mb-2" />
               <Shield className="w-5 h-5 text-blue-500 mb-2" />
               <MessageCircle className="w-5 h-5 text-black-500 mb-2" />
@@ -330,38 +288,29 @@ export default function AppointmentsCard({
             </div>
             <div className='flex flex-col mb-2 space-y-1 space' style={{ position: "relative", top: "-122px", left: "25px", marginRight: "175px", marginBottom: "-110px" }}>
 
-              <div > {rating} · {reviewCount} · Reviews</div>  {/*add distance*/}
-              <div > {doctorInfo.location}</div>  {/*add distance*/}
-              <div >Accepts  {visitDetails.insurance} </div>
-              <div >Speaks {spokenLanguages.join(', ')}</div>
+              <div > {doctor?.rating} · {doctor?.reviewCount == null ? 0 : doctor?.reviewCount} · Reviews</div>
+              <div > {doctorInfo.location}</div>
+              <div >Accepts  {doctor?.acceptedInsurances.slice(0, 3).join(', ')}
+                {doctor?.acceptedInsurances?.length > 3 && (
+                  <span className="text-gray-500"> + {doctor.acceptedInsurances.length - 3} more</span>
+                )}
+              </div>
+              <div >Speaks {doctor?.spokenLanguages.slice(0, 3).join(', ')}</div>
+              {doctor?.spokenLanguages?.length > 3 && (
+                <span className="text-gray-500"> + {doctor.spokenLanguages.length - 3} more</span>
+              )}
             </div>
           </div>
         </div>
         <div className="flex items-center space-x-2">
           <div className="flex flex-col items-end">
-            <p className="text-sm text-gray-500 mb-2 ">Next available: {nextAvailableText}</p>
+            <p className="text-sm text-gray-500 mb-2">Next available: {nextAvailableText}</p>
 
-            {/* <Link href={{
-              pathname: "/appointments",
-              query: {
-                id,
-                // firstName,
-                // lastName,
-                // specialty,
-                // degree,
-                // streetAddress,
-                // city,
-                // state,
-                // zipCode,
-              }
-            }}> */}
-            {/* </Link >  */}
 
             <Link href={`/viewDoctor/${doctorId}`}>
               <Button className=" mb-2" style={{
                 width: 175
               }}
-                onClick={handleAppointment} disabled={loading}
               >
                 Book Again
               </Button>
@@ -393,36 +342,20 @@ export default function AppointmentsCard({
                   <div className='flex flex-row '>
                     <div className="profile-image mb-4 sm:mb-0">
                       <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0 relative">
-                        {previewImage ? (
-                          <Image
-                            src={previewImage}
-                            alt="Profile"
-                            fill
-                            className="object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-gray-200 flex items-center justify-center relative">
-                            <Image
-                              src="/profpic.png"
-                              alt="Profile placeholder"
-                              fill
-                              className="object-cover"
-                            />
-                          </div>
-                        )}
+                        <DoctorProfileImage profileImage={doctor?.profileImage} />
                       </div>
                     </div>
-                    <div className='flex flex-col space-x-6 mb-2  '>
-                      <h3 className="flex justify-start  text-xl font-semibold text-gray-800 mt-4 ml-6  "> {doctorInfo.name}</h3>
-                      <h3 className="text-gray-500 text-lg 1px  ">{doctorInfo.specialty}</h3>
+                    <div className='flex flex-col space-x-6 mb-2 '>
+                      <h3 className="flex justify-start  text-xl font-semibold text-gray-800 mt-4 ml-6 dark:text-white"> {doctorInfo.name}</h3>
+                      <h3 className="text-gray-500 text-lg 1px  dark:text-white">{doctorInfo.specialty}</h3>
                       <div > {doctorInfo.location}</div>
                     </div>
                   </div>
-
                   <hr className="border-gray-200 mb-2" />
 
                 </DialogHeader>
                 <div className='flex justify-center'>{fillStars()}</div>
+
                 <div>
                   <textarea
                     className="w-full min-h-[100px] p-3 rounded-md border border-gray-200 focus:outline-none focus:border-gray-300"
@@ -451,16 +384,26 @@ export default function AppointmentsCard({
             //   }
             // }}
             >
-              <DialogTrigger>Visit Details</DialogTrigger>
+              <DialogTrigger>
+                <div className="text-gray-800 inline-flex items-center px-1 pt-1 hover:text-gray-600 dark:text-white dark:hover:text-gray-300 relative group">
+                  <span className="relative">
+                    Visit Details
+                    <span className="absolute left-0 bottom-0 w-full h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
+                  </span>
+                </div>
+              </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
                   <DialogTitle>Visit Details</DialogTitle>
                   <hr className="border-gray-200 mb-2" />
                 </DialogHeader>
                 <div className='flex justify-center flex-col'>
-                  <div>Reason: {visitDetails.reason != null ? `${visitDetails.reason}` : 'None'}</div>
+                  <h1 className='font-semibold'>Booked: {day}, {month} {date} {year}</h1>
+                  <div>Reason: {visitDetails.reason != null ? `${visitDetails.reason}` : 'General check up'}</div>
                   <div>Notes:  {visitDetails.notes != null ? `${visitDetails.notes}` : 'None'}</div>
+                  <div>Status: {status}</div>
                 </div>
+                {/* show previous booking */}
               </DialogContent>
             </Dialog>
           </div>
