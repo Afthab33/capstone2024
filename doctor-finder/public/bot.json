@@ -165,7 +165,7 @@
       "dove", "mappa", "mappe", "destinazione", "google", "distanza", "posizione", "posizionato", "ufficio", "edificio", "ospedale", "parco", "parcheggio", "parcheggiato", "direzione", "direzioni", "guidare", "guida",
       "nerede", "harita", "haritalar", "hedef", "google", "mesafe", "konum", "bulundu", "ofis", "bina", "hastane", "park", "park yeri", "park edilmiş", "yön", "yönler", "sürmek", "sürüş"
     ],
-    "bot_response": "Looking for our Google API integrated into Firebase DB, Check our homepage",
+    "bot_response": "Looking for a doctor using our Google API integrated into Firebase DB, Check our homepage",
     "required_words": []
   },
   {
@@ -784,7 +784,7 @@
       "gay", "lesbienne", "trans", "non-binaire", 
       "gay", "lesbica", "trans", "nonbinario"
     ],
-    "bot_response": "No, I'm a robot I not have such a gender",
+    "bot_response": "No, I am a robot I do not have such a gender",
     "required_words": []
   },
   {
@@ -808,6 +808,14 @@
     ],
     "bot_response": "Please do not use such languages on our Website.  Please lookup something more useful.",
     "required_words": []
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "talk", "dirty"
+  ],
+    "bot_response": "Your room is dirty go clean it",
+    "required_words": ["talk", "dirty"]
   },
   {
     "response_type": "adult",
@@ -921,7 +929,7 @@
   {
     "response_type": "question",
     "user_input": [
-    "blind", "night", "vision", "dark", "light", "mode",
+    "blind", "night", "vision", "dark", "light", "mode", "darkmode", "lightmode",
     "ciego", "noche", "visión", "oscuro", "luz", "modo",
     "盲", "夜", "视力", "黑暗", "光", "模式",
     "aveugle", "nuit", "vision", "sombre", "lumière", "mode",
@@ -1199,5 +1207,881 @@
     ],
     "bot_response": "If you continue to use such language, how do you expect to graduate",
     "required_words": []
+  },
+  {
+    "response_type": "symptoms",
+    "user_input": [
+    "chills", "chilly", "cold", "colds", "cough", "coughing", "fever", "numb", "numbness", "tingle", "tingling", "light",
+    "escalofríos", "frío", "resfriado", "resfriados", "tos", "tosiendo", "fiebre", "adormecido", "entumecimiento", "hormigueo", "hormigueando", "ligero",
+    "寒冷", "寒冷的", "感冒", "感冒的", "咳嗽", "咳嗽的", "发烧", "麻木", "麻木感", "刺痛", "刺痛感", "轻",
+    "frissons", "froid", "rhume", "rhumes", "toux", "toussant", "fièvre", "engourdi", "engourdissement", "picotement", "picotant", "léger",
+    "قشعريرة", "بارد", "زكام", "نزلات البرد", "سعال", "السعال", "حمى", "خدر", "تنميل", "وخز", "وخزات", "خفيف",
+    "कंपकंपी", "ठंडा", "सर्दी", "सर्दी", "खाँसी", "खांसी करना", "बुखार", "सुन्न", "सुन्नपन", "झनझनाहट", "झनझनाहट होना", "हल्का",
+    "কাঁপুনি", "শীতল", "ঠান্ডা", "ঠান্ডা", "কাশি", "কাশি করা", "জ্বর", "অচেতন", "অবেদন", "ঝাঁকুনি", "ঝাঁকুনি হওয়া", "হালকা",
+    "calafrios", "frio", "resfriado", "resfriados", "tosse", "tossindo", "febre", "dormência", "formigamento", "ardência", "formigamento", "leve",
+    "озноб", "прохладно", "простуда", "простуды", "кашель", "кашляние", "лихорадка", "онемение", "онемение", "покалывание", "покалывание", "лёгкий",
+    "寒気", "寒い", "風邪", "風邪", "咳", "咳をしている", "熱", "麻痺", "しびれ", "チクチク", "チクチクする", "軽い",
+    "schüttelfrost", "kalt", "erkältung", "erkältungen", "husten", "husten", "fieber", "taub", "taubheit", "kribbeln", "kribbelnd", "leicht",
+    "오한", "차가운", "감기", "감기", "기침", "기침하는", "열", "무감각", "무감각함", "따끔거림", "따끔거리는", "가벼운",
+    "ớn lạnh", "lạnh", "cảm lạnh", "cảm lạnh", "ho", "ho hắng", "sốt", "tê", "tê cóng", "rần rần", "rần rần", "nhẹ",
+    "brividi", "freddo", "raffreddore", "raffreddori", "tosse", "tossendo", "febbre", "intorpidito", "intorpidimento", "formicolio", "formicolante", "leggero",
+    "titreme", "soğuk", "soğuk algınlığı", "soğuklar", "öksürük", "öksürük yapmak", "ateş", "uyuşmuş", "uyuşma", "karıncalanma", "karıncalanma", "hafif"
+  ],
+    "bot_response": "Click on View All Doctor and filter by symptoms to find a doctor",
+    "required_words": []
+  },
+  {
+    "response_type": "symptoms",
+    "user_input": [
+      "dizzy", "dizziness", "spin", "spinning", "dry", "nauseated", "nausea", "vomit", "vomiting", "breath", "sleepy", "sleep", "thirsty", "tired", "weak",
+      "mareado", "mareos", "giro", "girando", "seco", "náuseas", "náusea", "vómito", "vómitos", "respiración", "somnoliento", "dormir", "sediento", "cansado", "débil",
+      "头晕", "头晕症", "旋转", "旋转中", "干", "恶心", "恶心感", "呕吐", "呕吐中", "呼吸", "困倦", "睡觉", "口渴", "疲劳", "虚弱",
+      "étourdi", "vertige", "tourner", "tournant", "sec", "nausée", "nauséeux", "vomir", "vomissements", "respiration", "somnolent", "dormir", "assoiffé", "fatigué", "faible",
+      "دوار", "دوار", "دوران", "الدوران", "جاف", "غثيان", "غثيان", "قيء", "قيء", "تنفس", "نعسان", "نوم", "عطش", "متعب", "ضعيف",
+      "चक्कर", "चक्कर आना", "घूमना", "घूमते हुए", "सूखा", "उल्टी आना", "उल्टी", "उल्टी करना", "साँस", "नींद", "सोना", "प्यास", "थका हुआ", "कमजोर",
+      "মাথা ঘুরানো", "মাথা ঘোরানো", "ঘূর্ণন", "ঘূর্ণিত", "শুকনো", "বমি বমি ভাব", "বমি", "বমি করা", "শ্বাস", "ঘুমন্ত", "ঘুম", "তৃষ্ণার্ত", "ক্লান্ত", "দুর্বল",
+      "calafrios", "mareado", "giro", "girando", "seco", "náuseas", "náusea", "vómito", "vómitos", "respiración", "somnoliento", "dormir", "sediento", "cansado", "débil",
+      "озноб", "головокружение", "поворот", "крутящий", "сухо", "тошнота", "тошнота", "рвота", "рвота", "дыхание", "сонный", "спать", "жажда", "усталый", "слабый",
+      "めまい", "めまい", "回転", "回っている", "乾燥", "吐き気", "吐き気", "嘔吐", "嘔吐している", "呼吸", "眠い", "寝る", "喉が渇いている", "疲れている", "弱い",
+      "schüttelfrost", "schwindel", "drehen", "drehend", "trocken", "übelkeit", "übel", "erbrechen", "erbrechen", "atmung", "schläfrig", "schlafen", "durstig", "müde", "schwach",
+      "오한", "어지러움", "회전", "돌고 있는", "건조", "메스꺼움", "메스꺼움", "구토", "구토하는", "호흡", "졸린", "자다", "목마른", "피곤한", "약한",
+      "ớn lạnh", "chóng mặt", "xoay", "đang xoay", "khô", "buồn nôn", "buồn nôn", "nôn", "nôn mửa", "hơi thở", "buồn ngủ", "ngủ", "khát", "mệt mỏi", "yếu",
+      "brividi", "vertigine", "giro", "girando", "secco", "nausea", "nausea", "vomito", "vomito", "respiro", "sonnolento", "dormire", "assetato", "stanco", "debole",
+      "titreme", "baş dönmesi", "dönme", "dönme", "kurak", "mide bulantısı", "bulantı", "kusma", "kusma", "nefes", "uykulu", "uyumak", "susuz", "yorgun", "zayıf"
+    ],
+    "bot_response": "Click on View All Doctor and filter by symptoms to find a doctor",
+    "required_words": []
+  },
+  {
+    "response_type": "symptoms",
+    "user_input": [
+      "breathe", "breathing", "losing", "hear", "hearing", "sound", "sounds", "loud", "ringing", "hissing", "urinate", "urinating", "pee", "peeing",
+      "respirar", "respirando", "perdiendo", "oír", "oyendo", "sonido", "sonidos", "fuerte", "zumbido", "silbido", "orinar", "orinando", "orinar", "orinar",
+      "呼吸", "呼吸中", "失去", "听", "听见", "声音", "声音", "大声", "铃声", "嘶嘶声", "小便", "排尿", "尿尿", "小便中",
+      "respirer", "respiration", "perdre", "entendre", "entendant", "son", "sons", "fort", "battement", "sifflement", "uriner", "urinant", "faire pipi", "pipi",
+      "تنفس", "التنفس", "فقدان", "سمع", "استماع", "صوت", "أصوات", "عالي", "رنين", "صفير", "تبول", "التبول", "تبول", "تبول",
+      "साँस लेना", "साँस लेना", "खोना", "सुनना", "सुन रहे", "ध्वनि", "ध्वनियाँ", "उँचा", "बजना", "सिट्टी", "पेशाब", "पेशाब करना", "पेशाब", "पेशाब करना",
+      "শ্বাস নেওয়া", "শ্বাস নিচ্ছে", "হারা", "শোনা", "শুনতে থাকা", "শব্দ", "শব্দগুলো", "বাজানো", "বাজানো", "হিচকিচানো", "মূত্রত্যাগ", "মূত্রত্যাগ করা", "মূত্র", "মূত্রত্যাগ করা",
+      "respirar", "respirando", "perder", "oír", "escuchando", "sonido", "sonidos", "fuerte", "sonido", "silbido", "orinar", "orinando", "orinar", "orinando",
+      "озноб", "головокружение", "поворот", "крутящий", "сухо", "тошнота", "тошнота", "рвота", "рвота", "дыхание", "сонный", "спать", "жажда", "усталый", "слабый",
+      "めまい", "めまい", "回転", "回っている", "乾燥", "吐き気", "吐き気", "嘔吐", "嘔吐している", "呼吸", "眠い", "寝る", "喉が渇いている", "疲れている", "弱い",
+      "schüttelfrost", "schwindel", "drehen", "drehend", "trocken", "übelkeit", "übel", "erbrechen", "erbrechen", "atmung", "schläfrig", "schlafen", "durstig", "müde", "schwach",
+      "오한", "어지러움", "회전", "돌고 있는", "건조", "메스꺼움", "메스꺼움", "구토", "구토하는", "호흡", "졸린", "자다", "목마른", "피곤한", "약한",
+      "ớn lạnh", "chóng mặt", "xoay", "đang xoay", "khô", "buồn nôn", "buồn nôn", "nôn", "nôn mửa", "hơi thở", "buồn ngủ", "ngủ", "khát", "mệt mỏi", "yếu",
+      "brividi", "vertigine", "giro", "girando", "secco", "nausea", "nausea", "vomito", "vomito", "respiro", "sonnolento", "dormire", "assetato", "stanco", "debole",
+      "titreme", "baş dönmesi", "dönme", "dönme", "kurak", "mide bulantısı", "bulantı", "kusma", "kusma", "nefes", "uykulu", "uyumak", "susuz", "yorgun", "zayıf"
+    ],
+    "bot_response": "Click on View All Doctor and filter by symptoms to find a doctor",
+    "required_words": []
+  },
+  {
+    "response_type": "symptoms",
+    "user_input": [
+      "remember", "remembered", "memory", "headache", "headaches", "migraine", "migraines", "blind", "blindness", "blinding", "blurred", "blurry", "vision",
+      "recordar", "recordado", "memoria", "dolor de cabeza", "dolores de cabeza", "migraña", "migrañas", "ciego", "ceguera", "cegadora", "borroso", "desenfocado", "visión",
+      "记得", "记得的", "记忆", "头痛", "头痛症", "偏头痛", "偏头痛症", "盲", "失明", "致盲", "模糊", "模糊的", "视力",
+      "se souvenir", "souvenu", "mémoire", "mal de tête", "maux de tête", "migraine", "migraines", "aveugle", "cécité", "éblouissant", "flou", "flou", "vision",
+      "تذكر", "تذكر", "ذاكرة", "صداع", "آلام الرأس", "الصداع النصفي", "الصداع النصفي", "أعمى", "عمى", "مبهج", "ضبابي", "مشوش", "رؤية",
+      "याद रखना", "याद रखा", "स्मृति", "सिरदर्द", "सिरदर्द", "माइग्रेन", "माइग्रेन", "अंधा", "अंधापन", "अंधापन", "धुंधला", "धुंधलापन", "दृष्टि",
+      "মনে রাখা", "মনে রাখা", "মেমরি", "মাথাব্যথা", "মাথাব্যথা", "মাইগ্রেন", "মাইগ্রেন", "অন্ধ", "অন্ধত্ব", "অন্ধ", "অস্পষ্ট", "ধূসর", "দৃষ্টি",
+      "ricordare", "ricordato", "memoria", "mal di testa", "mal di testa", "emicrania", "emicranie", "cieco", "cecità", "abbagliamento", "sfocato", "sfocato", "visione",
+      "помнить", "помнил", "память", "головная боль", "головные боли", "мигрень", "мигреня", "слепой", "слепота", "ослепление", "размыто", "размытие", "зрение",
+      "覚える", "覚えた", "記憶", "頭痛", "頭痛", "偏頭痛", "偏頭痛", "盲目", "失明", "眩しい", "ぼやけた", "ぼやけている", "視力",
+      "schütteln", "gedächtnis", "kopfschmerzen", "kopfweh", "kopfschmerzen", "migraine", "migräne", "blind", "blindheit", "blendung", "unscharf", "unscharf", "sicht",
+      "어려운", "기억하다", "기억했음", "기억", "두통", "두통", "편두통", "편두통", "맹목", "실명", "눈이 멀다", "흐림", "흐릿한", "시력",
+      "nhớ", "đã nhớ", "ký ức", "đau đầu", "đau đầu", "chứng đau nửa đầu", "chứng đau nửa đầu", "mù", "mù lòa", "mù mờ", "mờ", "mờ", "thị lực",
+      "ricordare", "ricordato", "memoria", "mal di testa", "mal di testa", "emicrania", "emicranie", "cieco", "cecità", "abbagliamento", "sfocato", "sfocato", "visione"
+    ],
+    "bot_response": "Click on View All Doctor and filter by symptoms to find a doctor",
+    "required_words": []
+  },
+  {
+    "response_type": "symptoms",
+    "user_input": [
+      "smell", "smelly", "scratching", "scratch", "itch", "itchy", "sweat", "sweaty", "swallow", "taste", "walk", "walking", "falling", "fall", "trip", "tripping", "fell", "write", "writing",
+      "oler", "maloliente", "rascar", "rascarse", "picazón", "comezón", "sudar", "sudoroso", "tragar", "sabor", "caminar", "caminando", "caer", "caída", "tropezar", "tropezando", "caído", "escribir", "escribiendo",
+      "闻", "臭", "抓", "抓痒", "痒", "痒的", "出汗", "汗流浃背", "吞咽", "味道", "走", "走路", "摔倒", "跌倒", "绊倒", "绊倒中", "摔倒了", "写", "写作",
+      "sentir", "sentir", "rascar", "rascando", "comezón", "picor", "transpirar", "sudoroso", "tragar", "sabor", "caminar", "caminando", "caer", "caída", "tropezar", "tropezando", "caído", "escribir", "escribiendo",
+      "رائحة", "رائحة كريهة", "خدش", "هرش", "حكة", "حكة", "عرق", "عرق", "بلع", "ذوق", "يمشي", "يمشي", "سقوط", "سقوط", "تعثر", "تعثر", "سقط", "كتابة", "كتابة",
+      "गंध", "बदबू", "खरोंच", "खरोंचना", "खुजली", "खुजली", "पसीना", "पसीने से", "स्वीकार", "स्वाद", "चलना", "चलते हुए", "गिरना", "गिरना", "ठोकर", "ठोकर खा रहे", "गिर चुका", "लिखना", "लिख रहे",
+      "গন্ধ", "বদবু", "খোঁচানো", "খোঁচানো", "চুলকানি", "চুলকানো", "ঘাম", "ঘামে", "গলগল করা", "স্বাদ", "চলা", "চলতে থাকা", "পড়ে যাওয়া", "পড়া", "থেমে যাওয়া", "হোঁচট খাচ্ছে", "পড়ে গেছি", "লিখা", "লিখছি",
+      "odore", "puzza", "grattare", "grattarsi", "prurito", "pruriginoso", "sudare", "sudato", "deglutire", "gusto", "camminare", "camminando", "cadere", "caduta", "inciampare", "inciampando", "caduto", "scrivere", "scrivendo",
+      "пахнуть", "вонь", "царапать", "царапаться", "зуд", "зудящий", "потеть", "потный", "глотать", "вкус", "идти", "идти", "падение", "падение", "споткнуться", "спотыкаясь", "упал", "писать", "пишу",
+      "匂い", "臭い", "引っかく", "かゆい", "かゆい", "かゆい", "汗", "汗だく", "飲み込む", "味", "歩く", "歩いている", "倒れる", "落ちる", "つまずく", "つまずいている", "転んだ", "書く", "書いている",
+      "schmecken", "geruch", "kratze", "kratzen", "jucken", "juckend", "schwitzen", "schwitzen", "schlucken", "geschmack", "laufen", "gehen", "fallen", "stürzen", "stolpern", "stolpernd", "gefallen", "schreiben", "schreiben",
+      "냄새", "악취", "긁다", "긁히다", "가려움", "가려운", "땀", "땀을 흘리다", "삼키다", "맛", "걷다", "걷고", "떨어지다", "떨어짐", "넘어지다", "넘어짐", "떨어졌다", "쓰다", "쓰고 있다",
+      "mùi", "hôi", "cào", "cào", "ngứa", "ngứa", "mồ hôi", "mồ hôi", "nuốt", "vị", "đi", "đi bộ", "ngã", "ngã", "vấp", "vấp ngã", "ngã rồi", "viết", "đang viết",
+      "odore", "puzza", "grattare", "grattarsi", "prurito", "pruriginoso", "sudare", "sudato", "deglutire", "gusto", "camminare", "camminando", "cadere", "caduta", "inciampare", "inciampando", "caduto", "scrivere", "scrivendo"
+    ],
+    "bot_response": "Click on View All Doctor and filter by symptoms to find a doctor",
+    "required_words": []
+  },
+  {
+    "response_type": "symptoms",
+    "user_input": [
+      "weight", "loss", "less", "lossing", "shivering", "convulsion", "convulsions", "deform", "deformed", "deformity", "discharge", "fatigue", "fatigued",
+      "peso", "pérdida", "menos", "perdiendo", "escalofríos", "convulsión", "convulsiones", "deformar", "deformado", "deformidad", "secreción", "fatiga", "fatigado",
+      "体重", "损失", "少", "失去", "发抖", "抽搐", "抽搐", "变形", "变形", "畸形", "分泌物", "疲劳", "疲倦",
+      "poids", "perte", "moins", "perdre", "frissons", "convulsion", "convulsions", "déformer", "déformé", "déformation", "écoulement", "fatigue", "fatigué",
+      "وزن", "فقدان", "أقل", "فقد", "ارتعاش", "تشنج", "تشنجات", "تشويه", "مشوه", "تشوه", "إفراز", "إرهاق", "مجهد",
+      "वजन", "हानि", "कम", "खोना", "कंपकंपी", "दौरा", "दौरे", "विकृत", "विकृत", "विकृति", "स्राव", "थकावट", "थका हुआ",
+      "ওজন", "হানি", "কম", "হারানো", "কাঁপছে", "কম্পন", "কম্পন", "বিকৃত", "বিকৃত", "অবতল", "নিষ্কাশন", "অত্যাধিক ক্লান্তি", "ক্লান্ত",
+      "poids", "perdre", "perdu", "perdre", "froid", "spasmes", "convulsions", "déformer", "déformé", "déformation", "perte", "fatigue", "fatigué",
+      "体重", "失去", "少", "失去", "颤抖", "抽搐", "抽搐", "变形", "变形", "畸形", "分泌物", "疲劳", "疲倦",
+      "gewicht", "verlust", "weniger", "verlieren", "zittern", "krampf", "krämpfe", "verzerrung", "verzerrt", "verformung", "ausscheidung", "ermüdung", "ermüdet",
+      "무게", "손실", "덜", "손실", "떨림", "경련", "경련", "변형", "변형", "기형", "분비물", "피로", "피곤한",
+      "trọng lượng", "mất", "ít", "mất", "rùng mình", "co giật", "co giật", "biến dạng", "biến dạng", "dị tật", "xuất tiết", "mệt mỏi", "mệt mỏi",
+      "peso", "perda", "meno", "perdere", "brivido", "convulsioni", "convulsioni", "deformare", "deformato", "deformazione", "secrezione", "fatica", "stanco"
+    ],
+    "bot_response": "Click on View All Doctor and filter by symptoms to find a doctor",
+    "required_words": []
+  },
+  {
+    "response_type": "symptoms",
+    "user_input": [
+      "swell", "swelling", "painful", "palpation", "sore", "toothache", "bloat", "bloating", "bleching", "gas", "blood", "bloody", "bleed", "bleeding", "constipation", "constipated",
+      "hinchar", "hinchazón", "doloroso", "palpación", "dolorido", "dolor de muelas", "hinchar", "hinchazón", "eructar", "gas", "sangre", "sangriento", "sangrar", "sangrado", "estreñimiento", "estreñido",
+      "肿胀", "肿胀的", "痛", "触诊", "疼痛", "牙痛", "腹胀", "腹胀", "打嗝", "气体", "血", "血腥", "出血", "出血中", "便秘", "便秘",
+      "gonfler", "gonflement", "douloureux", "palpation", "douloureux", "mal de dents", "gonfler", "gonflement", "éructation", "gaz", "sang", "sanglant", "saigner", "saignement", "constipation", "constipé",
+      "تورم", "تورم", "مؤلم", "فحص", "مؤلم", "ألم الأسنان", "انتفاخ", "انتفاخ", "تجشؤ", "غاز", "دم", "دموي", "ينزف", "نزيف", "إمساك", "محتبس",
+      "सूजन", "सूजन", "दर्दनाक", "पाल्पेशन", "दर्द", "दांत दर्द", "पेट फूलना", "पेट फूलना", "डकार", "गैस", "रक्त", "खून", "रक्तस्राव", "रक्तस्राव", "कब्ज", "कब्जित",
+      "ফুলানো", "ফুলে যাওয়া", "ব্যথাযুক্ত", "পালপেশন", "ব্যথা", "দাঁতের ব্যথা", "ফুলে যাওয়া", "পেট ফুলে যাওয়া", "ডাকার", "গ্যাস", "রক্ত", "রক্তাক্ত", "রক্তপাত", "রক্তপাত", "কবজ", "কবজিত",
+      "gonfiare", "gonfiore", "doloroso", "palpazione", "doloroso", "mal di denti", "gonfiare", "gonfiore", "eruttazione", "gas", "sangue", "sanguinolento", "sanguinare", "sanguinamento", "costipazione", "costipato",
+      "отекать", "опухоль", "болезненно", "пальпация", "болезненно", "зубная боль", "вздутие", "вздутие", "отрыжка", "газ", "кровь", "кровавый", "кровоточить", "кровотечение", "запор", "запор",
+      "腫れ", "腫れ", "痛い", "触診", "痛み", "歯痛", "膨満", "膨満", "ゲップ", "ガス", "血液", "血まみれ", "出血", "出血", "便秘", "便秘",
+      "schwellen", "schwellung", "schmerzhaft", "palpation", "schmerzhaft", "zahnweh", "aufblähen", "blähung", "rülpsen", "gas", "blut", "blutig", "bluten", "blutung", "verstopfung", "verstopft",
+      "부풀다", "부풀어 오름", "아픈", "촉진", "아픈", "치통", "부풀다", "복부 팽창", "트림", "가스", "피", "피로 물든", "출혈", "출혈", "변비", "변비",
+      "căng", "phình", "đau", "sờ", "đau", "đau răng", "đầy hơi", "chướng bụng", "ợ", "khí", "máu", "máu", "chảy máu", "chảy máu", "táo bón", "bị táo bón",
+      "gonfiare", "gonfiore", "doloroso", "palpazione", "doloroso", "mal di denti", "gonfiare", "gonfiore", "eruttazione", "gas", "sangue", "sanguinolento", "sanguinare", "sanguinamento", "costipazione", "costipato"
+    ],
+    "bot_response": "Click on View All Doctor and filter by symptoms to find a doctor",
+    "required_words": []
+  },
+  {
+    "response_type": "symptoms",
+    "user_input": [
+      "diarrhea", "fecal", "heartburn", "burn", "burning", "burned", "nausea", "nauseated", "nausating", "rectal", "abrasion", "scratch", "bruise", "bruised", "bruises",
+      "diarrea", "fecal", "acidez", "quemadura", "ardiendo", "quemado", "náusea", "náuseas", "náuseas", "rectal", "abrasión", "rascar", "moretón", "moretoneado", "moretones",
+      "腹泻", "粪便", "胃灼热", "烧伤", "灼烧", "烧伤", "恶心", "恶心的", "恶心", "直肠", "擦伤", "抓伤", "瘀伤", "淤伤", "淤伤",
+      "diarrhée", "fécal", "brûlures d'estomac", "brûlure", "brûlant", "brûlé", "nausée", "nauséeux", "nauséeux", "rectal", "abrasion", "gratter", "contusion", "contusionné", "contusions",
+      "إسهال", "براز", "حرقة المعدة", "حرق", "حارق", "محروق", "غثيان", "غثيان", "غثيان", "مستقيمي", "خدش", "خدش", "كدمات", "مُتَكَيّف", "كدمات",
+      "दस्त", "मल", "असिडिटी", "जलना", "जलता", "जलाया", "मतली", "मतली", "मतली", "गुदा", "खरोंच", "खरोंचना", "चोट", "लागा हुआ", "चोटें",
+      "ডায়রিয়া", "বর্জ্য", "হৃদয়ের জ্বালা", "পোড়া", "জ্বলন্ত", "পোড়ানো", "মাথা ঘোরা", "মাথা ঘোরা", "মাথা ঘোরা", "পায়ুপথ", "চিড়", "চিড়", "ফোসকা", "ফোসকা", "ফোসকা",
+      "diarrhea", "feca", "refluxo", "queimadura", "queimando", "queimado", "náusea", "náuseado", "náusea", "rectal", "abrasao", "arranhar", "hematoma", "hematoma", "hematomas",
+      "понос", "кал", "изжога", "ожог", "жгучий", "сгорел", "тошнота", "тошнотный", "тошнотный", "прямой", "царапина", "царапать", "синяк", "синяк", "синяки",
+      "下痢", "糞", "胸焼け", "火傷", "焼ける", "焼けた", "吐き気", "吐き気", "吐き気", "直腸", "擦り傷", "引っかく", "打撲", "打撲傷", "打撲",
+      "diarrea", "fecal", "ardor", "quemadura", "ardiendo", "quemado", "náusea", "náuseas", "náuseas", "rectal", "abrasión", "rascar", "moretón", "moretoneado", "moretones"
+    ],
+    "bot_response": "Click on View All Doctor and filter by symptoms to find a doctor",
+    "required_words": []
+  },
+  {
+    "response_type": "symptoms",
+    "user_input": [
+      "blister", "edema", "lesion", "laceration", "rash", "rashes", "amnesia", "confuse", "confused", "confusion", "confussing",
+      "ampolla", "edema", "lesión", "laceración", "erupción", "erupciones", "amnesia", "confundir", "confundido", "confusión", "confuso",
+      "水泡", "水肿", "病变", "割伤", "皮疹", "皮疹", "健忘症", "困惑", "困惑的", "混乱", "困惑",
+      "cloque", "œdème", "lésion", "lacération", "éruption", "éruptions", "amnésie", "confondre", "confus", "confusion", "confus",
+      "فقاعة", "وذمة", "آفة", "تمزق", "طفح جلدي", "طفح جلدي", "فقدان الذاكرة", "حيرة", "مربك", "الارتباك", "مربك",
+      "फफोला", "सूजन", "घाव", "कटना", "चमड़ी में दाने", "चमड़ी में दाने", "अम्नेशिया", "भ्रमित", "भ्रमित", "उलझन", "भ्रमित",
+      "ফোসকা", "ফোলাভাব", "ক্ষত", "কাটা", "চামড়ার ফুসকুড়ি", "চামড়ার ফুসকুড়ি", "অম্নেশিয়া", "বিভ্রান্ত", "বিভ্রান্ত", "অবধি", "বিভ্রান্ত",
+      "ampolla", "edema", "lesão", "laceração", "erupção", "erupções", "amnésia", "confundir", "confuso", "confusão", "confuso",
+      "пузырь", "отек", "повреждение", "порез", "сыпь", "высыпания", "амнезия", "смешать", "смущен", "путаница", "смущение",
+      "水泡", "水肿", "损伤", "割伤", "皮疹", "皮疹", "健忘症", "困惑", "困惑的", "混乱", "困惑",
+      "блистер", "отек", "поражение", "порез", "сыпь", "сыпь", "амнезия", "путаница", "смущен", "путаница", "путаница",
+      "物理的", "蔓延性", "疮病", "刺激", "病症", "自清"
+    ],
+    "bot_response": "Click on View All Doctor and filter by symptoms to find a doctor",
+    "required_words": []
+  },
+  {
+    "response_type": "symptoms",
+    "user_input": [
+      "hallucinate", "hallucination", "ghost", "cramps", "cramp", "cramping", "tremor", "tremors", "stiff", "stiffness",
+      "alucinar", "alucinación", "fantasma", "calambres", "calambre", "calambroso", "temblor", "temblores", "rigidez", "rigidez",
+      "幻觉", "幻觉", "鬼", "痉挛", "抽筋", "抽筋", "震颤", "震颤", "僵硬", "僵硬",
+      "halluciner", "hallucination", "fantôme", "crampes", "crampe", "crampant", "tremblement", "tremblements", "raideur", "raideur",
+      "هلوسة", "هلوسة", "شبح", "تشنجات", "تشنج", "تشنج", "رجفة", "رجفات", "تيبس", "تيبس",
+      "भ्रम", "भ्रमणा", "भूत", "पेट में ऐंठन", "ऐंठन", "ऐंठन", "कंपन", "कंपन", "कठोर", "कठोरता",
+      "হ্যালুসিনেট", "হ্যালুসিনেশন", "ভূত", "পেট ব্যথা", "ব্যথা", "ব্যথিত", "কম্পন", "কম্পন", "কঠোর", "কঠোরতা",
+      "allucinare", "allucinazione", "fantasma", "crampi", "crampo", "crampare", "tremore", "tremori", "rigido", "rigidità",
+      "галлюцинации", "галлюцинации", "призрак", "судороги", "судорога", "судорожный", "тремор", "треморы", "жесткость", "жесткость",
+      "幻觉", "幻觉", "鬼", "抽搐", "痉挛", "痉挛", "震动", "震动", "僵硬", "僵硬",
+      "визжаться", "зачараживать", "призрак", "прижигание", "курка", "сгибаться", "болото", "колотить", "выдвижение", "плохая типография"
+    ],
+    "bot_response": "Click on View All Doctor and filter by symptoms to find a doctor",
+    "required_words": []
+  },
+  {
+    "response_type": "symptoms",
+    "user_input": [
+      "intercourse", "pregnant", "pregnancy", "miscarriage", "vaginal", "vagina", "pelvic", "abortion",
+      "relación sexual", "embarazada", "embarazo", "aborto espontáneo", "vaginal", "vagina", "pélvico", "aborto",
+      "性交", "怀孕", "怀孕", "流产", "阴道", "阴道", "盆腔", "堕胎",
+      "rapports sexuels", "enceinte", "grossesse", "fausse couche", "vaginal", "vagin", "pelvien", "avortement",
+      "جماع", "حامل", "حمل", "إجهاض", "مهبلي", "مهبل", "حوضي", "إجهاض",
+      "संभोग", "गर्भवती", "गर्भावस्था", "गर्भपात", "योनि", "योनि", "पेल्विक", "गर्भपात",
+      "সম্পর্ক", "গর্ভবতী", "গর্ভাবস্থা", "গর্ভপাত", "যোনি", "যোনি", "পেলভিক", "গর্ভপাত",
+      "coito", "grávida", "gravidez", "aborto espontâneo", "vaginal", "vagina", "pélvico", "aborto",
+      "половой акт", "беременная", "беременность", "выкидыш", "вагинальный", "вагина", "тазовый", "аборт",
+      "性交", "怀孕", "怀孕", "流产", "阴道", "阴道", "盆腔", "堕胎",
+      "acte sexuel", "enceinte", "grossesse", "fausse couche", "vaginale", "vagin", "pelvien", "avortement"
+    ],
+    "bot_response": "Click on View All Doctor and filter by symptoms to find a doctor",
+    "required_words": []
+  },
+  {
+    "response_type": "symptoms",
+    "user_input": [
+      "depress", "depression", "mood", "swings", "afraid", "scared", "anxiety", "delusion", "delusional", "mania", "phobia", "sciatica",
+      "deprimir", "depresión", "estado de ánimo", "cambios de ánimo", "miedoso", "asustado", "ansiedad", "delirio", "delirante", "manía", "fobia", "ciática",
+      "抑郁", "抑郁症", "情绪", "波动", "害怕", "害怕的", "焦虑", "错觉", "妄想", "躁狂", "恐惧症", "坐骨神经痛",
+      "déprimer", "dépression", "humeur", "sauts d'humeur", "effrayé", "effrayé", "anxiété", "délire", "délirant", "manie", "phobie", "sciatique",
+      "اكتئاب", "اكتئاب", "مزاج", "تقلّبات المزاج", "خائف", "مذعور", "قلق", "هذيان", "مهووس", "هوس", "رهاب", "عَرق النسا",
+      "उदास", "डिप्रेशन", "मूड", "स्विंग", "डरा हुआ", "डरा", "चिंता", "भ्रम", "भ्रामक", "मेनिया", "फोबिया", "सियाटिका",
+      "অবসাদ", "অবসাদ", "মুড", "হলচল", "ভয়", "ভীত", "চিন্তা", "ভ্রম", "ভ্রমণ", "মেনিয়া", "ফোবিয়া", "সায়াটিকা",
+      "depressão", "depressão", "humor", "oscilações de humor", "assustado", "medroso", "ansiedade", "delírio", "delirante", "mania", "fobia", "ciática",
+      "депрессия", "депрессия", "настроение", "перепады настроения", "боязнь", "напуганный", "тревога", "бред", "бредовый", "мания", "фобия", "ишиас",
+      "抑郁", "抑郁症", "情绪", "情绪波动", "害怕", "害怕", "焦虑", "错觉", "妄想", "躁狂", "恐惧症", "坐骨神经痛",
+      "depresja", "depresja", "humor", "wahania nastroju", "przerażony", "przestraszony", "niepokój", "złudzenie", "urojenie", "mania", "fobia", "rwa kulszowa"
+    ],
+    "bot_response": "Click on View All Doctor and filter by symptoms to find a doctor",
+    "required_words": []
+  },
+  {
+    "response_type": "symptoms",
+    "user_input": [
+      "head", "hair", "skin", "shoulder", "neck", "cervical", "lumbar", "ribs", "elbow", "knee", "wrist", "hand", "finger", "throat", "chest", "mucus", "sneeze", "sneezing", "hip", "leg", "foot", "feet",
+      "cabeza", "cabello", "piel", "hombro", "cuello", "cervical", "lumbar", "costillas", "codo", "rodilla", "muñeca", "mano", "dedo", "garganta", "pecho", "moco", "estornudar", "estornudando", "cadera", "pierna", "pie", "pies",
+      "头", "头发", "皮肤", "肩膀", "脖子", "颈椎", "腰部", "肋骨", "肘部", "膝盖", "手腕", "手", "手指", "喉咙", "胸部", "粘液", "打喷嚏", "打喷嚏", "臀部", "腿", "脚", "脚",
+      "tête", "cheveux", "peau", "épaule", "cou", "cervical", "lombaire", "côtes", "coude", "genou", "poignet", "main", "doigt", "gorge", "poitrine", "mucus", "éternuer", "éternuement", "hanche", "jambe", "pied", "pieds",
+      "رأس", "شعر", "جلد", "كتف", "رقبة", "عنق الرحم", "قطني", "ضلوع", "مرفق", "ركبة", "معصم", "يد", "إصبع", "حلق", "صدر", "مخاط", "عطس", "عطاس", "ورك", "ساق", "قدم", "أقدام",
+      "सिर", "बाल", "त्वचा", "कंधा", "गला", "गर्दन", "गर्भाशय", "लंबर", "पसलियां", "कोहनी", "घुटना", "कलाई", "हाथ", "उंगली", "गला", "छाती", "कफ", "छींक", "छींकते हुए", "कूल्हा", "पैर", "पैर", "पैर",
+      "মাথা", "চুল", "চামড়া", "কাঁধ", "ঘাড়", "গর্ভনিরোধ", "লম্বার", "পাঁজর", "কনুই", "ঘুড়নি", "কনুই", "হাত", "পেট", "হাঁটিকা", "পালেট", "চর্মপোড়া", "মুছে চুল",
+      "coito", "melanica", "poignet", "do", "soctato", "popsrture", "grot"
+    ],
+    "bot_response": "Click on View All Doctor and filter by symptoms to find a doctor",
+    "required_words": []
+  },
+  {
+    "response_type": "symptoms",
+    "user_input": [
+      "tooth", "teeth", "bump", "cancer", "discolored", "irregular", "strange", "weird", "difficulty", "hairy", "lump", "sensitive", "poison", "poisoned", "poisonous", "poisoning", "bald",
+      "diente", "dientes", "bulto", "cáncer", "descolorido", "irregular", "extraño", "raro", "dificultad", "peludo", "bulto", "sensible", "veneno", "envenenado", "calvo",
+      "牙齿", "牙齿", "肿块", "癌症", "变色", "不规则", "奇怪", "怪异", "困难", "多毛", "肿块", "敏感", "毒药", "中毒", "秃头",
+      "dent", "dents", "bosse", "cancer", "décoloré", "irrégulier", "étrange", "bizarre", "difficulté", "poilu", "grosseur", "sensible", "poison", "empoisonné", "chauve",
+      "سن", "أسنان", "انتفاخ", "سرطان", "مُلون", "غير منتظم", "غريب", "غريب", "صعوبة", "شعرى", "كتلة", "حساس", "سم", "مسموم", "أصلع",
+      "दांत", "दांत", "गाँठ", "कैंसर", "रंगहीन", "असामान्य", "अजीब", "विचित्र", "कठिनाई", "बालों वाला", "गांठ", "संवेदनशील", "विष", "विषाक्त", "गंजा",
+      "মাথা", "চুল", "চামড়া", "কাঁধ", "ঘাড়", "গর্ভনিরোধ", "লম্বার", "পাঁজর", "কনুই", "ঘুড়নি", "কনুই", "হাত", "পেট", "হাঁটিকা", "পালেট", "চর্মপোড়া", "মুছে চুল",
+      "dente", "dentes", "inchaço", "câncer", "descolorido", "irregular", "estranho", "esquisito", "dificuldade", "peludo", "caroço", "sensível", "veneno", "envenenado", "careca",
+      "зуб", "зубы", "шишка", "рак", "обесцвеченный", "неправильный", "странный", "странный", "трудность", "волосатый", "шишка", "чувствительный", "яд", "отравленный", "лысый",
+      "zahn", "zähne", "beule", "krebs", "verfärbt", "irregular", "seltsam", "komisch", "schwierigkeit", "haarig", "beule", "empfindlich", "gift", "vergiftet", "kahl",
+      "이빨", "치아", "혹", "암", "변색", "불규칙", "이상한", "이상", "어려움", "털이 많은", "덩어리", "민감한", "독", "중독된", "대머리",
+      "răng", "răng", "cục u", "ung thư", "màu nhợt", "bất thường", "lạ", "kỳ lạ", "khó khăn", "rậm", "cục u", "nhạy cảm", "poison", "ngộ độc", "hói",
+      "capello", "capelli", "bozzo", "cancro", "discolorato", "irregolare", "strano", "strano", "difficoltà", "peloso", "grumo", "sensibile", "veleno", "avvelenato", "calvo",
+      "diş", "dişler", "şişlik", "kanser", "renksiz", "düzensiz", "garip", "garip", "zorluk", "kıllı", "yumru", "hassas", "zehir", "zehirlenmiş", "kel"
+    ],
+    "bot_response": "Click on View All Doctor and filter by symptoms to find a doctor",
+    "required_words": []
+  },
+  {
+    "response_type": "symptoms",
+    "user_input": [
+      "my"
+    ],
+    "bot_response": "Click on View All Doctor and filter by symptoms to find a doctor",
+    "required_words": ["my"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+      "setting"
+    ],
+    "bot_response": "Settings option is on top right near the log out button",
+    "required_words": ["setting"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+      "settings"
+    ],
+    "bot_response": "Settings option is on top right near the log out button",
+    "required_words": ["settings"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+      "log"
+    ],
+    "bot_response": "Logout button is on top right corner.  Thank you for using Doctor Finder",
+    "required_words": ["log"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+      "logout"
+    ],
+    "bot_response": "Logout button is on top right corner.  Thank you for using Doctor Finder",
+    "required_words": ["logout"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+      "messenger"
+    ],
+    "bot_response": "You can send messages using our messenger on top next to help link",
+    "required_words": ["messenger"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+      "messages"
+    ],
+    "bot_response": "You can send messages using our messenger on top next to help link",
+    "required_words": ["messages"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+      "message"
+    ],
+    "bot_response": "You can send messages using our messenger on top next to help link",
+    "required_words": ["message"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+      "creators"
+    ],
+    "bot_response": "Check our About Us page to view the creators of Doctor Finder",
+    "required_words": ["creators"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+      "creator"
+    ],
+    "bot_response": "Check our About Us page to view the creators of Doctor Finder",
+    "required_words": ["creator"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+      "created"
+    ],
+    "bot_response": "Check our About Us page to view the creators of Doctor Finder",
+    "required_words": ["created"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+      "develop"
+    ],
+    "bot_response": "Check our About Us page to view the creators of Doctor Finder",
+    "required_words": ["develop"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+      "developed"
+    ],
+    "bot_response": "Check our About Us page to view the creators of Doctor Finder",
+    "required_words": ["developed"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+      "developers"
+    ],
+    "bot_response": "Check our About Us page to view the creators of Doctor Finder",
+    "required_words": ["developers"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+      "logo"
+    ],
+    "bot_response": "We stole the logo from Marcus Ellison",
+    "required_words": ["logo"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+      "logo", "created"
+    ],
+    "bot_response": "We stole the logo from Marcus Ellison",
+    "required_words": ["created", "logo"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+      "logo", "made"
+    ],
+    "bot_response": "We stole the logo from Marcus Ellison",
+    "required_words": ["made", "logo"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+      "logo", "drew"
+    ],
+    "bot_response": "We stole the logo from Marcus Ellison",
+    "required_words": ["drew", "logo"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+      "who", "image"
+    ],
+    "bot_response": "We stole the logo from Marcus Ellison",
+    "required_words": ["who", "image"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+      "who", "logout"
+    ],
+    "bot_response": "The logout component was created by Marcus Ellison",
+    "required_words": ["who", "logout"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+      "messenger", "created"
+    ],
+    "bot_response": "The messenger was created by some asian guy on the team",
+    "required_words": ["created", "messenger"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+      "help", "created"
+    ],
+    "bot_response": "Some asian guy created the help section",
+    "required_words": ["created", "help"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+      "help", "made"
+    ],
+    "bot_response": "Some asian guy created the help section",
+    "required_words": ["created", "made"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "mode"
+  ],
+    "bot_response": "Click on the Dark/Light mode on top right near settings to change color",
+    "required_words": ["mode"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "help", "button"
+  ],
+    "bot_response": "You are already in the Help section, if you are searching for a doctor try the View All Doctors",
+    "required_words": ["help", "button"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "help", "link"
+  ],
+    "bot_response": "You are already in the Help section, if you are searching for a doctor try the View All Doctors",
+    "required_words": ["help", "link"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "help", "option"
+  ],
+    "bot_response": "You are already in the Help section, if you are searching for a doctor try the View All Doctors",
+    "required_words": ["help", "option"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "where", "search"
+  ],
+    "bot_response": "Search for doctors in the View All Doctors link on top of this page",
+    "required_words": ["where", "search"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "where", "doctors"
+  ],
+    "bot_response": "Search for doctors in the View All Doctors link on top of this page",
+    "required_words": ["where", "doctors"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "what", "help", "link"
+  ],
+    "bot_response": "The Help button is a section for asking questions about this site",
+    "required_words": ["what", "help", "link"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "what", "help", "button"
+  ],
+    "bot_response": "The Help button is a section for asking questions about this site",
+    "required_words": ["what", "help", "button"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "what", "messenger", "link"
+  ],
+    "bot_response": "The Messenger button is a section where clients communicate with doctors",
+    "required_words": ["what", "messenger", "link"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "what", "messenger", "button"
+  ],
+    "bot_response": "The Messenger button is a section where clients communicate with doctors",
+    "required_words": ["what", "messenger", "button"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "what", "about", "button"
+  ],
+    "bot_response": "The About Us button is a section where the developers names are shown",
+    "required_words": ["what", "about", "button"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "what", "about", "link"
+  ],
+    "bot_response": "The About Us button is a section where the developers names are shown",
+    "required_words": ["what", "about", "link"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "what", "view", "link"
+  ],
+    "bot_response": "The View All Doctors button is a section to find doctors",
+    "required_words": ["what", "view", "link"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "what", "view", "button"
+  ],
+    "bot_response": "The View All Doctors button is a section to find doctors",
+    "required_words": ["what", "view", "button"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "what", "view"
+  ],
+    "bot_response": "The View All Doctors button is a section to find doctors",
+    "required_words": ["what", "view"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "what", "visits", "link"
+  ],
+    "bot_response": "The Visits button is a section where past doctor visits is shown",
+    "required_words": ["what", "visit", "link"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "what", "visits", "button"
+  ],
+    "bot_response": "The Visits button is a section where past doctor visits is shown",
+    "required_words": ["what", "visit", "button"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "what", "names"
+  ],
+    "bot_response": "The members of Doctor Finder are: Trung Du, Marcus Ellison, Daniel Wagner, Mark Oladipo, Layth Gharbia",
+    "required_words": ["what", "names"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "who", "members"
+  ],
+    "bot_response": "The members of Doctor Finder are: Trung Du, Marcus Ellison, Daniel Wagner, Mark Oladipo, Layth Gharbia",
+    "required_words": ["who", "members"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "who", "developed"
+  ],
+    "bot_response": "The members of Doctor Finder are: Trung Du, Marcus Ellison, Daniel Wagner, Mark Oladipo, Layth Gharbia",
+    "required_words": ["who", "developed"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "edit", "profile"
+  ],
+    "bot_response": "Click on Settings to edit profile",
+    "required_words": ["edit", "profile"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "change", "profile"
+  ],
+    "bot_response": "Click on Settings to edit profile",
+    "required_words": ["change", "profile"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "change", "picture"
+  ],
+    "bot_response": "Click on Settings to edit profile",
+    "required_words": ["change", "picture"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "edit", "reviews"
+  ],
+    "bot_response": "To edit or view reviews click View All Doctors and find the doctor",
+    "required_words": ["edit", "reviews"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "view", "reviews"
+  ],
+    "bot_response": "To edit or view reviews click View All Doctors and find the doctor",
+    "required_words": ["view", "reviews"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "where", "rate"
+  ],
+    "bot_response": "To rate a doctor click Leave a review button on the Visit page",
+    "required_words": ["where", "rate"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "give", "rating"
+  ],
+    "bot_response": "To rate a doctor click Leave a review button on the Visit page",
+    "required_words": ["edit", "reviews"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "make", "appointment"
+  ],
+    "bot_response": "To create an appointment click on the doctor then Book Appointment",
+    "required_words": ["make", "appointment"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "create", "appointment"
+  ],
+    "bot_response": "To create an appointment click on the doctor then Book Appointment",
+    "required_words": ["create", "appointment"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "set", "appointment"
+  ],
+    "bot_response": "To create an appointment click on the doctor then Book Appointment",
+    "required_words": ["set", "appointment"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "who", "settings"
+  ],
+    "bot_response": "Settings button was created by Marcus Ellison",
+    "required_words": ["who", "settings"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "who", "light"
+  ],
+    "bot_response": "Light Dark mode was created by some asian guy",
+    "required_words": ["who", "light"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "who", "log"
+  ],
+    "bot_response": "Log Out and Registration was created by Marcus Ellison",
+    "required_words": ["who", "log"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "who", "view"
+  ],
+    "bot_response": "View All Doctors was created by Daniel Wagner",
+    "required_words": ["who", "view"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "who", "rating"
+  ],
+    "bot_response": "Reviews was created by Daniel Wagner",
+    "required_words": ["who", "rating"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "who", "appointments"
+  ],
+    "bot_response": "Appointments was created by Mark Oladipo",
+    "required_words": ["who", "appointments"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "who", "comparison"
+  ],
+    "bot_response": "Doctor Comparison was created by Layth Gharbia",
+    "required_words": ["who", "comparison"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "what", "database"
+  ],
+    "bot_response": "Doctor Finder uses Firebase as the backend database",
+    "required_words": ["what", "database"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "who", "host"
+  ],
+    "bot_response": "Doctor Finder host via Vercel hosting",
+    "required_words": ["who", "host"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "what", "backend"
+  ],
+    "bot_response": "Doctor Finder uses Next.js as our backend",
+    "required_words": ["what", "backend"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "what", "language"
+  ],
+    "bot_response": "Doctor Finder is programmed mostly in 99% Typescript",
+    "required_words": ["what", "language"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "what", "features"
+  ],
+    "bot_response": "Doctor Finder features include: Registration, Custom Profiles, Light Dark Mode, Help Section, Messenger, Doctor Comparison, Doctor Query, Ratings, and Appointment System",
+    "required_words": ["what", "features"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "who", "contrubuted"
+  ],
+    "bot_response": "That is classified information.  I've been instructed not to tell. Look at the GitHub commits.",
+    "required_words": ["who", "contrubuted"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "rate", "doctor"
+  ],
+    "bot_response": "Rate a doctor by going to Visit and Leave a Review",
+    "required_words": ["rate", "doctor"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "tell", "joke"
+  ],
+    "bot_response": "I got no jokes, my programmer didn't program me with such abilities",
+    "required_words": ["tell", "joke"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "where", "doctor"
+  ],
+    "bot_response": "To find a doctor start on top with View All Doctors link",
+    "required_words": ["where", "doctors"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "i", "am"
+  ],
+    "bot_response": "If this is a medical emergency please call 911",
+    "required_words": ["i", "am"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "buy", "drugs"
+  ],
+    "bot_response": "Legally from a pharmacist, Illegally from a drug dealer",
+    "required_words": ["buy", "drugs"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "i", "killed", "pikachu"
+  ],
+    "bot_response": "What the fuck is your problem, I'm calling the police on you",
+    "required_words": ["i", "killed", "pikachu"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "have", "sex"
+  ],
+    "bot_response": "What the fuck is your problem, I'm calling the police on you",
+    "required_words": ["have", "sex"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "please", "cuss"
+  ],
+    "bot_response": "What the fuck is your problem, I'm calling the police on you",
+    "required_words": ["please", "cuss"]
+  },
+  {
+    "response_type": "navigation",
+    "user_input": [
+    "where", "reviews"
+  ],
+    "bot_response": "You can look at reviews by clicking Visits then click reviews",
+    "required_words": ["where", "reviews"]
   }
 ]
