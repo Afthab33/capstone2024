@@ -229,7 +229,7 @@ const SearchContent = () => {
       const doctorsRef = collection(db, 'users');
 
       // fetch all doctors first
-      let q = query(doctorsRef, where('role', '==', 'doctor'));
+      const q = query(doctorsRef, where('role', '==', 'doctor'));
 
       const querySnapshot = await getDocs(q);
       
