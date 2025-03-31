@@ -7,6 +7,7 @@ import { collection, getDocs, query, where, getDoc, doc } from 'firebase/firesto
 import DoctorProfileCard from './components/DoctorProfileCard';
 import { initializeFirebase, db as getFirebaseDb } from './authcontext';
 import Link from 'next/link';
+import { Search } from 'lucide-react';
 
 interface Doctor {
   id: string;
@@ -110,6 +111,30 @@ export default function Home() {
         <h1 className="text-3xl sm:text-4xl md:text-5xl text-center font-semibold px-4">
           Find the best doctor near you.
         </h1>
+        
+        {/* search bar */}
+        <div className="mt-12 flex justify-center px-4">
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            const searchInput = e.currentTarget.querySelector('input') as HTMLInputElement;
+            if (searchInput.value.trim()) {
+              window.location.href = `/search?query=${encodeURIComponent(searchInput.value.trim())}`;
+            }
+          }} className="flex items-center w-full max-w-2xl border rounded-full overflow-hidden bg-white dark:bg-zinc-900">
+            <div className="flex items-center justify-center pl-4">
+              <Search className="h-5 w-5 text-gray-400" />
+            </div>
+            <input
+              type="text"
+              placeholder="Search by specialty, name, or location..."
+              className="px-4 py-3 w-full border-none focus:ring-0 dark:text-white focus:outline-none dark:bg-zinc-900 text-foreground"
+            />
+            <button type="submit" className="bg-primary h-10 w-10 p-2 flex items-center justify-center rounded-full hover:bg-primary/90 text-white mr-1">
+              <Search className="h-5 w-5" />
+            </button>
+          </form>
+        </div>
+        
         {/*<div className="mt-6">
           <Link href="/compare" passHref>
             <button className="bg-blue-500 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-600 transition">

@@ -9,8 +9,8 @@ export default function AboutUs() {
             </div>
             <div className="bg-secondary text-secondary-foreground">
                 <div className="mx-4 sm:mx-8 md:mx-16 lg:mx-20 pb-20">
-                    <h1 className="text-4xl pt-10 text-left lg:mx-20 xl:mx-60 font-semibold">Our Team</h1>
-                    <div className=" text-grey-500 pt-10 text-md sm:text-lg md:text-lg lg:text-xl lg:mx-20 xl:mx-60 flex justify-between">
+                    <h1 className="text-4xl pt-10 text-left text-white dark:text-black lg:mx-20 xl:mx-60 font-semibold">Our Team</h1>
+                    <div className=" text-white dark:text-black pt-10 text-md sm:text-lg md:text-lg lg:text-xl lg:mx-20 xl:mx-60 flex justify-between">
                         <p>Trung Du</p>
                         <p>Marcus Ellison</p>
                         <p>Daniel Wagner</p>

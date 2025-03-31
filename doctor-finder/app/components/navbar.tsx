@@ -92,17 +92,18 @@ const Navbar = () => {
               </Link>
             </div>
 
-            {/*search bar here*/}
-            <form onSubmit={handleSearch} className="hidden sm:flex items-center border rounded-lg overflow-hidden">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search doctors..."
-                className="px-3 py-2 w-64 border-none focus:ring-0 focus:outline-none"
-              />
-            </form>
-
+            {/*search bar here - hidden on index page*/}
+            {pathname !== '/' && (
+              <form onSubmit={handleSearch} className="hidden sm:flex items-center border rounded-lg overflow-hidden dark:bg-zinc-900">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search doctors..."
+                  className="px-3 py-2 w-64 border-none focus:ring-0 focus:outline-none dark:bg-zinc-900 dark:text-white"
+                />
+              </form>
+            )}
 
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
               {
