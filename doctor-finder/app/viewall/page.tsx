@@ -22,6 +22,7 @@ import { Check, ChevronDown, Filter, X } from "lucide-react"
 import useUserLocation from '../hooks/useUserLocation';
 import { isAfter } from 'date-fns';
 import { Skeleton } from "@/components/ui/skeleton";
+import Link from 'next/link'
 
 interface Doctor {
   key: string;
@@ -412,6 +413,15 @@ const ViewAllDoctors = () => {
               <div>Error: {error}</div>
             ) : (
               <>
+                {/* Comparing the Doctors */}
+<div className="flex justify-end mb-4">
+      <Link href="/compare" passHref>
+        <button className="bg-blue-500 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-600 transition">
+          Compare Doctors
+        </button>
+      </Link>
+    </div>
+                
                 {/* filter and sort section */}
                 <div className="mb-8">
                   <div className="flex flex-wrap items-center gap-2 mb-4">
