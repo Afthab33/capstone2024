@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { format, isBefore, startOfDay } from 'date-fns';
 import { DialogTrigger } from '@radix-ui/react-dialog';
 import DoctorProfileImage from '../viewDoctor/[id]/components/DoctorProfileImage';
+import StarRating from '../viewDoctor/[id]/components/StarRating';
 import useUserLocation from '../hooks/useUserLocation';
 
 
@@ -254,6 +255,7 @@ export default function AppointmentsCard({
         review: review.trim(),
         appointmentId: id,
         doctorName: doctorInfo.name,
+        doctorId: doctorId,
         reviewedBy: user?.uid,
         reviewerEmail: user?.email,
         createdAt: Timestamp.now(),
@@ -324,7 +326,7 @@ export default function AppointmentsCard({
 
             <div className='flex mb-2 space-y-1 mr-8' >
               <div>
-                <div className='flex gap-2'> <Star className="flex-shrink-0 w-5 h-5 text-yellow-400 unfill-current mb-2" /> <div>{doctor?.rating} · {doctor?.reviewCount == null ? 0 : doctor?.reviewCount} · Reviews </div></div>
+                <div className='flex gap-2'> <div> <StarRating rating={doctor?.rating ?? 0} /> · {doctor?.reviewCount == null ? 0 : doctor?.reviewCount} · Reviews </div></div>
                 <div className='flex gap-2' > <MapPin className="flex-shrink-0 w-5 h-5 text-black-500 mb-2" /> {distance !== null ? `${distance} mi · ` : ''} {doctorInfo.location}</div>
                 <div className='flex gap-2' ><Shield className="flex-shrink-0 w-5 h-5 text-blue-500 mb-2" />
                   <div>Accepts  {doctor?.acceptedInsurances.slice(0, 3).join(', ')}
