@@ -2,7 +2,7 @@
 import { Button } from '@/components/ui/button';
 import { Star, Shield, MessageCircle, MapPin } from 'lucide-react';
 import Link from 'next/link';
-import {  useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { collection, addDoc, Timestamp, getDoc, doc } from 'firebase/firestore';
 import { db as getFirebaseDb, useAuth } from '../authcontext';
 import { useToast } from '@/hooks/use-toast';
@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { format, isBefore, startOfDay } from 'date-fns';
 import { DialogTrigger } from '@radix-ui/react-dialog';
 import DoctorProfileImage from '../viewDoctor/[id]/components/DoctorProfileImage';
+import useUserLocation from '../hooks/useUserLocation';
 
 
 
@@ -31,16 +32,23 @@ interface AppointmentsCardProps {
     patientType: 'new' | 'returning';
     notes?: string;
   };
-
+  coordinates?: {
+    lat: number;
+    lng: number;
+  };
 }
 
-
+type DistanceCache = {
+  [key: string]: number;
+};
+const distanceCache: DistanceCache = {};
 export default function AppointmentsCard({
   id,
   doctorInfo,
   visitDetails,
   doctorId,
   status,
+  coordinates,
   datetime = new Timestamp(0, 0),
 }: AppointmentsCardProps) {
 
@@ -52,7 +60,6 @@ export default function AppointmentsCard({
   const date = datetime.toDate().getDate();
   const year = datetime.toDate().getFullYear();
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
-  const [visitsDialogOpen, setVisitsDialogOpen] = useState(false);
   const [doctor, setDoctor] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -62,7 +69,46 @@ export default function AppointmentsCard({
   const currentTime = useMemo(() => new Date(), []);
   const [availabilityData, setAvailabilityData] = useState<{ [key: string]: string[] }>({});
   const { toast } = useToast();
+  const { coordinates: userCoords } = useUserLocation();
+  const [distance, setDistance] = useState<number | null>(null);
 
+  // calculate distance when coordinates change
+  useEffect(() => {
+    if (!userCoords || !coordinates) return;
+
+    // create a cache key from both coordinates
+    const cacheKey = `${userCoords.lat},${userCoords.lng}-${coordinates.lat},${coordinates.lng}`;
+
+    // check if we already calculated this distance
+    if (distanceCache[cacheKey] !== undefined) {
+      setDistance(distanceCache[cacheKey]);
+      return;
+    }
+
+    // calculate and cache the distance
+    const calculatedDistance = calculateDistance(
+      userCoords.lat,
+      userCoords.lng,
+      coordinates.lat,
+      coordinates.lng
+    );
+
+    distanceCache[cacheKey] = calculatedDistance;
+    setDistance(calculatedDistance);
+  }, [userCoords, coordinates]);
+
+  // calculate distance
+  const calculateDistance = (lat1: number, lng1: number, lat2: number, lng2: number): number => {
+    const R = 3958.8;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLng = (lng2 - lng1) * Math.PI / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+      Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return Math.round(R * c * 10) / 10;
+  };
 
   // fetch doctor data
   useEffect(() => {
@@ -242,18 +288,17 @@ export default function AppointmentsCard({
     for (let index = 1; index <= starCount; index++) {
       starMap.set(index, <Star className="w-4 h-4 sm:w-14 sm:h-14 text-blue-400 fill-current" />);
     }
-    console.log(starCount);
     return <>
       <div className='flex flex-row gap-4 items-center'>
         {
           Array.from(starMap.values(), (star, index: number) =>
             <div key={index} >
               <button
-               onClick={() => setStarCount(index + 1)}
-                // onMouseEnter={() => setStarCount(index + 1)}
+                onClick={() => setStarCount(index + 1)}
+                onMouseEnter={() => setStarCount(index + 1)}
+                onMouseLeave={() => starCount == 1 ? setStarCount(index - 1) : <></>}
               > {star}
               </button>
-              
             </div>,
           )
         }
@@ -265,55 +310,45 @@ export default function AppointmentsCard({
   return (
     <>
 
-      <div className="flex items-center justify-between w-full max-w p-4 rounded-lg ">
-        <div className="flex items-center space-x-4">
+      <div className="flex gap-2 flex-col lg:flex-row flex-1 items-center lg:items-start justify-between w-full max-w p-4  ">
+        <div className="flex flex-col md:flex-row md:items-center space-x-4">
+        <div className="profile-image">
           <DoctorProfileImage profileImage={doctor?.profileImage} />
-          <div className="w-26 h-26 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0 relative">
-            {/* Placeholder for 's image */}
-
-          </div>
-          <div>
-            <div className='flex justify-left text-gray-500 mb-2 text-[15px] -indent-36' >
+        </div>
+          <div className='flex flex-col'>
+            <div className='flex justify-left text-gray-500 mb-2 text-[15px] lg:-indent-36 mt-2' >
               {day}, {month} {date} {year}
             </div>
             <span className="text-lg font-semibold text-gray-800 dark:text-gray-200"> {doctorInfo.name}</span>
             <h3 className="text-gray-500 text-sm 1px mb-2">{doctorInfo.specialty}</h3>
-            <div className="flex flex-col items-left text-sm mb-2"  >
 
-              <Star className="w-5 h-5 text-yellow-400 unfill-current mb-2" />
-              <MapPin className="w-5 h-5 text-black-500 mb-2" />
-              <Shield className="w-5 h-5 text-blue-500 mb-2" />
-              <MessageCircle className="w-5 h-5 text-black-500 mb-2" />
-
-            </div>
-            <div className='flex flex-col mb-2 space-y-1 space' style={{ position: "relative", top: "-122px", left: "25px", marginRight: "175px", marginBottom: "-110px" }}>
-
-              <div > {doctor?.rating} · {doctor?.reviewCount == null ? 0 : doctor?.reviewCount} · Reviews</div>
-              <div > {doctorInfo.location}</div>
-              <div >Accepts  {doctor?.acceptedInsurances.slice(0, 3).join(', ')}
-                {doctor?.acceptedInsurances?.length > 3 && (
-                  <span className="text-gray-500"> + {doctor.acceptedInsurances.length - 3} more</span>
-                )}
+            <div className='flex mb-2 space-y-1 mr-8' >
+              <div>
+                <div className='flex gap-2'> <Star className="flex-shrink-0 w-5 h-5 text-yellow-400 unfill-current mb-2" /> <div>{doctor?.rating} · {doctor?.reviewCount == null ? 0 : doctor?.reviewCount} · Reviews </div></div>
+                <div className='flex gap-2' > <MapPin className="flex-shrink-0 w-5 h-5 text-black-500 mb-2" /> {distance !== null ? `${distance} mi · ` : ''} {doctorInfo.location}</div>
+                <div className='flex gap-2' ><Shield className="flex-shrink-0 w-5 h-5 text-blue-500 mb-2" />
+                  <div>Accepts  {doctor?.acceptedInsurances.slice(0, 3).join(', ')}
+                    {doctor?.acceptedInsurances?.length > 3 && (
+                      <span className="text-gray-500"> + {doctor.acceptedInsurances.length - 3} more</span>
+                    )}
+                  </div>
+                </div>
+                <div className='flex gap-2' ><MessageCircle className="flex-shrink-0 w-5 h-5 text-black-500 mb-2 " />
+                  <div>Speaks {doctor?.spokenLanguages.slice(0, 3).join(', ')}
+                  </div> {doctor?.spokenLanguages?.length > 3 && (<span className="text-gray-500 ">+ {doctor.spokenLanguages.length - 3} more</span>
+                  )}</div>
               </div>
-              <div >Speaks {doctor?.spokenLanguages.slice(0, 3).join(', ')}</div>
-              {doctor?.spokenLanguages?.length > 3 && (
-                <span className="text-gray-500"> + {doctor.spokenLanguages.length - 3} more</span>
-              )}
             </div>
           </div>
         </div>
-        <div className="flex items-center space-x-2">
-          <div className="flex flex-col items-end">
-            <p className="text-sm text-gray-500 mb-2">Next available: {nextAvailableText}</p>
-
+        <div className="Buttons">
+          <div className="flex flex-col gap-2 items-end">
+            <p className="hidden xl:block text-sm text-gray-500 mb-3 text-center dark:text-gray-400">Next available: {nextAvailableText}</p>
 
             <Link href={`/viewDoctor/${doctorId}`}>
-              <Button className=" mb-2" style={{
-                width: 175
-              }}
-              >
+              <div className="inline-flex w-full xl:w-auto items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 min-w-[200px]">
                 Book Again
-              </Button>
+              </div>
             </Link>
 
 
@@ -328,26 +363,20 @@ export default function AppointmentsCard({
                 }
               }}
             >
-              <Button onClick={() => setReviewDialogOpen(!reviewDialogOpen)} className="mb-2 " style={{
-                backgroundColor: "#829eb5",
-                width: 175
-              }} >
-                Leave a Review
-              </Button>
 
+              <div onClick={() => setReviewDialogOpen(!reviewDialogOpen)} className="inline-flex w-full xl:w-auto items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background  bg-[#829eb5] text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 min-w-[200px]">
+                Leave a Review
+              </div>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Write a review</DialogTitle>
-
-                  <div className='flex flex-row '>
-                    <div className="profile-image mb-4 sm:mb-0">
-                      <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0 relative">
-                        <DoctorProfileImage profileImage={doctor?.profileImage} />
-                      </div>
-                    </div>
-                    <div className='flex flex-col space-x-6 mb-2 '>
-                      <h3 className="flex justify-start  text-xl font-semibold text-gray-800 mt-4 ml-6 dark:text-white"> {doctorInfo.name}</h3>
-                      <h3 className="text-gray-500 text-lg 1px  dark:text-white">{doctorInfo.specialty}</h3>
+                  <DialogTitle className='flex items-center'>Write a review</DialogTitle>
+                  <div className='flex flex-row'>
+                   <div className="profile-image"> 
+                    <DoctorProfileImage profileImage={doctor?.profileImage} />
+                   </div>
+                    <div className='flex flex-col space-x-8 mb-2 items-center sm:items-start'>
+                      <div className="flex justify-start text-xl font-semibold text-gray-800 mt-4 c sm:ml-8  dark:text-white"> {doctorInfo.name}</div>
+                      <div className="text-gray-500 text-lg 1px dark:text-white mr-10 sm:ml-10">{doctorInfo.specialty}</div>
                       <div > {doctorInfo.location}</div>
                     </div>
                   </div>
@@ -373,17 +402,9 @@ export default function AppointmentsCard({
                 </div>
               </DialogContent>
             </Dialog>
+            <p className="xl:hidden text-xs text-gray-500 mt-2 text-center dark:text-gray-400">Next available: {nextAvailableText}</p>
 
-            <Dialog
-            // open={visitsDialogOpen}
-            // onOpenChange={(visitsDialogOpen) => {
-            //   setVisitsDialogOpen(visitsDialogOpen);
-            //   if (!open) {
-            //     setReview('');
-            //     setStarCount(0);
-            //   }
-            // }}
-            >
+            <Dialog>
               <DialogTrigger>
                 <div className="text-gray-800 inline-flex items-center px-1 pt-1 hover:text-gray-600 dark:text-white dark:hover:text-gray-300 relative group">
                   <span className="relative">
@@ -401,15 +422,13 @@ export default function AppointmentsCard({
                   <h1 className='font-semibold'>Booked: {day}, {month} {date} {year}</h1>
                   <div>Reason: {visitDetails.reason != null ? `${visitDetails.reason}` : 'General check up'}</div>
                   <div>Notes:  {visitDetails.notes != null ? `${visitDetails.notes}` : 'None'}</div>
-                  <div>Status: {status}</div>
+                  {/* <div>Status: {status}</div> */}
                 </div>
-                {/* show previous booking */}
               </DialogContent>
             </Dialog>
           </div>
         </div>
       </div >
-      <hr style={{ border: '1px solid gray-200' }} />
     </>
   )
 }

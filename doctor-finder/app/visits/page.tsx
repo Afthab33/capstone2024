@@ -22,15 +22,22 @@ interface AppointmentHistoryprops {
     patientType: 'new' | 'returning';
     notes?: string;
   };
-
+  coordinates?: {
+    lat: number;
+    lng: number;
+  };
 }
+
+
 
 export default function AppointmentsHistory() {
   const [appointments, setAppointments] = useState<AppointmentHistoryprops[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { user } = useAuth();
+  
 
+  
   useEffect(() => {
     const fetchAppointments = async () => {
 
@@ -84,16 +91,20 @@ export default function AppointmentsHistory() {
           <h1 className="text-2xl font-bold mb-4 text-left">Appointments History </h1>
           <div className="space-y-4">
             {appointments.map((appointment, index) => (
+              <div key={index}> 
               <AppointmentsCard
-                key={index}
                 id={appointment.id}
                 doctorInfo={appointment.doctorInfo}
                 visitDetails={appointment.visitDetails}
                 datetime={appointment.datetime}
                 doctorId={appointment.doctorId}
                 status={appointment.status}
+                coordinates={appointment.coordinates}
               />
-
+                {index < appointments.length - 1 && (
+                  <div className="border-b border-gray-200 dark:border-zinc-800 my-4" />
+                )}
+              </div>
             ))}
           </div>
         </div>
