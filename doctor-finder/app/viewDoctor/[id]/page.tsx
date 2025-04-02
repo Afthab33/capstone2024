@@ -7,7 +7,7 @@ import { useAuth } from '../../authcontext';
 import { Star, Shield, MessageCircle, Clock } from 'lucide-react';
 import { format, isBefore, startOfDay } from 'date-fns';
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTitle, DialogHeader, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogHeader, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast"
@@ -19,6 +19,7 @@ import DoctorProfileImage from './components/DoctorProfileImage';
 import ActionButtons from './components/ActionButtons';
 import BookingForm from './components/BookingForm';
 import StarRating from './components/StarRating';
+import ReviewsHistory from './components/Reviews';
 import { getVisibleDates, formatDisplayName, resetVisibleDates } from './utils/dateUtils';
 import { findNextAvailableSlot } from './utils/availabilityUtils';
 import { arePrereqsComplete, validateBookingDetails } from './utils/bookingUtils';
@@ -85,6 +86,7 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
   const [otherReportReason, setOtherReportReason] = useState('');
   const [isLargeScreen, setIsLargeScreen] = useState(false);
   const [showAllTimeSlots, setShowAllTimeSlots] = useState(false);
+  const [showReviews, setShowReviews] = useState(false);
   const { toast } = useToast();
 
   const handleReportClick = useCallback(() => {
@@ -471,10 +473,25 @@ const handleCompareClick = useCallback(() => {
                     "Dr. {doctor?.lastName} is an exceptional physician. Their expertise and caring approach made me feel comfortable throughout my entire visit. Highly recommended!"
                   </p>
                   <div className="text-right">
-                    <span className="font-semibold text-sm underline cursor-pointer hover:text-gray-700 dark:hover:text-gray-300">
-                      {/* link to reviews maybe? */}
-                      See all {doctor?.reviewCount} reviews
-                    </span>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <span
+                          className="font-semibold text-sm underline cursor-pointer hover:text-gray-700 dark:hover:text-gray-300"
+                          onClick={() => {
+                            console.log("Opening modal for doctor ID:", id);
+                            setShowReviews(true);
+                          }}
+                        >
+                          See all {doctor?.reviewCount ?? 0} reviews
+                        </span>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Reviews for Dr. {doctor?.lastName}</DialogTitle>
+                        </DialogHeader>
+                        <ReviewsHistory doctorId={id} />
+                      </DialogContent>
+                    </Dialog>
                   </div>
                 </div>
               </div>
