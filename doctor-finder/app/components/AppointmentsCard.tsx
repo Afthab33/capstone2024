@@ -282,13 +282,15 @@ export default function AppointmentsCard({
 
   const fillStars = () => {
     const starMap = new Map();
-    //unfill stars
-    for (let i = 1; i <= 5; i++) {
-      starMap.set(i, <Star className="w-2 h-2 sm:w-14 sm:h-14 text-blue-400 unfill-current " strokeWidth={1.5} />);
-    }
-    //add fill stars
-    for (let index = 1; index <= starCount; index++) {
-      starMap.set(index, <Star className="w-4 h-4 sm:w-14 sm:h-14 text-blue-400 fill-current" />);
+    for (let index = 1; index <= 5; index++) {
+      //add fill stars
+      if(index <= starCount){
+        starMap.set(index, <Star className="w-4 h-4 sm:w-14 sm:h-14 text-blue-400 fill-current" />);
+      } 
+      //unfill stars
+      else {
+        starMap.set(index, <Star className="w-2 h-2 sm:w-14 sm:h-14 text-blue-400 unfill-current " strokeWidth={1.5} />);
+      }
     }
     return <>
       <div className='flex flex-row gap-4 items-center'>
@@ -314,9 +316,9 @@ export default function AppointmentsCard({
 
       <div className="flex gap-2 flex-col lg:flex-row flex-1 items-center lg:items-start justify-between w-full max-w p-4  ">
         <div className="flex flex-col md:flex-row md:items-center space-x-4">
-        <div className="profile-image">
-          <DoctorProfileImage profileImage={doctor?.profileImage} />
-        </div>
+          <div className="profile-image">
+            <DoctorProfileImage profileImage={doctor?.profileImage} />
+          </div>
           <div className='flex flex-col'>
             <div className='flex justify-left text-gray-500 mb-2 text-[15px] lg:-indent-36 mt-2' >
               {day}, {month} {date} {year}
@@ -326,7 +328,7 @@ export default function AppointmentsCard({
 
             <div className='flex mb-2 space-y-1 mr-8' >
               <div>
-                <div className='flex gap-2'> <div> <StarRating rating={doctor?.rating ?? 0} /> · {doctor?.reviewCount == null ? 0 : doctor?.reviewCount} · Reviews </div></div>
+                <div className='flex gap-2'> <Star className="flex-shrink-0 w-5 h-5 text-yellow-400 unfill-current mb-2" /> <div>{doctor?.rating} · {doctor?.reviewCount == null ? 0 : doctor?.reviewCount}  Reviews </div></div>
                 <div className='flex gap-2' > <MapPin className="flex-shrink-0 w-5 h-5 text-black-500 mb-2" /> {distance !== null ? `${distance} mi · ` : ''} {doctorInfo.location}</div>
                 <div className='flex gap-2' ><Shield className="flex-shrink-0 w-5 h-5 text-blue-500 mb-2" />
                   <div>Accepts  {doctor?.acceptedInsurances.slice(0, 3).join(', ')}
@@ -373,9 +375,9 @@ export default function AppointmentsCard({
                 <DialogHeader>
                   <DialogTitle className='flex items-center'>Write a review</DialogTitle>
                   <div className='flex flex-row'>
-                   <div className="profile-image"> 
-                    <DoctorProfileImage profileImage={doctor?.profileImage} />
-                   </div>
+                    <div className="profile-image">
+                      <DoctorProfileImage profileImage={doctor?.profileImage} />
+                    </div>
                     <div className='flex flex-col space-x-8 mb-2 items-center sm:items-start'>
                       <div className="flex justify-start text-xl font-semibold text-gray-800 mt-4 c sm:ml-8  dark:text-white"> {doctorInfo.name}</div>
                       <div className="text-gray-500 text-lg 1px dark:text-white mr-10 sm:ml-10">{doctorInfo.specialty}</div>
