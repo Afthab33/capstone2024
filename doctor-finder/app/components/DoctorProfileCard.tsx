@@ -222,11 +222,15 @@ export default function DoctorProfileCard({
             
             <div className="flex flex-col sm:flex-col gap-1 text-sm sm:text-base">
               <div className="flex items-center">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 cursor-pointer">
                   <Star className="min-w-5 min-h-5 w-5 h-5 text-yellow-400" />
                   <span>
-                    {rating}
-                    <span className="font-semibold"> · {reviewCount} reviews</span>
+                    {rating > 0 ? rating.toFixed(1) : '0'}
+                    <span className="font-semibold hover:text-gray-700 dark:hover:text-gray-300" onClick={() => {
+                      if (id) {
+                        window.location.href = `/viewDoctor/${id}?openReviews=true`;
+                      }
+                    }}> · {reviewCount} reviews</span>
                   </span>
                 </div>
               </div>

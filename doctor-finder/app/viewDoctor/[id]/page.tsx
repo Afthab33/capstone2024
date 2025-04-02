@@ -1,7 +1,7 @@
 "use client";
 
 import { use, useEffect, useState, useCallback, useMemo } from 'react';
-import { doc, getDoc, collection, addDoc, Timestamp, writeBatch } from 'firebase/firestore';
+import { doc, getDoc, collection, addDoc, Timestamp, writeBatch, query, getDocs, where, orderBy } from 'firebase/firestore';
 import { db as getFirebaseDb } from '../../authcontext';
 import { useAuth } from '../../authcontext';
 import { Star, Shield, MessageCircle, Clock } from 'lucide-react';
@@ -51,6 +51,16 @@ interface Appointment {
   updatedAt: Timestamp;
 }
 
+interface ReviewData {
+  id: string;
+  reviewedBy?: string;
+  doctorId: string;
+  review: string;
+  rating: number;
+  createdAt: any;
+  [key: string]: any; 
+}
+
 const ViewDoctor = ({ params }: ViewDoctorProps) => {
   const { id } = use(params);
   const router = useRouter();
@@ -88,6 +98,9 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
   const [showAllTimeSlots, setShowAllTimeSlots] = useState(false);
   const [showReviews, setShowReviews] = useState(false);
   const { toast } = useToast();
+  const [shouldOpenReviews, setShouldOpenReviews] = useState(false);
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [reviewsLoading, setReviewsLoading] = useState(true);
 
   const handleReportClick = useCallback(() => {
     setShowReportDialog(true);
@@ -215,6 +228,72 @@ const handleCompareClick = useCallback(() => {
     }
   }, [id, user, currentTime]);
 
+  // fetch reviews
+  useEffect(() => {
+    const fetchReviews = async () => {
+      if (!id) {
+        return;
+      }
+      
+      try {
+        setReviewsLoading(true);
+        const db = getFirebaseDb();
+        const reviewsRef = collection(db, 'reviews');
+        const q = query(
+          reviewsRef,
+          where('doctorId', '==', id),
+          orderBy('createdAt', 'desc')
+        );
+        
+        const reviewsSnapshot = await getDocs(q);
+        
+        const reviewsData = reviewsSnapshot.docs.map(doc => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            ...data
+          } as ReviewData;
+        });
+        
+        // pre-fetch user data for all reviews
+        const enhancedReviews = await Promise.all(
+          reviewsData.map(async (review) => {
+            try {
+              // get the user ID from reviewedBy field
+              const userId = review.reviewedBy;
+              
+              if (userId) {
+                const userDoc = await getDoc(doc(db, 'users', userId));
+                if (userDoc.exists()) {
+                  const userData = userDoc.data();
+                  return {
+                    ...review,
+                    reviewerName: `${userData.firstName} ${userData.lastName}`,
+                    reviewerImage: userData.profileImage || null
+                  };
+                }
+              }
+              return review;
+            } catch (error) {
+              console.error('Error fetching reviewer details:', error);
+              return review;
+            }
+          })
+        );
+        
+        setReviews(enhancedReviews);
+      } catch (error) {
+        console.error('Error fetching reviews:', error);
+      } finally {
+        setReviewsLoading(false);
+      }
+    };
+
+    if (user) {
+      fetchReviews();
+    }
+  }, [id, user]);
+
   // handle disabled date click
   const handleDisabledDateClick = useCallback(() => {
     if (!arePrereqsComplete(bookingPrereqs)) {
@@ -319,6 +398,20 @@ const handleCompareClick = useCallback(() => {
       });
     }
   };
+
+  // check URL and open dialog
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const openReviews = urlParams.get('openReviews');
+      if (openReviews === 'true') {
+        setShouldOpenReviews(true);
+        setShowReviews(true);
+        
+        router.replace(`/viewDoctor/${id}`);
+      }
+    }
+  }, [id, router]);
 
   if (authLoading || (!authLoading && !user)) {
     return null;
@@ -467,32 +560,54 @@ const handleCompareClick = useCallback(() => {
                   </div>
                   <div className="w-full h-px bg-gray-300 dark:bg-zinc-800 mt-4 mb-4 block sm:hidden" />
                 </div>
-                {/* TODO: add real reviews and ratings */}
-                <div className="w-full sm:w-2/3 sm:pl-5 sm:border-l border-gray-300 dark:border-zinc-800">
-                  <p className="text-gray-600 dark:text-gray-400 text-md italic">
-                    "Dr. {doctor?.lastName} is an exceptional physician. Their expertise and caring approach made me feel comfortable throughout my entire visit. Highly recommended!"
-                  </p>
-                  <div className="text-right">
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <span
-                          className="font-semibold text-sm underline cursor-pointer hover:text-gray-700 dark:hover:text-gray-300"
-                          onClick={() => {
-                            console.log("Opening modal for doctor ID:", id);
-                            setShowReviews(true);
-                          }}
-                        >
-                          See all {doctor?.reviewCount ?? 0} reviews
-                        </span>
-                      </DialogTrigger>
-                      <DialogContent>
-                        <DialogHeader>
-                          <DialogTitle>Reviews for Dr. {doctor?.lastName}</DialogTitle>
-                        </DialogHeader>
-                        <ReviewsHistory doctorId={id} />
-                      </DialogContent>
-                    </Dialog>
-                  </div>
+                <div className="w-full sm:w-2/3 sm:pl-5 sm:border-l border-gray-300 dark:border-zinc-800 flex flex-col justify-between min-h-[100px]">
+                  {reviewsLoading ? (
+                    <>
+                      <div className="mb-2">
+                        <Skeleton className="h-16 w-full" />
+                      </div>
+                      <div className="text-right mt-auto pt-2">
+                        <Skeleton className="h-4 w-24 ml-auto" />
+                      </div>
+                    </>
+                  ) : reviews.length > 0 ? (
+                    <>
+                      <div className="text-gray-600 dark:text-gray-400 text-md italic mb-2">
+                        "{reviews[0].review}"
+                      </div>
+                      <div className="text-right mt-auto pt-2">
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <span
+                              className="font-semibold text-sm underline cursor-pointer hover:text-gray-700 dark:hover:text-gray-300"
+                            >
+                              See all {reviews.length} reviews
+                            </span>
+                          </DialogTrigger>
+                          <DialogContent className="fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] w-[calc(100%-32px)] sm:w-[600px]">
+                            <DialogHeader>
+                              <DialogTitle>Reviews for {doctor?.degree === 'MD' ? 'Dr.' : ''} {doctor?.firstName} {doctor?.lastName}</DialogTitle>
+                              <DialogDescription>
+                                View all reviews and ratings
+                              </DialogDescription>
+                            </DialogHeader>
+                            <ReviewsHistory doctorId={id} preloadedReviews={reviews} isLoading={reviewsLoading} doctorName={displayName} />
+                          </DialogContent>
+                        </Dialog>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="flex flex-col items-center justify-center h-full">
+                        <div className="text-gray-500 dark:text-gray-400 text-sm text-center">
+                          No reviews yet for {doctor?.degree === 'MD' ? 'Dr.' : ''} {doctor?.firstName} {doctor?.lastName}
+                        </div>
+                        <div className="text-gray-400 dark:text-gray-500 text-xs text-center mt-1">
+                          Be the first to share your experience
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -867,6 +982,29 @@ const handleCompareClick = useCallback(() => {
               Report
             </Button>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={showReviews || shouldOpenReviews}
+        onOpenChange={(open) => {
+          setShowReviews(open);
+          setShouldOpenReviews(open);
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Reviews for {doctor?.degree === 'MD' ? 'Dr.' : ''} {doctor?.firstName} {doctor?.lastName}</DialogTitle>
+            <DialogDescription>
+              View all reviews and ratings
+            </DialogDescription>
+          </DialogHeader>
+          <ReviewsHistory 
+            doctorId={id} 
+            preloadedReviews={reviews} 
+            isLoading={reviewsLoading}
+            doctorName={`${doctor?.degree === 'MD' ? 'Dr.' : ''} ${doctor?.firstName} ${doctor?.lastName}`}
+          />
         </DialogContent>
       </Dialog>
     </div>
