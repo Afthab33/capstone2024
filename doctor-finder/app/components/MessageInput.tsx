@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';// get stuff from Firebase Storage
+import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage';// get stuff from Firebase Storage
 import { app } from "../authcontext"; // Import Firebase app
 import EmojiPicker, { Theme } from 'emoji-picker-react';
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { ArrowUp, Smile, X, Paperclip } from "lucide-react";
 import { useTheme } from 'next-themes';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useDropzone } from 'react-dropzone';
 
 interface MessageInputProps {
   sendMessage: () => void;
@@ -27,19 +28,26 @@ function MessageInput({ sendMessage, message, setMessage, image, setImage }: Mes
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { theme } = useTheme();
+  const [isDragActive, setIsDragActive] = useState(false);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files ? e.target.files[0] : null;
-    if (selectedFile) {
-      setFile(selectedFile);
-      // Display image preview
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(selectedFile);
-    }
-  };
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop: (acceptedFiles) => {
+      const selectedFile = acceptedFiles[0];
+      if (selectedFile) {
+        setFile(selectedFile);
+        // Display image preview
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setImagePreview(reader.result as string);
+        };
+        reader.readAsDataURL(selectedFile);
+      }
+    },
+    accept: {
+      'image/*': ['.jpeg', '.jpg', '.png', '.gif']
+    },
+    maxFiles: 1
+  });
 
   const handleUpload = async () => {
     if (!file) {
@@ -75,11 +83,20 @@ function MessageInput({ sendMessage, message, setMessage, image, setImage }: Mes
     setMessage((prevMessage) => prevMessage + emojiData.emoji);
   };
 
+  const handleDialogOpen = () => {
+    // if there's an image already uploaded (either from preview or final upload)
+    if (imagePreview || image) {
+      // if we have a final uploaded image but no preview, create a preview from it
+      if (image && !imagePreview) {
+        setImagePreview(image);
+      }
+    }
+    setIsDialogOpen(true);
+  };
+
   const handleDialogClose = () => {
     setIsDialogOpen(false);
-    setImagePreview(null);
-    setFile(null);
-    setUploadProgress(null);
+    // don't reset the imagePreview here so it persists between dialog opens
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -91,6 +108,34 @@ function MessageInput({ sendMessage, message, setMessage, image, setImage }: Mes
     }
   };
 
+  const handleDeleteImage = async () => {
+    try {
+      // if there's an uploaded image in Firebase storage
+      if (image) {
+        // create a reference to the image in Firebase storage
+        const storage = getStorage(app);
+        const imageRef = ref(storage, image);
+        
+        try {
+          // delete the image from Firebase storage
+          await deleteObject(imageRef);
+          console.log("Image deleted from storage successfully");
+        } catch (error) {
+          console.error("Error deleting image from storage:", error);
+          // continue with UI cleanup even if storage deletion fails
+        }
+      }
+      
+      // clear all states
+      setImage(null);
+      setFile(null);
+      setImagePreview(null);
+      setUploadProgress(null);
+    } catch (error) {
+      console.error("Error in handleDeleteImage:", error);
+    }
+  };
+
   return (
     <div className='flex items-center'>
       <div className='relative flex-1 flex items-center gap-2 p-2 border border-gray-300 dark:border-zinc-800 rounded-full'>
@@ -98,7 +143,7 @@ function MessageInput({ sendMessage, message, setMessage, image, setImage }: Mes
           variant="outline" 
           size="icon"
           className="h-8 w-8 rounded-full shrink-0"
-          onClick={() => setIsDialogOpen(true)}
+          onClick={handleDialogOpen}
         >
           <Paperclip className={`${image ? "text-primary" : "text-muted-foreground"} h-4 w-4`} />
         </Button>
@@ -172,7 +217,7 @@ function MessageInput({ sendMessage, message, setMessage, image, setImage }: Mes
 
       {/* image upload dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-[425px] w-[90vw] max-w-[90vw] rounded-lg">
+        <DialogContent className="sm:max-w-[500px] w-[90vw] max-w-[90vw] rounded-lg">
           <DialogHeader>
             <DialogTitle>Upload Image</DialogTitle>
             <DialogDescription>
@@ -181,49 +226,70 @@ function MessageInput({ sendMessage, message, setMessage, image, setImage }: Mes
           </DialogHeader>
           
           <div className="space-y-4">
-            {/* preview section */}
-            {imagePreview && (
-              <div className="flex justify-center">
-                <div className="relative w-60 h-60 rounded-md overflow-hidden">
+            {/* preview section - show either the preview or the uploaded image */}
+            {(imagePreview || image) && (
+              <div className="flex flex-col items-center gap-2">
+                <div className="relative max-w-full rounded-md overflow-hidden">
                   <img
-                    src={imagePreview}
+                    src={imagePreview || image || ''}
                     alt="Preview"
-                    className="w-full h-full object-cover"
+                    className="max-h-[300px] w-auto object-contain"
                   />
+                  
+                  {uploadProgress !== null && (
+                    <div className="w-full bg-gray-200 dark:bg-zinc-800 rounded-full h-2.5 mt-2">
+                      <div 
+                        className="bg-primary h-2.5 rounded-full" 
+                        style={{ width: `${uploadProgress}%` }}
+                      ></div>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
 
-            {/* file input section */}
-            <div className="space-y-4">
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-gray-200 file:text-gray-700 hover:file:bg-gray-300 dark:file:bg-zinc-800 dark:file:text-zinc-300 dark:hover:file:bg-zinc-700"
-              />
-              
-              <div className="flex justify-end gap-2">
-                <Button variant="outline" onClick={handleDialogClose}>
-                  Cancel
-                </Button>
-                <Button
-                  type="button"
-                  onClick={handleUpload}
-                  disabled={!file || uploadProgress !== null}
-                >
-                  {uploadProgress !== null ? 'Uploading...' : 'Upload'}
-                </Button>
-              </div>
-              
-              {uploadProgress !== null && (
-                <div className="w-full bg-gray-200 dark:bg-zinc-800 rounded-full h-2.5 mt-2">
-                  <div 
-                    className="bg-primary h-2.5 rounded-full" 
-                    style={{ width: `${uploadProgress}%` }}
-                  ></div>
-                </div>
+            {/* dropzone section */}
+            <div
+              {...getRootProps()}
+              className={`p-8 border-2 border-dashed rounded-lg cursor-pointer
+                ${isDragActive 
+                  ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' 
+                  : 'border-gray-300 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800'
+                }
+                hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors`}
+            >
+              <input {...getInputProps()} />
+              {uploadProgress !== null ? (
+                <p className="text-center text-gray-500 dark:text-gray-400">Uploading...</p>
+              ) : isDragActive ? (
+                <p className="text-center text-blue-500 dark:text-blue-400">Drop the image here...</p>
+              ) : (
+                <p className="text-center text-gray-500 dark:text-gray-400">
+                  Drag and drop an image here, or click to select
+                </p>
               )}
+            </div>
+              
+            <div className="flex justify-end gap-2">
+              {(imagePreview || image) && (
+                <Button 
+                  variant="destructive" 
+                  onClick={handleDeleteImage}
+                >
+                  <X className="h-4 w-4 mr-2" />
+                  {image ? "Delete Image" : "Remove Image"}
+                </Button>
+              )}
+              <Button variant="outline" onClick={handleDialogClose}>
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                onClick={handleUpload}
+                disabled={!file || uploadProgress !== null}
+              >
+                {uploadProgress !== null ? 'Uploading...' : 'Upload'}
+              </Button>
             </div>
           </div>
         </DialogContent>

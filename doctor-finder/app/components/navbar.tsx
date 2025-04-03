@@ -337,12 +337,12 @@ const Navbar = () => {
                       </DropdownMenuItem>
                     )}
                     <DropdownMenuItem 
-                      className="cursor-pointer py-2 border border-gray-200 dark:border-zinc-800" 
+                      className="cursor-pointer py-2 mt-2 border border-gray-200 dark:border-zinc-800" 
                       onClick={handleNewMessageClick}
                     >
-                      <div className="flex items-center justify-center w-full text-primary">
+                      <div className="flex items-center justify-center w-full text-primary dark:text-secondary">
                         <Edit2 className="mr-2 h-4 w-4" />
-                        <span>New Message</span>
+                        <span className='text-muted-foreground'>New Message</span>
                       </div>
                     </DropdownMenuItem>
                   </DropdownMenuContent>

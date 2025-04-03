@@ -21,9 +21,10 @@ interface MessageCardProps {
   message: Message;
   me: User;
   other: User;
+  isConsecutive?: boolean;
 }
 
-function MessageCard({ message, me, other }: MessageCardProps) {
+function MessageCard({ message, me, other, isConsecutive = false }: MessageCardProps) {
   const isMessageFromMe = message.senderId === me.id;
   
   const formatTimeAgo = (time: Timestamp) => {
@@ -53,13 +54,17 @@ function MessageCard({ message, me, other }: MessageCardProps) {
   };
 
   return (
-    <div key={message.id} className={`flex mb-4 ${isMessageFromMe ? 'justify-end' : 'justify-start'}`}>
+    <div key={message.id} className={`flex ${isConsecutive ? 'mb-3' : 'mb-3'} ${isMessageFromMe ? 'justify-end' : 'justify-start'}`}>
       <div className={`flex items-start ${isMessageFromMe ? 'flex-row-reverse' : 'flex-row'} gap-2`}>
-        <img
-          className='w-10 h-10 rounded-full overflow-hidden'
-          src={isMessageFromMe ? me.profileImage : other.profileImage || "/profpic.png"}
-          alt='Avatar'
-        />
+        {!isConsecutive ? (
+          <img
+            className='w-10 h-10 rounded-full overflow-hidden'
+            src={isMessageFromMe ? me.profileImage : other.profileImage || "/profpic.png"}
+            alt='Avatar'
+          />
+        ) : (
+          <div className="w-10 h-10"></div> 
+        )}
         
         <div className={getMessageContainerStyles()}>
           {message.image && (

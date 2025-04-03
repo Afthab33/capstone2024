@@ -144,8 +144,8 @@ export default function Home() {
                 placeholder="Search by specialty, name, or location..."
                 className="px-4 py-3 w-full border-none focus:ring-0 dark:text-white focus:outline-none dark:bg-zinc-950 text-foreground"
               />
-              <button type="submit" className="bg-primary h-10 w-10 p-2 flex items-center justify-center rounded-full hover:bg-primary/90 text-white mr-1">
-                <Search className="h-5 w-5" />
+              <button type="submit" className="bg-primary h-10 w-10 p-3 flex items-center justify-center rounded-full hover:bg-primary/90 text-white mr-1">
+                <Search className="h-7 w-7" />
               </button>
             </form>
           </div>

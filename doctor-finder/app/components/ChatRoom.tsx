@@ -40,6 +40,10 @@ interface MessageGroup {
   messages: Message[];
 }
 
+interface ProcessedMessage extends Message {
+  isConsecutive?: boolean;
+}
+
 function ChatRoom({ selectedChatroom }: ChatRoomProps) {
     const messagesContainerRef = useRef<HTMLDivElement>(null);
     // messages feature
@@ -105,7 +109,16 @@ function ChatRoom({ selectedChatroom }: ChatRoomProps) {
     // try to auto scroll to bottom of chat
     useEffect(() => {
       if (messagesContainerRef.current) {
-        messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+        // add a small delay before scrolling to the bottom
+        setTimeout(() => {
+          const container = messagesContainerRef.current;
+          if (container) {
+            container.scrollTo({
+              top: container.scrollHeight,
+              behavior: 'smooth'
+            });
+          }
+        }, 300);
       }
     }, [messages]);
 
@@ -210,6 +223,22 @@ function ChatRoom({ selectedChatroom }: ChatRoomProps) {
       }
     };
 
+    // process consecutive messages
+    const processConsecutiveMessages = (messages: Message[]): ProcessedMessage[] => {
+      return messages.map((message, index, array) => {
+        // check if this message is consecutive (same sender as previous and both are text-only)
+        const isConsecutive = index > 0 && 
+                             message.senderId === array[index - 1].senderId && 
+                             !message.image && 
+                             !array[index - 1].image;
+        
+        return {
+          ...message,
+          isConsecutive
+        };
+      });
+    };
+
     // Current log in user
     return (
       <div className='flex flex-col h-screen'>
@@ -218,7 +247,7 @@ function ChatRoom({ selectedChatroom }: ChatRoomProps) {
           </div>
         <div 
           ref={messagesContainerRef}
-          className='flex-1 overflow-y-auto px-12 pt-4 max-h-[80vh]'
+          className='flex-1 overflow-y-auto px-12 pt-4 max-h-[80vh] scroll-smooth'
         >
           {groupMessagesByTime(messages).map((group, groupIndex) => (
             <div key={groupIndex}>
@@ -227,8 +256,15 @@ function ChatRoom({ selectedChatroom }: ChatRoomProps) {
                   {group.timestamp}
                 </span>
               </div>
-              {group.messages.map((message) => (
-                <MessageCard key={message.id} message={message} me={me} other={other} />
+              {processConsecutiveMessages(group.messages).map((message, messageIndex) => (
+                <div key={message.id} className={message.isConsecutive ? '-mt-2' : ''}>
+                  <MessageCard 
+                    message={message} 
+                    me={me} 
+                    other={other} 
+                    isConsecutive={message.isConsecutive} 
+                  />
+                </div>
               ))}
             </div>
           ))}

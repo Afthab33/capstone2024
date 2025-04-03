@@ -13,6 +13,7 @@ const nextConfig = {
         'encrypted-tbn0.gstatic.com',
         'firebasestorage.googleapis.com',
         'lh3.googleusercontent.com',
+        'www.bing.com',
       ],
     },
   }
