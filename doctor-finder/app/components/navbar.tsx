@@ -317,9 +317,9 @@ const Navbar = () => {
                                   className="rounded-full object-cover w-10 h-10"
                                 />
                               </div>
-                              <div className="flex flex-col flex-1">
-                                <span className="font-medium">{notification.senderName}</span>
-                                <span className="text-sm text-muted-foreground">{notification.content}</span>
+                              <div className="flex flex-col flex-1 min-w-0">
+                                <span className="font-medium truncate">{notification.senderName}</span>
+                                <span className="text-sm text-muted-foreground break-words overflow-hidden text-ellipsis line-clamp-2">{notification.content}</span>
                               </div>
                               <ChevronRight className="h-5 w-5 text-muted-foreground flex-shrink-0 ml-2" />
                             </div>

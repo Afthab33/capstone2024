@@ -76,6 +76,11 @@ const formatMessageTime = (timestamp: Timestamp | null): string => {
   return `${months} ${months === 1 ? 'month' : 'months'} ago`;
 };
 
+const truncateMessage = (message: string | null, maxLength: number = 30): string => {
+  if (!message) return "No messages yet";
+  return message.length > maxLength ? `${message.substring(0, maxLength)}...` : message;
+};
+
 function UserChat({ userData, setSelectedChatroom, selectedChatroomId }: UserChatProps) {
   const { toast } = useToast();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -423,7 +428,7 @@ function UserChat({ userData, setSelectedChatroom, selectedChatroomId }: UserCha
             <UsersCard
               name={`${chatroom.usersData[chatroom.users.find((id) => id !== userData.id) as string].firstName} ${chatroom.usersData[chatroom.users.find((id) => id !== userData.id) as string].lastName}`}
               avatarUrl={chatroom.usersData[chatroom.users.find((id) => id !== userData.id) as string].profileImage}
-              latestMessage={chatroom.lastMessage}
+              latestMessage={truncateMessage(chatroom.lastMessage)}
               time={formatMessageTime(chatroom.timestamp)}
               type="chat"
             />
