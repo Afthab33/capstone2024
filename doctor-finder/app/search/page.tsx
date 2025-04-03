@@ -612,10 +612,75 @@ const SearchContent = () => {
   );
 };
 
+// new SkeletonLoading component
+const SkeletonLoading = () => {
+  return (
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-36">
+      <div className="mb-8 mt-4">
+        {/* filter skeleton */}
+        <div className="flex flex-wrap gap-2 mb-4">
+          <Skeleton className="h-10 w-28" />
+          <Skeleton className="h-10 w-28" />
+          <Skeleton className="h-10 w-28" />
+          <Skeleton className="h-10 w-28" />
+          <Skeleton className="h-10 w-36" />
+        </div>
+      </div>
+
+      {/* result count skeleton */}
+      <div className="mb-4 text-sm text-muted-foreground">
+        <Skeleton className="h-8 w-24" />
+      </div>
+      
+      {/* doctor card skeletons */}
+      <div className="space-y-4">
+        {[1, 2, 3, 4].map((i) => (
+          <div key={i} className="flex flex-col sm:flex-row w-full p-4 rounded-lg">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center sm:space-x-6 w-full">
+              {/* profile image skeleton */}
+              <div className="profile-image mb-4 sm:mb-0">
+                <Skeleton className="w-28 h-28 rounded-full" />
+              </div>
+
+              <div className="w-full relative">
+                {/* name and specialty skeletons */}
+                <div>
+                  <Skeleton className="h-6 w-48 mb-1" />
+                  <Skeleton className="h-5 w-36 mb-3" />
+                </div>
+
+                {/* info line skeletons */}
+                <div className="flex flex-col sm:flex-col gap-1 text-sm sm:text-base">
+                  <div className="flex items-center gap-2">
+                    <Skeleton className="h-5 w-5" />
+                    <Skeleton className="h-5 w-32" />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Skeleton className="h-5 w-5" />
+                    <Skeleton className="h-5 w-64" />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Skeleton className="h-5 w-5" />
+                    <Skeleton className="h-5 w-72" />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Skeleton className="h-5 w-5" />
+                    <Skeleton className="h-5 w-56" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 // main page component with suspense fallback
 const SearchPage = () => {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<SkeletonLoading />}>
       <SearchContent />
     </Suspense>
   );
