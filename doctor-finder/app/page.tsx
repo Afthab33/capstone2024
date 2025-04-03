@@ -8,6 +8,7 @@ import DoctorProfileCard from './components/DoctorProfileCard';
 import { initializeFirebase, db as getFirebaseDb } from './authcontext';
 import Link from 'next/link';
 import { Search } from 'lucide-react';
+import Image from 'next/image';
 
 interface Doctor {
   id: string;
@@ -107,14 +108,19 @@ export default function Home() {
 
   return (
     <div className="container max-w-full flex flex-col">
-      <div className="hero-section py-16 sm:py-32 relative text-white">
-        <div className="absolute inset-0 z-0">
-          <img 
-            src="/hero4.png" 
-            alt="Hero background" 
-            className="w-full h-full object-cover"
+      <div className="hero-section py-16 sm:py-32 relative text-white bg-[#B5DDF8]">
+        <div className="absolute inset-0 z-0 bg-[#B5DDF8]">
+          <Image
+            src="/hero4.png"
+            alt="Doctor Finder Hero"
+            fill
+            priority
+            sizes="100vw"
+            style={{
+              objectFit: 'cover',
+              objectPosition: 'center',
+            }}
           />
-          <div className="absolute inset-0 bg-black bg-opacity-0"></div>
         </div>
         <div className="relative z-10">
           <h1 className="text-3xl sm:text-4xl md:text-5xl text-center font-semibold px-4">
