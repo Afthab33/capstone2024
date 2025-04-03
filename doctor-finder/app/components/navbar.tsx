@@ -7,14 +7,15 @@ import { Button } from "@/components/ui/button";
 import { useAuth, auth as getFirebaseAuth, clearUserCache, db as getFirebaseDb } from "../authcontext";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { useState, useEffect } from 'react';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, collection, query, orderBy, limit, where, getDocs } from 'firebase/firestore';
 import { useTheme } from "next-themes";                     // Dark/Light Mode
-import { Moon, Sun } from "lucide-react";                   // Dark/Light Mode
+import { Moon, Sun, ChevronRight, Edit2 } from "lucide-react";                   // Dark/Light Mode
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 interface UserData {
   role?: string;
+  profileImage?: string;
 }
 
 const Navbar = () => {
@@ -25,6 +26,13 @@ const Navbar = () => {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const { theme, setTheme } = useTheme();
+  const [notifications, setNotifications] = useState<{
+    senderId: string;
+    content: string;
+    senderName: string;
+    time: any;
+    senderProfileImage?: string;
+  }[]>([]);
   
   useEffect(() => {
     const fetchUserData = async () => {
@@ -46,6 +54,67 @@ const Navbar = () => {
     }
   }, [user]);
 
+  useEffect(() => {
+    const fetchRecentMessages = async () => {
+      if (!user) return;
+      
+      try {
+        const chatroomsQuery = query(
+          collection(getFirebaseDb(), 'chatrooms'),
+          where('users', 'array-contains', user.uid)
+        );
+        
+        const chatroomDocs = await getDocs(chatroomsQuery);
+        const chatroomIds = chatroomDocs.docs.map(doc => doc.id);
+        
+        const recentMessages: any[] = [];
+        
+        for (const chatroomId of chatroomIds) {
+          const messagesQuery = query(
+            collection(getFirebaseDb(), 'messages'),
+            where('chatRoomId', '==', chatroomId),
+            where('senderId', '!=', user.uid),
+            orderBy('senderId'),
+            orderBy('time', 'desc'),
+            limit(1)
+          );
+          
+          const messagesDocs = await getDocs(messagesQuery);
+          
+          if (!messagesDocs.empty) {
+            const messageDoc = messagesDocs.docs[0];
+            const messageData = messageDoc.data();
+            
+            const chatroomData = chatroomDocs.docs.find(doc => doc.id === chatroomId)?.data();
+            const senderId = messageData.senderId;
+            const senderData = chatroomData?.usersData[senderId];
+            
+            // Format the sender's name with their title
+            const senderTitle = senderData.role === 'doctor' 
+              ? `Dr. ${senderData.firstName} ${senderData.lastName}${senderData.degree ? `, ${senderData.degree}` : ''}`
+              : `${senderData.firstName} ${senderData.lastName}`;
+            
+            recentMessages.push({
+              senderId: senderId,
+              content: messageData.content || (messageData.image ? "Sent an image" : ""),
+              senderName: senderTitle,
+              time: messageData.time,
+              senderProfileImage: senderData.profileImage || '/profpic.png'
+            });
+          }
+        }
+        
+        recentMessages.sort((a, b) => b.time - a.time);
+        setNotifications(recentMessages.slice(0, 3));
+        
+      } catch (error) {
+        console.error('Error fetching recent messages:', error);
+      }
+    };
+
+    fetchRecentMessages();
+  }, [user]);
+
   const getSettingsRoute = () => {
     if (!user || !userData) return '/login';
     return userData.role === 'doctor' ? '/dsettings' : '/psettings';
@@ -63,6 +132,26 @@ const Navbar = () => {
     e.preventDefault();
     if (searchQuery.trim() !== "") {
       router.push(`/search?query=${encodeURIComponent(searchQuery)}`);
+    }
+  };
+
+  const handleNotificationClick = (notification: any) => {
+    localStorage.setItem('selectedChatId', notification.senderId);
+    
+    if (pathname === '/DoctorChat') {
+      window.location.reload();
+    } else {
+      router.push('/DoctorChat');
+    }
+  };
+
+  const handleNewMessageClick = () => {
+    localStorage.setItem('openNewChat', 'true');
+    
+    if (pathname === '/DoctorChat') {
+      window.location.reload();
+    } else {
+      router.push('/DoctorChat');
     }
   };
 
@@ -191,20 +280,87 @@ const Navbar = () => {
               </>
             ) : user ? (
               <>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <div>
+                      <Image
+                        src="/notifications.svg"
+                        alt="Notifications"
+                        width={40}
+                        height={40}
+                        className='cursor-pointer hover:opacity-80 shadow-[0_0_3px_rgba(0,0,0,0.3)] rounded-full p-0.5 dark:hidden'
+                      />
+                      <Image
+                        src="/notificationsdark.svg"
+                        alt="Notifications"
+                        width={40}
+                        height={40}
+                        className='cursor-pointer bg-zinc-800 hover:opacity-80 shadow-[0_0_3px_rgba(0,0,0,0.3)] rounded-full p-0.5 hidden dark:block'
+                      />
+                    </div>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-[300px]">
+                    {notifications.length > 0 ? (
+                      notifications.map((notification, index) => (
+                        <div key={index}>
+                          <DropdownMenuItem 
+                            className="cursor-pointer py-3"
+                            onClick={() => handleNotificationClick(notification)}
+                          >
+                            <div className="flex items-center w-full">
+                              <div className="flex-shrink-0 mr-3">
+                                <Image
+                                  src={notification.senderProfileImage || '/profpic.png'}
+                                  alt="Profile"
+                                  width={40}
+                                  height={40}
+                                  className="rounded-full object-cover w-10 h-10"
+                                />
+                              </div>
+                              <div className="flex flex-col flex-1">
+                                <span className="font-medium">{notification.senderName}</span>
+                                <span className="text-sm text-muted-foreground">{notification.content}</span>
+                              </div>
+                              <ChevronRight className="h-5 w-5 text-muted-foreground flex-shrink-0 ml-2" />
+                            </div>
+                          </DropdownMenuItem>
+                          {index < notifications.length - 1 && (
+                            <div className="h-px bg-border mx-2" />
+                          )}
+                        </div>
+                      ))
+                    ) : (
+                      <DropdownMenuItem>
+                        <div className="text-center w-full text-muted-foreground">
+                          No new messages
+                        </div>
+                      </DropdownMenuItem>
+                    )}
+                    <DropdownMenuItem 
+                      className="cursor-pointer py-2 border border-gray-200 dark:border-zinc-800" 
+                      onClick={handleNewMessageClick}
+                    >
+                      <div className="flex items-center justify-center w-full text-primary">
+                        <Edit2 className="mr-2 h-4 w-4" />
+                        <span>New Message</span>
+                      </div>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
                 <Link href={getSettingsRoute()}>
                   <Image
                     src="/settings2.png"
                     alt="Settings"
                     width={40}
                     height={40}
-                    className="cursor-pointer hover:opacity-80 shadow-[0_0_3px_rgba(0,0,0,0.3)] rounded-full p-0.5 dark:hidden"
+                    className='cursor-pointer hover:opacity-80 shadow-[0_0_3px_rgba(0,0,0,0.3)] rounded-full p-0.5 dark:hidden'
                   />
                   <Image
                     src="/settings2dark.svg"
                     alt="Settings"
                     width={40}
                     height={40}
-                    className="cursor-pointer bg-zinc-800 hover:opacity-80 shadow-[0_0_3px_rgba(0,0,0,0.3)] rounded-full p-0.5 hidden dark:block"
+                    className='cursor-pointer bg-zinc-800 hover:opacity-80 shadow-[0_0_3px_rgba(0,0,0,0.3)] rounded-full p-0.5 hidden dark:block'
                   />
                 </Link>
                 <Dialog open={isLogoutDialogOpen} onOpenChange={setIsLogoutDialogOpen}>

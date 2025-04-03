@@ -1,7 +1,7 @@
 // ChatRoom.tsx
 'use client';
 
-import React,{useState,useEffect} from 'react';
+import React,{useState,useEffect, useRef} from 'react';
 import MessageCard from './MessageCard';
 import MessageInput from './MessageInput';
 import { addDoc, collection,doc, serverTimestamp,onSnapshot,query,where,orderBy,updateDoc } from 'firebase/firestore';
@@ -35,7 +35,13 @@ interface ChatRoomProps {
   selectedChatroom: Chatroom;
 }
 
+interface MessageGroup {
+  timestamp: string;
+  messages: Message[];
+}
+
 function ChatRoom({ selectedChatroom }: ChatRoomProps) {
+    const messagesContainerRef = useRef<HTMLDivElement>(null);
     // messages feature
     const me = selectedChatroom?.myData;
     const other = selectedChatroom?.otherData;
@@ -74,85 +80,172 @@ function ChatRoom({ selectedChatroom }: ChatRoomProps) {
     ]
     */
 
-    /*
+    // get messages 
     useEffect(() => {
-      // Scroll to the bottom when messages change
+      if (!chatRoomId) return;
+    
+      const unsubscribe = onSnapshot(
+        query(collection(firestore, 'messages'), where("chatRoomId", "==", chatRoomId), orderBy('time', 'asc')),
+        (snapshot) => {
+          const messages = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            content: doc.data().content,
+            senderId: doc.data().senderId,
+            time: doc.data().time, // Ensure `time` matches the expected type (either a timestamp or string)
+            image: doc.data().image || null, // Ensure `image` can be `null`
+          }));
+    
+          setMessages(messages);
+        }
+      );
+    
+      return unsubscribe;
+    }, [chatRoomId]);
+
+    // try to auto scroll to bottom of chat
+    useEffect(() => {
       if (messagesContainerRef.current) {
         messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
       }
     }, [messages]);
-  */
 
-  // get messages 
-  useEffect(() => {
-    if (!chatRoomId) return;
-  
-    const unsubscribe = onSnapshot(
-      query(collection(firestore, 'messages'), where("chatRoomId", "==", chatRoomId), orderBy('time', 'asc')),
-      (snapshot) => {
-        const messages = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          content: doc.data().content,
-          senderId: doc.data().senderId,
-          time: doc.data().time, // Ensure `time` matches the expected type (either a timestamp or string)
-          image: doc.data().image || null, // Ensure `image` can be `null`
-        }));
-  
-        setMessages(messages);
+    const sendMessage = async () => {
+    const messageCollection = collection(firestore, 'messages');
+
+    // if msg is empty don't send to firebase
+    if (message.trim() === '' && !image) {
+      return;
+    }
+
+    try {
+      const messageData = {
+         chatRoomId,
+         senderId: me.id,
+         content: message,
+         time: serverTimestamp(),
+         image: image,
+      };
+
+      await addDoc(messageCollection, messageData);
+      
+      const chatroomRef = doc(firestore, 'chatrooms', chatRoomId);
+      await updateDoc(chatroomRef, {
+        lastMessage: message ? message : "Image",
+        timestamp: serverTimestamp(),
+      });
+
+      setMessage('');
+      setImage(null);
+    } catch(err) {
+      console.error(err);
+    }
+    }
+
+    const groupMessagesByTime = (messages: Message[]): MessageGroup[] => {
+      const groups: MessageGroup[] = [];
+      let currentGroup: Message[] = [];
+      let lastTimestamp: Date | null = null;
+
+      messages.forEach((message) => {
+        const messageDate = message.time?.toDate();
+        
+        if (!messageDate) return;
+
+        // start a new group if:
+        // 1. this is the first message
+        // 2. more than 1 hour has passed since the last message
+        // 3. it's a different day than the last message
+        if (!lastTimestamp || 
+            (messageDate.getTime() - lastTimestamp.getTime() > 60 * 60 * 1000) ||
+            !isSameDay(messageDate, lastTimestamp)) {
+          
+          if (currentGroup.length > 0) {
+            groups.push({
+              timestamp: lastTimestamp ? formatGroupTimestamp(lastTimestamp) : '',
+              messages: currentGroup
+            });
+          }
+          currentGroup = [message];
+        } else {
+          currentGroup.push(message);
+        }
+        
+        lastTimestamp = messageDate;
+      });
+
+      // add the last group
+      if (currentGroup.length > 0 && lastTimestamp) {
+        groups.push({
+          timestamp: lastTimestamp ? formatGroupTimestamp(lastTimestamp) : '',
+          messages: currentGroup
+        });
       }
-    );
-  
-    return unsubscribe;
-  }, [chatRoomId]);
 
-  const sendMessage = async () => {
-  const messageCollection = collection(firestore, 'messages');
-
-  // if msg is empty don't send to firebase
-  if (message.trim() === '' && !image) {
-    return;
-  }
-
-  try {
-    const messageData = {
-       chatRoomId,
-       senderId: me.id,
-       content: message,
-       time: serverTimestamp(),
-       image: image,
+      return groups;
     };
 
-    await addDoc(messageCollection, messageData);
-    setMessage('');
-    setImage(null);
-      
-    // update chatroom last message
-    const chatroomRef = doc(firestore, 'chatrooms', chatRoomId);
-     
-    await updateDoc(chatroomRef, {
-      lastMessage:message ? message : "Image",
-    });
+    const isSameDay = (date1: Date, date2: Date): boolean => {
+      return date1.getDate() === date2.getDate() &&
+             date1.getMonth() === date2.getMonth() &&
+             date1.getFullYear() === date2.getFullYear();
+    };
 
-  } catch(err) {
-    console.error(err);
-  }
-  }
+    const formatGroupTimestamp = (date: Date): string => {
+      const now = new Date();
+      const isToday = isSameDay(date, now);
+      const isYesterday = isSameDay(date, new Date(now.setDate(now.getDate() - 1)));
+
+      if (isToday) {
+        return `Today at ${date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true })}`;
+      } else if (isYesterday) {
+        return `Yesterday at ${date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true })}`;
+      } else {
+        // format: "Fri, Mar 22 at 11:05 AM"
+        const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
+        const monthName = date.toLocaleDateString('en-US', { month: 'short' });
+        const day = date.getDate();
+        const time = date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true });
+        
+        return `${dayName}, ${monthName} ${day} at ${time}`;
+      }
+    };
 
     // Current log in user
     return (
       <div className='flex flex-col h-screen'>
-        <div className='text-xl font-bold py-4 pl-4'>{other.firstName + " " + other.lastName}</div>
-        <hr></hr>
-        <div className='flex-1 overflow-y-auto p-10 max-h-[70vh]'>
-          {/* Messages container with overflow and scroll */}
-          {messages?.map((message) => (
-            <MessageCard key={message.id} message={message} me={me} other={other}/>
+        <div className='text-xl font-semibold flex items-center gap-3 py-5 pl-12 border-b border-gray-300 dark:border-zinc-800'>
+          <span>{`${other.firstName} ${other.lastName}`}</span>
+          </div>
+        <div 
+          ref={messagesContainerRef}
+          className='flex-1 overflow-y-auto px-12 pt-4 max-h-[80vh]'
+        >
+          {groupMessagesByTime(messages).map((group, groupIndex) => (
+            <div key={groupIndex}>
+              <div className={`flex justify-center ${groupIndex === 0 ? 'mb-4' : 'my-16'}`}>
+                <span className="text-zinc-600 dark:text-zinc-400 text-sm px-4 py-1 rounded-full">
+                  {group.timestamp}
+                </span>
+              </div>
+              {group.messages.map((message) => (
+                <MessageCard key={message.id} message={message} me={me} other={other} />
+              ))}
+            </div>
           ))}
         </div>
   
         {/* Input box at the bottom*/}
-        <MessageInput sendMessage={sendMessage} message={message} setMessage={setMessage} 
-        image={image} setImage={setImage} />
+        <div className='mb-16 flex justify-center b'>
+          <div className='w-[100%] max-w-6xl'>
+            <MessageInput 
+              sendMessage={sendMessage} 
+              message={message} 
+              setMessage={setMessage} 
+              image={image} 
+              setImage={setImage} 
+            />
+          </div>
+        </div>
       </div>
     );
   }

@@ -553,7 +553,9 @@ const handleCompareClick = useCallback(() => {
               <div className="flex flex-col sm:flex-row">
                 <div className="w-full sm:w-1/3 flex flex-col items-center sm:items-center justify-center sm:pr-5 mb-4 sm:mb-0">
                   <div className="flex flex-row sm:flex-col items-center gap-3 sm:gap-2">
-                    <span className="text-5xl sm:text-6xl font-regular leading-none">{doctor?.rating}</span>
+                    <span className="text-5xl sm:text-6xl font-regular leading-none">
+                      {doctor?.rating === 0 ? '0' : doctor?.rating?.toFixed(1)}
+                    </span>
                       <div>
                         <StarRating rating={doctor?.rating ?? 0} />
                       </div>

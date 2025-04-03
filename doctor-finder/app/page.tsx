@@ -107,34 +107,43 @@ export default function Home() {
 
   return (
     <div className="container max-w-full flex flex-col">
-      <div className="hero-section bg-background text-white py-16 sm:py-32">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl text-center font-semibold px-4">
-          Find the best doctor near you.
-        </h1>
-        
-        {/* search bar */}
-        <div className="mt-12 flex justify-center px-4">
-          <form onSubmit={(e) => {
-            e.preventDefault();
-            const searchInput = e.currentTarget.querySelector('input') as HTMLInputElement;
-            if (searchInput.value.trim()) {
-              window.location.href = `/search?query=${encodeURIComponent(searchInput.value.trim())}`;
-            }
-          }} className="flex items-center w-full max-w-2xl border rounded-full overflow-hidden bg-white dark:bg-zinc-900">
-            <div className="flex items-center justify-center pl-4">
-              <Search className="h-5 w-5 text-gray-400" />
-            </div>
-            <input
-              type="text"
-              placeholder="Search by specialty, name, or location..."
-              className="px-4 py-3 w-full border-none focus:ring-0 dark:text-white focus:outline-none dark:bg-zinc-900 text-foreground"
-            />
-            <button type="submit" className="bg-primary h-10 w-10 p-2 flex items-center justify-center rounded-full hover:bg-primary/90 text-white mr-1">
-              <Search className="h-5 w-5" />
-            </button>
-          </form>
+      <div className="hero-section py-16 sm:py-32 relative text-white">
+        <div className="absolute inset-0 z-0">
+          <img 
+            src="/hero4.png" 
+            alt="Hero background" 
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-black bg-opacity-0"></div>
         </div>
-        
+        <div className="relative z-10">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl text-center font-semibold px-4">
+            Find the best doctor near you.
+          </h1>
+          
+          {/* search bar */}
+          <div className="mt-12 flex justify-center px-4">
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              const searchInput = e.currentTarget.querySelector('input') as HTMLInputElement;
+              if (searchInput.value.trim()) {
+                window.location.href = `/search?query=${encodeURIComponent(searchInput.value.trim())}`;
+              }
+            }} className="flex items-center w-full max-w-2xl border rounded-full overflow-hidden bg-white dark:bg-zinc-950">
+              <div className="flex items-center justify-center pl-4">
+                <Search className="h-5 w-5 text-gray-400" />
+              </div>
+              <input
+                type="text"
+                placeholder="Search by specialty, name, or location..."
+                className="px-4 py-3 w-full border-none focus:ring-0 dark:text-white focus:outline-none dark:bg-zinc-950 text-foreground"
+              />
+              <button type="submit" className="bg-primary h-10 w-10 p-2 flex items-center justify-center rounded-full hover:bg-primary/90 text-white mr-1">
+                <Search className="h-5 w-5" />
+              </button>
+            </form>
+          </div>
+        </div>
         {/*<div className="mt-6">
           <Link href="/compare" passHref>
             <button className="bg-blue-500 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-600 transition">
@@ -241,7 +250,7 @@ export default function Home() {
               <div className={`absolute top-8 left-1/2 transform -translate-x-1/2 z-10 transition-opacity duration-300 hidden lg:block ${mapLoaded ? 'opacity-100' : 'opacity-0'}`}>
                 <Link
                   href={'/locationSearch'}
-                  className="bg-white px-3 py-2 dark:bg-zinc-900 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200 flex items-center space-x-2 whitespace-nowrap text-sm"
+                  className="bg-white px-3 py-2 dark:bg-zinc-950 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200 flex items-center space-x-2 whitespace-nowrap text-sm"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-accent" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />

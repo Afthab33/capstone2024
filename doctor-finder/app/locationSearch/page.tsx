@@ -26,6 +26,10 @@ interface Doctor {
   availability?: {
     [date: string]: string[];
   };
+  coordinates?: {
+    lat: number;
+    lng: number;
+  };
 }
 
 // memoized doctor card component
@@ -66,6 +70,7 @@ const MemoizedDoctorCard = memo(({ doctor, isHovered, onHover }: {
         rating={doctor.rating || 0}
         reviewCount={doctor.reviewCount || 0}
         availability={doctor.availability}
+        coordinates={doctor.coordinates}
       />
     </div>
   </div>

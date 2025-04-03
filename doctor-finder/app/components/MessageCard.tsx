@@ -23,58 +23,53 @@ interface MessageCardProps {
   other: User;
 }
 
-function MessageCard( {message, me, other} : MessageCardProps) {
-    const isMessageFromMe = message.senderId === me.id;
+function MessageCard({ message, me, other }: MessageCardProps) {
+  const isMessageFromMe = message.senderId === me.id;
+  
+  const formatTimeAgo = (time: Timestamp) => {
+    const date = time?.toDate();
+    const momentDate = moment(date);
+    return momentDate.fromNow();
+  };
 
-    const formatTimeAgo = (time: Timestamp) => {
-      const date = time?.toDate();
-      const momentDate = moment(date);
-      return momentDate.fromNow();
-    };
+  const getMessageContainerStyles = () => {
+    const baseStyles = '';
+    const roundedStyle = message.image ? 'rounded-lg px-2 py-2' : 'rounded-full px-4 py-2';
+    
+    if (isMessageFromMe) {
+      return `${baseStyles} ${roundedStyle} bg-primary dark:text-zinc-800 text-white self-end`;
+    }
+    return `${baseStyles} ${roundedStyle} bg-neutral-200 dark:bg-zinc-800 dark:text-zinc-100 text-neutral-600 self-start`;
+  };
 
-    // Major change: w-10 h-10 -> flex items-start
-    return (
-      <div key={message.id} className={`flex mb-4 ${isMessageFromMe ? 'justify-end' : 'justify-start'}`}>
-        {/* Avatar on the left or right based on the sender */}
-        <div className={`flex items-start ${isMessageFromMe ? 'ml-2 mr-2' : 'mr-2'}`}>
-        {
-          !isMessageFromMe && (
-            <img
-              className='w-10 h-10 rounded-full overflow-hidden'
-              src={other.profileImage}
-              alt='Avatar'
-            />
-          )
-        }
-        {
-          isMessageFromMe && (
-            <img
-              className='w-10 h-10 rounded-full overflow-hidden'
-              src={me.profileImage}
-              alt='Avatar'
-            />
-          )
-        }
-        {/*
-          <img
-            className="w-10 h-10 object-cover rounded-full"
-            src={message.avatarUrl}
-            alt="Avatar"
-          />
-        */}
+  const getImageStyles = () => {
+    const baseStyles = 'rounded-lg max-h-60 w-auto ';
+    if (message.image) {
+      return isMessageFromMe 
+        ? `${baseStyles}` 
+        : `${baseStyles}`;
+    }
+    return '';
+  };
 
-          {/* Edit this to change output of messages*/}
-          {/* Message bubble on the right or left based on the sender, think ml-3 look good enough change color here */}
-          <div className={`text-white p-2 rounded-md ${isMessageFromMe ? 'bg-blue-500 self-end ml-3' : 'bg-gray-400 self-start ml-3'}`}>
-            {
-              message.image && <img src={message.image} className='max-h-60 w-60 mb-4' />
-            }
-            <p>{message.content}</p>
-            <div className="text-xs text-gray-200">{formatTimeAgo(message.time)}</div>
-          </div>
+  return (
+    <div key={message.id} className={`flex mb-4 ${isMessageFromMe ? 'justify-end' : 'justify-start'}`}>
+      <div className={`flex items-start ${isMessageFromMe ? 'flex-row-reverse' : 'flex-row'} gap-2`}>
+        <img
+          className='w-10 h-10 rounded-full overflow-hidden'
+          src={isMessageFromMe ? me.profileImage : other.profileImage || "/profpic.png"}
+          alt='Avatar'
+        />
+        
+        <div className={getMessageContainerStyles()}>
+          {message.image && (
+            <img src={message.image} className={getImageStyles()} alt="Message attachment" />
+          )}
+          <p className={`text-md ${message.image ? 'mt-1' : ''}`}>{message.content}</p>
         </div>
       </div>
-    );
-  }
-  
-  export default MessageCard;
+    </div>
+  );
+}
+
+export default MessageCard;

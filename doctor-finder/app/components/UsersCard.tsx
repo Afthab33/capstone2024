@@ -27,7 +27,7 @@ function UsersCard({ name, latestMessage, type, time=String(Timestamp), avatarUr
   const formattedTime = formatTime(time);
   */
   return (
-    <div className="flex items-center p-4 border-b border-gray-200 relative hover:cursor-pointer">
+    <div className="flex items-center p-4 border-b border-gray-200 dark:border-zinc-800 relative hover:cursor-pointer">
 
       {/* Avatar on the left find image later when marcus does images */}
       <div className="flex-shrink-0 mr-4 relative">
