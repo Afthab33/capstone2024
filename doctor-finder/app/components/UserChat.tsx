@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from "react";
 import { db2 as firestore } from "../authcontext"; // omg confusing
-import { collection, onSnapshot, query, addDoc, serverTimestamp, where, getDocs, orderBy, doc, writeBatch } from 'firebase/firestore';
+import { collection, onSnapshot, query, addDoc, serverTimestamp, where, getDocs, orderBy, doc, writeBatch, getDoc } from 'firebase/firestore';
 import UsersCard from "./UsersCard";
 import { Timestamp } from 'firebase/firestore';
 import { Button } from "@/components/ui/button";
@@ -125,8 +125,46 @@ function UserChat({ userData, setSelectedChatroom, selectedChatroomId }: UserCha
       orderBy('timestamp', 'desc')  // most recent chats appear at the top
     );
 
-    const unsubscribeChatrooms = onSnapshot(chatroomsQuery, (snapshot) => {
-      const chatrooms = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })) as Chatroom[];
+    const unsubscribeChatrooms = onSnapshot(chatroomsQuery, async (snapshot) => {
+      // get all unique user IDs from chatrooms
+      const userIds = new Set<string>();
+      snapshot.docs.forEach(doc => {
+        const chatroom = doc.data();
+        chatroom.users.forEach((userId: string) => {
+          if (userId !== userData.id) {
+            userIds.add(userId);
+          }
+        });
+      });
+
+      // fetch latest user data for all users
+      const usersData: Record<string, UserData> = {};
+      await Promise.all(Array.from(userIds).map(async (userId) => {
+        const userDoc = await getDoc(doc(firestore, 'users', userId));
+        if (userDoc.exists()) {
+          usersData[userId] = { id: userDoc.id, ...userDoc.data() } as UserData;
+        }
+      }));
+
+      // update chatrooms with latest user data
+      const chatrooms = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        const updatedUsersData = { ...data.usersData };
+        
+        // replace with latest user data
+        data.users.forEach((userId: string) => {
+          if (usersData[userId]) {
+            updatedUsersData[userId] = usersData[userId];
+          }
+        });
+        
+        return { 
+          id: doc.id, 
+          ...data,
+          usersData: updatedUsersData 
+        } as Chatroom;
+      });
+      
       setLoading(false);
       setUserChatrooms(chatrooms);
     });

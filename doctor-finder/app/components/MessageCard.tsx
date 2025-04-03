@@ -62,11 +62,13 @@ function MessageCard({ message, me, other, isConsecutive = false }: MessageCardP
         {/* image message */}
         <div className={`flex items-start ${isMessageFromMe ? 'flex-row-reverse' : 'flex-row'} gap-2 max-w-full`}>
           {!isConsecutive ? (
-            <img
-              className='w-10 h-10 rounded-full overflow-hidden flex-shrink-0'
-              src={isMessageFromMe ? me.profileImage : other.profileImage || "/profpic.png"}
-              alt='Avatar'
-            />
+            <div className='w-10 h-10 rounded-full overflow-hidden flex-shrink-0 relative'>
+              <img
+                className='w-full h-full object-cover'
+                src={isMessageFromMe ? me.profileImage : other.profileImage || "/profpic.png"}
+                alt='Avatar'
+              />
+            </div>
           ) : (
             <div className="w-10 h-10 flex-shrink-0"></div> 
           )}
@@ -92,11 +94,13 @@ function MessageCard({ message, me, other, isConsecutive = false }: MessageCardP
     <div key={message.id} className={`flex ${isConsecutive ? 'mb-3' : 'mb-3'} ${isMessageFromMe ? 'justify-end' : 'justify-start'} w-full`}>
       <div className={`flex items-start ${isMessageFromMe ? 'flex-row-reverse' : 'flex-row'} gap-2 max-w-full`}>
         {!isConsecutive ? (
-          <img
-            className='w-10 h-10 rounded-full overflow-hidden flex-shrink-0'
-            src={isMessageFromMe ? me.profileImage : other.profileImage || "/profpic.png"}
-            alt='Avatar'
-          />
+          <div className='w-10 h-10 rounded-full overflow-hidden flex-shrink-0 relative'>
+            <img
+              className='w-full h-full object-cover'
+              src={isMessageFromMe ? me.profileImage : other.profileImage || "/profpic.png"}
+              alt='Avatar'
+            />
+          </div>
         ) : (
           <div className="w-10 h-10 flex-shrink-0"></div> 
         )}
