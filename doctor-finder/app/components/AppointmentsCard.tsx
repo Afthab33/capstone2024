@@ -10,7 +10,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { format, isBefore, startOfDay } from 'date-fns';
 import { DialogTrigger } from '@radix-ui/react-dialog';
 import DoctorProfileImage from '../viewDoctor/[id]/components/DoctorProfileImage';
-import StarRating from '../viewDoctor/[id]/components/StarRating';
 import useUserLocation from '../hooks/useUserLocation';
 
 
@@ -27,6 +26,12 @@ interface AppointmentsCardProps {
     degree: string;
     location: string;
   };
+
+  patientInfo: { 
+    email:string;
+    name:string;  
+  };
+
   visitDetails: {
     reason: string;
     insurance: string;
@@ -51,6 +56,7 @@ export default function AppointmentsCard({
   status,
   coordinates,
   datetime = new Timestamp(0, 0),
+  patientInfo
 }: AppointmentsCardProps) {
 
   const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -72,7 +78,7 @@ export default function AppointmentsCard({
   const { toast } = useToast();
   const { coordinates: userCoords } = useUserLocation();
   const [distance, setDistance] = useState<number | null>(null);
-
+  const rating = doctor?.rating;
   // calculate distance when coordinates change
   useEffect(() => {
     if (!userCoords || !coordinates) return;
@@ -328,7 +334,7 @@ export default function AppointmentsCard({
 
             <div className='flex mb-2 space-y-1 mr-8' >
               <div>
-                <div className='flex gap-2'> <Star className="flex-shrink-0 w-5 h-5 text-yellow-400 unfill-current mb-2" /> <div>{doctor?.rating} · {doctor?.reviewCount == null ? 0 : doctor?.reviewCount}  Reviews </div></div>
+                <div className='flex gap-2'> <Star className="flex-shrink-0 w-5 h-5 text-yellow-400 unfill-current mb-2" /> <div>{ rating > 0 ? rating.toFixed(1) : '0'} · {doctor?.reviewCount == null ? 0 : doctor?.reviewCount}  Reviews </div></div>
                 <div className='flex gap-2' > <MapPin className="flex-shrink-0 w-5 h-5 text-black-500 mb-2" /> {distance !== null ? `${distance} mi · ` : ''} {doctorInfo.location}</div>
                 <div className='flex gap-2' ><Shield className="flex-shrink-0 w-5 h-5 text-blue-500 mb-2" />
                   <div>Accepts  {doctor?.acceptedInsurances.slice(0, 3).join(', ')}
@@ -347,7 +353,7 @@ export default function AppointmentsCard({
         </div>
         <div className="Buttons">
           <div className="flex flex-col gap-2 items-end">
-            <p className="hidden xl:block text-sm text-gray-500 mb-3 text-center dark:text-gray-400">Next available: {nextAvailableText}</p>
+            <p className="hidden xl:block text-sm text-gray-500 mb-3 mt-4 text-center dark:text-gray-400">Next available: {nextAvailableText}</p>
 
             <Link href={`/viewDoctor/${doctorId}`}>
               <div className="inline-flex w-full xl:w-auto items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 min-w-[200px]">

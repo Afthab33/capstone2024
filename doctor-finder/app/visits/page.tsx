@@ -26,6 +26,10 @@ interface AppointmentHistoryprops {
     lat: number;
     lng: number;
   };
+  patientInfo:{
+    name:string;
+    email:string;
+  }
 }
 
 
@@ -47,11 +51,11 @@ export default function AppointmentsHistory() {
 
       //find doctor and clinic patient has booked 
       const appointmentsQuery = query(collection(db, 'appointments')
-        // ,where('status','==','complete')
-        , where('status', '==', 'scheduled')
-        , where('datetime', '<=', ts)
-        , orderBy('datetime', 'desc')
-
+      ,where('patientId','==',user?.uid)
+      , where('status', '==', 'scheduled')
+      , where('datetime', '<=', ts)
+      , orderBy('datetime', 'desc')
+        
       );
 
       try {
@@ -77,7 +81,7 @@ export default function AppointmentsHistory() {
       setLoading(false);
     }
   }, [user]);
-
+  
 
   if (loading) return <div>Loding...</div>
   if (error) return <div>Error: {error}</div>
@@ -100,6 +104,7 @@ export default function AppointmentsHistory() {
                 doctorId={appointment.doctorId}
                 status={appointment.status}
                 coordinates={appointment.coordinates}
+                patientInfo={appointment.patientInfo}
               />
                 {index < appointments.length - 1 && (
                   <div className="border-b border-gray-200 dark:border-zinc-800 my-4" />
