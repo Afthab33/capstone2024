@@ -15,6 +15,7 @@ interface AppointmentHistoryprops {
     specialty: string;
     degree: string;
     location: string;
+   
   };
   visitDetails: {
     reason: string;
@@ -22,7 +23,7 @@ interface AppointmentHistoryprops {
     patientType: 'new' | 'returning';
     notes?: string;
   };
-  coordinates?: {
+   coordinates?: {
     lat: number;
     lng: number;
   };

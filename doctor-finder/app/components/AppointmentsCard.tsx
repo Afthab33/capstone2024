@@ -54,7 +54,6 @@ export default function AppointmentsCard({
   visitDetails,
   doctorId,
   status,
-  coordinates,
   datetime = new Timestamp(0, 0),
   patientInfo
 }: AppointmentsCardProps) {
@@ -76,9 +75,11 @@ export default function AppointmentsCard({
   const currentTime = useMemo(() => new Date(), []);
   const [availabilityData, setAvailabilityData] = useState<{ [key: string]: string[] }>({});
   const { toast } = useToast();
-  const { coordinates: userCoords } = useUserLocation();
+  // const { coordinates: userCoords } = useUserLocation();
   const [distance, setDistance] = useState<number | null>(null);
   const rating = doctor?.rating;
+  const coordinates =doctor?.coordinates
+ const{coordinates : userCoords } = useUserLocation();
   // calculate distance when coordinates change
   useEffect(() => {
     if (!userCoords || !coordinates) return;
