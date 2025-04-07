@@ -15,7 +15,6 @@ interface AppointmentHistoryprops {
     specialty: string;
     degree: string;
     location: string;
-   
   };
   visitDetails: {
     reason: string;

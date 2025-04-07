@@ -27,9 +27,9 @@ interface AppointmentsCardProps {
     location: string;
   };
 
-  patientInfo: { 
-    email:string;
-    name:string;  
+  patientInfo: {
+    email: string;
+    name: string;
   };
 
   visitDetails: {
@@ -78,8 +78,8 @@ export default function AppointmentsCard({
   // const { coordinates: userCoords } = useUserLocation();
   const [distance, setDistance] = useState<number | null>(null);
   const rating = doctor?.rating;
-  const coordinates =doctor?.coordinates
- const{coordinates : userCoords } = useUserLocation();
+  const coordinates = doctor?.coordinates
+  const { coordinates: userCoords } = useUserLocation();
   // calculate distance when coordinates change
   useEffect(() => {
     if (!userCoords || !coordinates) return;
@@ -291,9 +291,9 @@ export default function AppointmentsCard({
     const starMap = new Map();
     for (let index = 1; index <= 5; index++) {
       //add fill stars
-      if(index <= starCount){
+      if (index <= starCount) {
         starMap.set(index, <Star className="w-4 h-4 sm:w-14 sm:h-14 text-blue-400 fill-current" />);
-      } 
+      }
       //unfill stars
       else {
         starMap.set(index, <Star className="w-2 h-2 sm:w-14 sm:h-14 text-blue-400 unfill-current " strokeWidth={1.5} />);
@@ -335,7 +335,16 @@ export default function AppointmentsCard({
 
             <div className='flex mb-2 space-y-1 mr-8' >
               <div>
-                <div className='flex gap-2'> <Star className="flex-shrink-0 w-5 h-5 text-yellow-400 unfill-current mb-2" /> <div>{ rating > 0 ? rating.toFixed(1) : '0'} · {doctor?.reviewCount == null ? 0 : doctor?.reviewCount}  Reviews </div></div>
+                <div className='flex gap-2'> <Star className="flex-shrink-0 w-5 h-5 text-yellow-400 unfill-current mb-2" />
+                  <div>{rating > 0 ? rating.toFixed(1) : '0'} ·
+                    <span className="font-semibold hover:text-gray-700 dark:hover:text-gray-300" onClick={() => {
+                      if (doctorId) {
+                        window.location.href = `/viewDoctor/${doctorId}?openReviews=true`;
+                      }
+                    }}> {doctor?.reviewCount == null ? 0 : doctor?.reviewCount}  reviews 
+                    </span>
+                  </div>
+                </div>
                 <div className='flex gap-2' > <MapPin className="flex-shrink-0 w-5 h-5 text-black-500 mb-2" /> {distance !== null ? `${distance} mi · ` : ''} {doctorInfo.location}</div>
                 <div className='flex gap-2' ><Shield className="flex-shrink-0 w-5 h-5 text-blue-500 mb-2" />
                   <div>Accepts  {doctor?.acceptedInsurances.slice(0, 3).join(', ')}
