@@ -1,8 +1,8 @@
 
 import { Button } from '@/components/ui/button';
-import { Star, Shield, MessageCircle, MapPin } from 'lucide-react';
+import { Star, Shield, MessageCircle, MapPin, StarHalf } from 'lucide-react';
 import Link from 'next/link';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { collection, addDoc, Timestamp, getDoc, doc } from 'firebase/firestore';
 import { db as getFirebaseDb, useAuth } from '../authcontext';
 import { useToast } from '@/hooks/use-toast';
@@ -53,9 +53,7 @@ export default function AppointmentsCard({
   doctorInfo,
   visitDetails,
   doctorId,
-  status,
   datetime = new Timestamp(0, 0),
-  patientInfo
 }: AppointmentsCardProps) {
 
   const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -75,11 +73,13 @@ export default function AppointmentsCard({
   const currentTime = useMemo(() => new Date(), []);
   const [availabilityData, setAvailabilityData] = useState<{ [key: string]: string[] }>({});
   const { toast } = useToast();
-  // const { coordinates: userCoords } = useUserLocation();
   const [distance, setDistance] = useState<number | null>(null);
   const rating = doctor?.rating;
   const coordinates = doctor?.coordinates
   const { coordinates: userCoords } = useUserLocation();
+  const refs = useRef<(HTMLDivElement | null)[]>([]);
+  const [hoverIndex, setHoverIndex] = useState<number | null>(null);
+  const [isHalf, setIsHalf] = useState(false);
   // calculate distance when coordinates change
   useEffect(() => {
     if (!userCoords || !coordinates) return;
@@ -287,47 +287,92 @@ export default function AppointmentsCard({
     }
   };
 
-  const fillStars = () => {
-    const starMap = new Map();
-    for (let index = 1; index <= 5; index++) {
-      //add fill stars
-      if (index <= starCount) {
-        starMap.set(index, <Star className="w-4 h-4 sm:w-14 sm:h-14 text-blue-400 fill-current" />);
-      }
-      //unfill stars
-      else {
-        starMap.set(index, <Star className="w-2 h-2 sm:w-14 sm:h-14 text-blue-400 unfill-current " strokeWidth={1.5} />);
-      }
-    }
-    return <>
-      <div className='flex flex-row gap-4 items-center'>
-        {
-          Array.from(starMap.values(), (star, index: number) =>
-            <div key={index} >
-              <button
-                onClick={() => setStarCount(index + 1)}
-                onMouseEnter={() => setStarCount(index + 1)}
-                onMouseLeave={() => starCount == 1 ? setStarCount(index - 1) : <></>}
-              > {star}
-              </button>
-            </div>,
-          )
+ 
+  const fillStars=() => {
+    
+  
+    const handleMouseMove = (index: number) => (e: React.MouseEvent) => {
+      const element = refs.current[index];
+      if (element) {
+        const rect = element.getBoundingClientRect();
+        const relativeX = e.clientX - rect.left;
+        const halfway = relativeX < rect.width / 2;
+        if (hoverIndex !== index || isHalf !== halfway) {
+          setHoverIndex(index);
+          setIsHalf(halfway);
         }
+      }
+    };
+  
+    const handleMouseLeave = () => {
+      setHoverIndex(null);
+      setIsHalf(false);
+    };
+  
+    const handleClick = () => {
+      if (hoverIndex !== null) {
+        const newRating = hoverIndex + (isHalf ? 0.5 : 1);
+        setStarCount(newRating);
+      }
+    };
+  
+    const renderStar = (index: number) => {
+      let icon;
+      if (hoverIndex !== null) {
+        if (index < hoverIndex) {
+          icon = <Star className="text-blue-400 fill-current" size={60} />;
+        } else if (index === hoverIndex) {
+          icon = isHalf
+            ? <StarHalf className="text-blue-400 fill-current" size={60} />
+            : <Star className="text-blue-400 fill-current" size={60} />;
+        } else {
+          icon = <Star className="text-blue-300" strokeWidth={1.5} size={60} />;
+        }
+      } else {
+        if (index + 1 <= Math.floor(starCount)) {
+          icon = <Star className="text-blue-400 fill-current" size={60} />;
+        } else if (index + 1 - starCount === 0.5) {
+          icon = <StarHalf className="text-blue-400 fill-current" size={60} />;
+        } else {
+          icon = <Star className="text-blue-300" strokeWidth={1.5} size={60} />;
+        }
+      }
+      return icon;
+    };
+  
+    return (
+      <div
+        className="flex gap-2"
+        onMouseLeave={handleMouseLeave} // Now handles entire container
+      >
+        {[0, 1, 2, 3, 4].map((index) => (
+          <div
+            key={index}
+            ref={(el: HTMLDivElement | null) => {
+              refs.current[index] = el;
+            }}
+            onMouseMove={handleMouseMove(index)}
+            onClick={handleClick}
+            style={{ cursor: 'pointer' }}
+          >
+            {renderStar(index)}
+          </div>
+        ))}
       </div>
-    </>
-  }
-
+    );
+  };
+   
+  
 
   return (
     <>
-
       <div className="flex gap-2 flex-col lg:flex-row flex-1 items-center lg:items-start justify-between w-full max-w p-4  ">
         <div className="flex flex-col md:flex-row md:items-center space-x-4">
           <div className="profile-image">
             <DoctorProfileImage profileImage={doctor?.profileImage} />
           </div>
           <div className='flex flex-col'>
-            <div className='flex justify-left text-gray-500 mb-2 text-[15px] lg:-indent-36 mt-2' >
+            <div className='flex justify-left text-gray-500 mb-2 text-[15px] lg:-indent-32 mt-2 cursor-pointer' >
               {day}, {month} {date} {year}
             </div>
             <span className="text-lg font-semibold text-gray-800 dark:text-gray-200"> {doctorInfo.name}</span>
