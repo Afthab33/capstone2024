@@ -14,11 +14,15 @@ import { useToast } from "@/hooks/use-toast"
 import { ToastAction } from "@/components/ui/toast"
 import React from 'react';
 import { useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 
 import DoctorProfileImage from './components/DoctorProfileImage';
 import ActionButtons from './components/ActionButtons';
 import BookingForm from './components/BookingForm';
 import StarRating from './components/StarRating';
+
+import DoctorSelectionModal from '../../components/DoctorSelectionModal';
+import DoctorComparison from '../../components/DoctorComparison';
 import ReviewsHistory from './components/Reviews';
 import { getVisibleDates, formatDisplayName, resetVisibleDates } from './utils/dateUtils';
 import { findNextAvailableSlot } from './utils/availabilityUtils';
@@ -60,18 +64,31 @@ interface ReviewData {
   createdAt: any;
   [key: string]: any; 
 }
-
+interface Doctor {
+  id: string;
+  firstName: string;
+  lastName: string;
+  specialty?: string;
+  gender?: string;
+}
 const ViewDoctor = ({ params }: ViewDoctorProps) => {
+  console.log("Params:", params); // Debugging
   const { id } = use(params);
+  console.log("Doctor ID from params:", id); // Debugging
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
   const [doctor, setDoctor] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showCompareModal, setShowCompareModal] = useState(false);
+  const [selectedDoctor, setSelectedDoctor] = useState<any>(null);
+  const [doctors, setDoctors] = useState([]);
   const [userSymptoms, setUserSymptoms] = useState<string[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const currentTime = useMemo(() => new Date(), []);
-  
+  const [currentDoctor, setCurrentDoctor] = useState<Doctor | null>(null); // To store the current doctor
+
+
   const [availabilityData, setAvailabilityData] = useState<{ [key: string]: string[] }>({});
   const [weekOffset, setWeekOffset] = useState(0);
   const [bookingPrereqs, setBookingPrereqs] = useState<BookingPrereqs>({
@@ -102,16 +119,49 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
   const [reviews, setReviews] = useState<any[]>([]);
   const [reviewsLoading, setReviewsLoading] = useState(true);
 
+  useEffect(() => {
+    const fetchCurrentDoctor = async () => {
+      if (!id) {
+        console.error("Doctor ID is missing from params");
+        return;
+      }
+
+      try {
+        const db = getFirebaseDb();
+        const doctorDocRef = doc(db, "users", id); // Fetch from the 'users' collection
+        const doctorDoc = await getDoc(doctorDocRef);
+
+        if (doctorDoc.exists()) {
+          const doctorData = { id: doctorDoc.id, ...doctorDoc.data() } as Doctor;
+          console.log("Fetched current doctor:", doctorData); // Debugging
+          setCurrentDoctor(doctorData);
+        } else {
+          console.error("Doctor not found in Firestore.");
+        }
+      } catch (error) {
+        console.error("Error fetching doctor:", error);
+      }
+    };
+
+    fetchCurrentDoctor();
+  }, [id]);
+
+
   const handleReportClick = useCallback(() => {
     setShowReportDialog(true);
+
+    
   }, []);
+  const handleCompareClick = (doctorId: string) => {
+  if (!currentDoctor?.id) {
+    console.error("Current doctor ID is missing");
+    alert("Current doctor information is not loaded yet. Please try again.");
+    return;
+  }
 
-const handleCompareClick = useCallback(() => { 
-
-  console.log('Compare the Doctors');
-              }, []); 
-  
-  // if user is not logged in, redirect to login page
+  console.log("Navigating to compare page with:", currentDoctor.id, doctorId);
+  router.push(`/compare?doctor1=${currentDoctor.id}&doctor2=${doctorId}`);
+};
   useEffect(() => {
     if (!authLoading && !user) {
       localStorage.setItem('redirectAfterAuth', window.location.pathname);
@@ -293,8 +343,13 @@ const handleCompareClick = useCallback(() => {
       fetchReviews();
     }
   }, [id, user]);
-
-  // handle disabled date click
+  const handleClose = () => {
+    setShowCompareModal(false); // Close the modal
+  };
+  
+  const handleSelectDoctor = (doctor: Doctor) => {
+    console.log("Selected doctor for comparison:", doctor);
+  };
   const handleDisabledDateClick = useCallback(() => {
     if (!arePrereqsComplete(bookingPrereqs)) {
       setIncompleteFields({
@@ -399,7 +454,6 @@ const handleCompareClick = useCallback(() => {
     }
   };
 
-  // check URL and open dialog
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const urlParams = new URLSearchParams(window.location.search);
@@ -525,6 +579,7 @@ const handleCompareClick = useCallback(() => {
   if (error) return <div>{error}</div>;
 
   const displayName = formatDisplayName(doctor);
+  {console.log("Current doctor ID passed to ActionButtons:", currentDoctor?.id || "")}
 
   return (
     <div className="container mx-auto px-4 xs:px-4 sm:px-4 md:px-4 lg:px-24 pt-8 lg:pt-16">
@@ -647,7 +702,14 @@ const handleCompareClick = useCallback(() => {
               </div>
               <hr className="border-gray-200 dark:border-zinc-800" />
 
-              <ActionButtons onReportClick={handleReportClick} onCompareClick={handleCompareClick} />
+
+
+              <ActionButtons 
+              
+              onReportClick={handleReportClick}
+              onCompareClick={handleCompareClick}
+              currentDoctorId={currentDoctor?.id || ""}
+              />
             </div>
           </div>
         </div>
@@ -787,6 +849,28 @@ const handleCompareClick = useCallback(() => {
               </div>
             )}
 
+{showCompareModal && (
+  <DoctorSelectionModal
+    currentDoctor={
+      doctor || {
+        id: '',
+        firstName: 'Unknown',
+        lastName: 'Doctor',
+        specialty: 'N/A',
+        gender: 'N/A',
+      }
+    } // Pass the fetched doctor or a fallback
+    selectedDoctor={selectedDoctor}
+    onClose={handleClose}
+    onSelectDoctor={(doctor) => {
+      console.log('Selected doctor for comparison:', doctor);
+      setShowCompareModal(false); // Close the modal after selection
+    }}
+  />
+)}
+{selectedDoctor && doctor && (
+  <DoctorComparison doctor1={doctor} doctor2={selectedDoctor} />
+)}
             <div className="mt-2">
               <Button 
                 className="w-full bg-primary hover:bg-primary/90 text-white"
