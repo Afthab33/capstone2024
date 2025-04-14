@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
-import { db as getFirebaseDb } from '../authcontext';
+import { db as getFirebaseDb } from './app/authcontext';
 
 interface Doctor {
   id: string;
