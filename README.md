@@ -31,15 +31,28 @@ FIREBASE_STORAGE_BUCKET=<your-firebase-storage-bucket>
 FIREBASE_MESSAGING_SENDER_ID=<your-firebase-messaging-sender-id>
 FIREBASE_APP_ID=<your-firebase-app-id>
 FIREBASE_MEASUREMENT_ID=<your-firebase-measurement-id>
+GOOGLE_MAPS_API_KEY=<your-google-maps-api-key>
+IPGEOLOCATION_API_KEY=<your-ipgeolocation-api-key>
+```
+
+> [!WARNING]
+> Your Google Maps key only has to have embed capabilities.
+
+> [!WARNING]
+> You can get your IPGeolocation key from [here](https://ipgeolocation.io/ip-location-api.html).
+
+5. Run the Cloud Functions
+```
+cd functions; npm install; firebase deploy --only functions
+```
+
+6. Start the development server
+```
+cd ..; npm run dev
 ```
 
 
-5. Start the development server
-```
-npm run dev
-```
-
-6. Open your browser and navigate to `http://localhost:3000`
+7. Open your browser and navigate to `http://localhost:3000`
 
 ## Contributing
 
