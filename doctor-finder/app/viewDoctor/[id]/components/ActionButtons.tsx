@@ -11,7 +11,7 @@ interface ActionButtonsProps {
   currentDoctorId: string;
 }
 
-const ActionButtons: React.FC<ActionButtonsProps> = React.memo(({ onReportClick, currentDoctorId }) => {
+const ActionButtons: React.FC<ActionButtonsProps> = React.memo(({ onReportClick, onCompareClick, currentDoctorId }) => {
 const [doctors, setDoctors] = useState<{ id: string; name: string }[]>([]);
     const [modalOpen, setModalOpen] = useState(false);
     const router = useRouter();
@@ -43,7 +43,7 @@ const [doctors, setDoctors] = useState<{ id: string; name: string }[]>([]);
   
     const handleDoctorSelect = (doctorId: string) => {
       setModalOpen(false);
-      router.push(`/compare?doctor1=${currentDoctorId}&doctor2=${doctorId}`);
+      onCompareClick(doctorId);
     };
   
   
