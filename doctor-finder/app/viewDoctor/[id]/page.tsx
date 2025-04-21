@@ -4,7 +4,7 @@ import { use, useEffect, useState, useCallback, useMemo } from 'react';
 import { doc, getDoc, collection, addDoc, Timestamp, writeBatch, query, getDocs, where, orderBy } from 'firebase/firestore';
 import { db as getFirebaseDb } from '../../authcontext';
 import { useAuth } from '../../authcontext';
-import { Star, Shield, MessageCircle, Clock } from 'lucide-react';
+import { Star, Shield, MessageCircle, Clock, Users } from 'lucide-react';
 import { format, isBefore, startOfDay } from 'date-fns';
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle, DialogHeader, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
@@ -14,20 +14,18 @@ import { useToast } from "@/hooks/use-toast"
 import { ToastAction } from "@/components/ui/toast"
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { useParams } from 'next/navigation';
 
 import DoctorProfileImage from './components/DoctorProfileImage';
 import ActionButtons from './components/ActionButtons';
 import BookingForm from './components/BookingForm';
 import StarRating from './components/StarRating';
 
-import DoctorSelectionModal from '../../components/DoctorSelectionModal';
-import DoctorComparison from '../../components/DoctorComparison';
 import ReviewsHistory from './components/Reviews';
 import { getVisibleDates, formatDisplayName, resetVisibleDates } from './utils/dateUtils';
 import { findNextAvailableSlot } from './utils/availabilityUtils';
 import { arePrereqsComplete, validateBookingDetails } from './utils/bookingUtils';
 import type { ViewDoctorProps, UserData, BookingPrereqs } from './utils/types';
+import { initializeFirebase } from '../../authcontext';
 
 interface Appointment {
   id: string;
@@ -64,30 +62,36 @@ interface ReviewData {
   createdAt: any;
   [key: string]: any; 
 }
+
 interface Doctor {
   id: string;
   firstName: string;
   lastName: string;
   specialty?: string;
   gender?: string;
+  profileImage?: string;
+  acceptedInsurances?: string[];
+  spokenLanguages?: string[];
+  rating?: number;
+  degree?: string;
+  streetAddress?: string;
+  city?: string;
+  state?: string;
+  zipCode?: string;
+  role?: string;
 }
+
 const ViewDoctor = ({ params }: ViewDoctorProps) => {
-  console.log("Params:", params); // Debugging
   const { id } = use(params);
-  console.log("Doctor ID from params:", id); // Debugging
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
   const [doctor, setDoctor] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [showCompareModal, setShowCompareModal] = useState(false);
-  const [selectedDoctor, setSelectedDoctor] = useState<any>(null);
-  const [doctors, setDoctors] = useState([]);
   const [userSymptoms, setUserSymptoms] = useState<string[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const currentTime = useMemo(() => new Date(), []);
   const [currentDoctor, setCurrentDoctor] = useState<Doctor | null>(null); // To store the current doctor
-
 
   const [availabilityData, setAvailabilityData] = useState<{ [key: string]: string[] }>({});
   const [weekOffset, setWeekOffset] = useState(0);
@@ -118,6 +122,13 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
   const [shouldOpenReviews, setShouldOpenReviews] = useState(false);
   const [reviews, setReviews] = useState<any[]>([]);
   const [reviewsLoading, setReviewsLoading] = useState(true);
+  const [showCompareDialog, setShowCompareDialog] = useState(false);
+  const [doctorsToCompare, setDoctorsToCompare] = useState<Doctor[]>([]);
+  const [comparisonDoctors, setComparisonDoctors] = useState<Doctor[]>([]);
+  const [currentComparisonIndex, setCurrentComparisonIndex] = useState(0);
+  const [loadingComparisonDoctors, setLoadingComparisonDoctors] = useState(false);
+
+  const specialtyMatchClass = "text-primary font-medium relative inline-block after:absolute after:inset-0 after:animate-pulse after:bg-primary/20 after:-z-10 after:rounded-full after:blur-sm after:scale-110 px-1 py-0.5 z-0";
 
   useEffect(() => {
     const fetchCurrentDoctor = async () => {
@@ -127,6 +138,7 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
       }
 
       try {
+        await initializeFirebase();
         const db = getFirebaseDb();
         const doctorDocRef = doc(db, "users", id); // Fetch from the 'users' collection
         const doctorDoc = await getDoc(doctorDocRef);
@@ -146,21 +158,73 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
     fetchCurrentDoctor();
   }, [id]);
 
-
   const handleReportClick = useCallback(() => {
     setShowReportDialog(true);
-
-    
   }, []);
-  const handleCompareClick = useCallback((doctorId: string) => {
-    if (!id) {
-      console.error("Current doctor ID is missing");
-      return;
+
+  const handleCompareClick = useCallback(() => {
+    if (currentDoctor) {
+      setDoctorsToCompare([currentDoctor]);
+      fetchComparisonDoctors(currentDoctor);
     }
+    setShowCompareDialog(true);
+  }, [currentDoctor]);
+
+  const fetchComparisonDoctors = async (doctor: Doctor) => {
+    if (!doctor) return;
     
+    try {
+      setLoadingComparisonDoctors(true);
+      await initializeFirebase();
+      const db = getFirebaseDb();
+      
+      // get all doctors
+      const allDoctorsQuery = query(
+        collection(db, "users"),
+        where("role", "==", "doctor")
+      );
+      
+      const querySnapshot = await getDocs(allDoctorsQuery);
+      const allDoctors = querySnapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() } as Doctor))
+        .filter(d => d.id !== doctor.id); // exclude current doctor
+      
+      // separate doctors by specialty match
+      const sameSpecialtyDoctors = allDoctors.filter(d => 
+        d.specialty === doctor.specialty && doctor.specialty
+      );
+      const otherDoctors = allDoctors.filter(d => 
+        d.specialty !== doctor.specialty || !doctor.specialty
+      );
+      
+      // combine the arrays with specialty matches first
+      const sortedDoctors = [...sameSpecialtyDoctors, ...otherDoctors];
+      
+      console.log(`Found ${sameSpecialtyDoctors.length} doctors with same specialty and ${otherDoctors.length} other doctors`);
+      
+      setComparisonDoctors(sortedDoctors);
+      setCurrentComparisonIndex(0);
+    } catch (error) {
+      console.error("Error fetching comparison doctors:", error);
+    } finally {
+      setLoadingComparisonDoctors(false);
+    }
+  };
+  
+  const navigateComparisonDoctor = (direction: 'next' | 'prev') => {
+    if (comparisonDoctors.length === 0) return;
     
-    router.push(`/compare?doctor1=${id}&doctor2=${doctorId}`);
-  }, [id, router]);
+    if (direction === 'next') {
+      setCurrentComparisonIndex(prev => 
+        prev === comparisonDoctors.length - 1 ? 0 : prev + 1
+      );
+    } else {
+      setCurrentComparisonIndex(prev => 
+        prev === 0 ? comparisonDoctors.length - 1 : prev - 1
+      );
+    }
+  };
+
   useEffect(() => {
     if (!authLoading && !user) {
       localStorage.setItem('redirectAfterAuth', window.location.pathname);
@@ -342,13 +406,7 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
       fetchReviews();
     }
   }, [id, user]);
-  const handleClose = () => {
-    setShowCompareModal(false); // Close the modal
-  };
   
-  const handleSelectDoctor = (doctor: Doctor) => {
-    console.log("Selected doctor for comparison:", doctor);
-  };
   const handleDisabledDateClick = useCallback(() => {
     if (!arePrereqsComplete(bookingPrereqs)) {
       setIncompleteFields({
@@ -701,13 +759,10 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
               </div>
               <hr className="border-gray-200 dark:border-zinc-800" />
 
-
-
               <ActionButtons 
-              
-              onReportClick={handleReportClick}
-              onCompareClick={handleCompareClick}
-              currentDoctorId={currentDoctor?.id || ""}
+                onReportClick={handleReportClick}
+                onCompareClick={handleCompareClick}
+                currentDoctorId={currentDoctor?.id || ""}
               />
             </div>
           </div>
@@ -848,28 +903,6 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
               </div>
             )}
 
-{showCompareModal && (
-  <DoctorSelectionModal
-    currentDoctor={
-      doctor || {
-        id: '',
-        firstName: 'Unknown',
-        lastName: 'Doctor',
-        specialty: 'N/A',
-        gender: 'N/A',
-      }
-    } // Pass the fetched doctor or a fallback
-    selectedDoctor={selectedDoctor}
-    onClose={handleClose}
-    onSelectDoctor={(doctor) => {
-      console.log('Selected doctor for comparison:', doctor);
-      setShowCompareModal(false); // Close the modal after selection
-    }}
-  />
-)}
-{selectedDoctor && doctor && (
-  <DoctorComparison doctor1={doctor} doctor2={selectedDoctor} />
-)}
             <div className="mt-2">
               <Button 
                 className="w-full bg-primary hover:bg-primary/90 text-white"
@@ -1090,6 +1123,281 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
             isLoading={reviewsLoading}
             doctorName={`${doctor?.degree === 'MD' ? 'Dr.' : ''} ${doctor?.firstName} ${doctor?.lastName}`}
           />
+        </DialogContent>
+      </Dialog>
+
+      <Dialog 
+        open={showCompareDialog} 
+        onOpenChange={(open) => {
+          setShowCompareDialog(open);
+          if (!open) {
+            setTimeout(() => {
+              setDoctorsToCompare([]);
+              setComparisonDoctors([]);
+              setCurrentComparisonIndex(0);
+            }, 300);
+          }
+        }}
+      >
+        <DialogContent className="fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] w-[calc(100%-32px)] sm:w-[90%] max-w-[1200px] max-h-[90vh] overflow-y-auto rounded-lg border border-gray-200 dark:border-zinc-900 bg-white dark:bg-zinc-950 p-0 shadow-lg">
+          <DialogHeader className="p-6 pb-2 sticky top-0 bg-white dark:bg-zinc-950 z-10">
+            <DialogTitle className="text-xl font-semibold">Compare Doctors</DialogTitle>
+            <DialogDescription className="text-gray-500 mt-1.5 mb-0">
+              Compare {doctor?.firstName} {doctor?.lastName} with other doctors
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="px-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* current doctor */}
+            <div className="rounded-lg p-4">
+              <div className="flex items-start space-x-4 sm:space-x-6">
+                <DoctorProfileImage profileImage={doctor?.profileImage} />
+                <div className="mt-1 sm:mt-2">
+                  <h1 className="text-lg sm:text-xl font-semibold">
+                    {displayName}
+                  </h1>
+                  <p className={`text-base sm:text-lg inline-block ${
+                    comparisonDoctors[currentComparisonIndex]?.specialty === doctor?.specialty && doctor?.specialty
+                      ? specialtyMatchClass
+                      : 'text-gray-400'
+                  }`}>
+                    {doctor?.specialty}
+                  </p>
+                  
+                  <div className="flex items-center gap-2">
+                    <span className="text-md sm:text-md">
+                      {doctor?.streetAddress}, {doctor?.city}, {doctor?.state} {doctor?.zipCode}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-8 sm:mt-8 bg-gray-100 dark:bg-zinc-900 rounded-lg p-4 sm:p-5">
+                <div className="flex flex-col items-center justify-center">
+                  <div className="flex flex-row items-center gap-3 mb-2">
+                    <span className="text-5xl font-regular mt-2 leading-none">
+                      {doctor?.rating === 0 ? 
+                        '0' : doctor?.rating?.toFixed(1) || '0'}
+                    </span>
+                    <div>
+                      <StarRating rating={doctor?.rating ?? 0} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-8 sm:mt-8 space-y-4 sm:space-y-6">
+                <div className="space-y-1 relative">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <Shield className="w-8 h-8 sm:w-10 sm:h-10 text-blue-500 absolute top-1/2 -translate-y-1/2" />
+                    <h3 className="text-lg sm:text-lg font-semibold ml-12 sm:ml-14">Accepted Insurance</h3>
+                  </div>
+                  <div className="ml-12 sm:ml-14">
+                    <span className="text-md sm:text-md text-gray-500 dark:text-gray-400 truncate block">
+                      {doctor?.acceptedInsurances?.slice(0, 3).join(', ') || 'Insurance not available'}
+                      {doctor?.acceptedInsurances?.length && doctor?.acceptedInsurances?.length > 3 && (
+                        <span className="text-gray-500 dark:text-gray-400"> + {doctor.acceptedInsurances.length - 3} more</span>
+                      )}
+                    </span>
+                  </div>
+                </div>
+                <hr className="border-gray-200 dark:border-zinc-800" />
+
+                <div className="space-y-1 relative">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <MessageCircle className="w-8 h-8 sm:w-10 sm:h-10 text-black-500 absolute top-1/2 -translate-y-1/2" />
+                    <h3 className="text-lg sm:text-lg font-semibold ml-12 sm:ml-14">Spoken Languages</h3>
+                  </div>
+                  <div className="ml-12 sm:ml-14">
+                    <span className="text-md sm:text-md text-gray-500 dark:text-gray-400">
+                      {doctor?.spokenLanguages?.slice(0, 3).join(', ') || 'Languages not available'}
+                      {doctor?.spokenLanguages?.length && doctor?.spokenLanguages?.length > 3 && (
+                        <span className="text-gray-500 dark:text-gray-400"> + {doctor.spokenLanguages.length - 3} more</span>
+                      )}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* comparison doctor */}
+            {loadingComparisonDoctors ? (
+              <div className="rounded-lg p-4">
+                {/* doctor info skeleton */}
+                <div className="flex items-start space-x-4 sm:space-x-6">
+                  <Skeleton className="w-16 h-16 rounded-full" />
+                  <div className="mt-1 sm:mt-2">
+                    <Skeleton className="h-6 w-48 mb-2" />
+                    <Skeleton className="h-5 w-32 mb-2" />
+                    <Skeleton className="h-4 w-64" />
+                  </div>
+                </div>
+
+                {/* rating box skeleton */}
+                <div className="mt-8 sm:mt-12 bg-gray-100 dark:bg-zinc-900 rounded-lg p-4 sm:p-5">
+                  <div className="flex flex-col items-center justify-center">
+                    <div className="flex flex-row items-center gap-3">
+                      <Skeleton className="h-12 w-12" />
+                      <Skeleton className="h-6 w-32" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* info skeleton */}
+                <div className="mt-8 sm:mt-14 space-y-4 sm:space-y-6">
+                  <div className="space-y-1 relative">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <Skeleton className="w-10 h-10 absolute top-1/2 -translate-y-1/2" />
+                      <Skeleton className="h-6 w-48 ml-14" />
+                    </div>
+                    <div className="ml-12 sm:ml-14">
+                      <Skeleton className="h-4 w-64" />
+                    </div>
+                  </div>
+                  <hr className="border-gray-200 dark:border-zinc-800" />
+
+                  <div className="space-y-1 relative">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <Skeleton className="w-10 h-10 absolute top-1/2 -translate-y-1/2" />
+                      <Skeleton className="h-6 w-48 ml-14" />
+                    </div>
+                    <div className="ml-12 sm:ml-14">
+                      <Skeleton className="h-4 w-64" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : comparisonDoctors.length > 0 ? (
+              <div className="rounded-lg p-4">
+                {/* doctor info */}
+                <div className="flex items-start space-x-4 sm:space-x-6">
+                  <DoctorProfileImage profileImage={comparisonDoctors[currentComparisonIndex]?.profileImage} />
+                  <div className="mt-1 sm:mt-2">
+                    <h1 className="text-lg sm:text-xl font-semibold">
+                      {formatDisplayName(comparisonDoctors[currentComparisonIndex])}
+                    </h1>
+                    <p className={`text-base sm:text-lg inline-block ${
+                      comparisonDoctors[currentComparisonIndex]?.specialty === doctor?.specialty && doctor?.specialty
+                        ? specialtyMatchClass
+                        : 'text-gray-400'
+                    }`}>
+                      {comparisonDoctors[currentComparisonIndex]?.specialty}
+                    </p>
+                    
+                    <div className="flex items-center gap-2">
+                    <span className="text-md sm:text-md">
+                      {comparisonDoctors[currentComparisonIndex]?.streetAddress}, {comparisonDoctors[currentComparisonIndex]?.city}, {comparisonDoctors[currentComparisonIndex]?.state} {comparisonDoctors[currentComparisonIndex]?.zipCode}
+                    </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* rating box - simple */}
+                <div className="mt-8 sm:mt-8 bg-gray-100 dark:bg-zinc-900 rounded-lg p-4 sm:p-5">
+                  <div className="flex flex-col items-center justify-center">
+                    <div className="flex flex-row items-center gap-3 mb-2">
+                      <span className="text-5xl font-regular mt-2 leading-none">
+                        {comparisonDoctors[currentComparisonIndex]?.rating === 0 ? 
+                          '0' : comparisonDoctors[currentComparisonIndex]?.rating?.toFixed(1) || '0'}
+                      </span>
+                      <div>
+                        <StarRating rating={comparisonDoctors[currentComparisonIndex]?.rating ?? 0} />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* info */}
+                <div className="mt-8 sm:mt-8 space-y-4 sm:space-y-6">
+                  <div className="space-y-1 relative">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <Shield className="w-8 h-8 sm:w-10 sm:h-10 text-blue-500 absolute top-1/2 -translate-y-1/2" />
+                      <h3 className="text-lg sm:text-lg font-semibold ml-12 sm:ml-14">Accepted Insurance</h3>
+                    </div>
+                    <div className="ml-12 sm:ml-14">
+                      <span className="text-md sm:text-md text-gray-500 dark:text-gray-400 truncate block">
+                        {comparisonDoctors[currentComparisonIndex]?.acceptedInsurances?.slice(0, 3).join(', ') || 'Insurance not available'}
+                        {comparisonDoctors[currentComparisonIndex]?.acceptedInsurances?.length && comparisonDoctors[currentComparisonIndex]?.acceptedInsurances?.length > 3 && (
+                          <span className="text-gray-500 dark:text-gray-400"> + {comparisonDoctors[currentComparisonIndex].acceptedInsurances.length - 3} more</span>
+                        )}
+                      </span>
+                    </div>
+                  </div>
+                  <hr className="border-gray-200 dark:border-zinc-800" />
+
+                  <div className="space-y-1 relative">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <MessageCircle className="w-8 h-8 sm:w-10 sm:h-10 text-black-500 absolute top-1/2 -translate-y-1/2" />
+                      <h3 className="text-lg sm:text-lg font-semibold ml-12 sm:ml-14">Spoken Languages</h3>
+                    </div>
+                    <div className="ml-12 sm:ml-14">
+                      <span className="text-md sm:text-md text-gray-500 dark:text-gray-400">
+                        {comparisonDoctors[currentComparisonIndex]?.spokenLanguages?.slice(0, 3).join(', ') || 'Languages not available'}
+                        {comparisonDoctors[currentComparisonIndex]?.spokenLanguages?.length && comparisonDoctors[currentComparisonIndex]?.spokenLanguages?.length > 3 && (
+                          <span className="text-gray-500 dark:text-gray-400"> + {comparisonDoctors[currentComparisonIndex].spokenLanguages.length - 3} more</span>
+                        )}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="border border-dashed border-gray-300 dark:border-zinc-700 rounded-lg p-4 flex flex-col items-center justify-center">
+                <Users className="w-16 h-16 text-gray-400 mb-4" />
+                <p className="text-gray-500 text-center text-lg mb-6">No other doctors available for comparison</p>
+                <Button 
+                  variant="outline"
+                  size="lg"
+                  onClick={() => {
+                    setShowCompareDialog(false);
+                    router.push('/viewall');
+                  }}
+                  className="px-8 py-6 text-base"
+                >
+                  Find Doctors
+                </Button>
+              </div>
+            )}
+          </div>
+          
+          {/* navigation arrows */}
+          {loadingComparisonDoctors ? (
+            <div className="p-6 pt-0 flex justify-end items-center">
+              <div className="flex items-center gap-4">
+                <Skeleton className="w-10 h-10 rounded-full" />
+                <Skeleton className="w-10 h-10 rounded-full" />
+                <Skeleton className="w-24 h-10 rounded-md" />
+              </div>
+            </div>
+          ) : comparisonDoctors.length > 0 && (
+            <div className="p-6 pt-0 flex justify-end items-center">
+              <div className="flex items-center gap-4">
+                <Button 
+                  variant="outline" 
+                  onClick={() => navigateComparisonDoctor('prev')}
+                  className="w-10 h-10 rounded-full p-0"
+                >
+                  ←
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={() => navigateComparisonDoctor('next')}
+                  className="w-10 h-10 rounded-full p-0"
+                >
+                  →
+                </Button>
+                <Button
+                  variant="default"
+                  onClick={() => {
+                    setShowCompareDialog(false);
+                    router.push(`/viewDoctor/${comparisonDoctors[currentComparisonIndex].id}`);
+                  }}
+                >
+                  Book Online
+                </Button>
+              </div>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </div>

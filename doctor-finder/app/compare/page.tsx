@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../authcontext";
@@ -24,7 +24,7 @@ interface Doctor {
   profileImage?: string;
 }
 
-const CompareDoctorsPage = () => {
+const CompareDoctorsContent = () => {
   const [doctor1, setDoctor1] = useState<Doctor | null>(null);
   const [doctor2, setDoctor2] = useState<Doctor | null>(null);
   const [loading, setLoading] = useState(true);
@@ -251,6 +251,29 @@ const CompareDoctorsPage = () => {
   );
 };
 
+const CompareDoctorsPage = () => {
+  return (
+    <Suspense fallback={
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-2xl font-bold mb-8">loading comparison...</h1>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {[...Array(2)].map((_, i) => (
+            <div key={i} className="p-6 bg-gray-100 dark:bg-zinc-800 rounded-lg animate-pulse">
+              <div className="h-8 w-3/4 bg-gray-300 rounded mb-4"></div>
+              <div className="space-y-3">
+                {[...Array(6)].map((_, j) => (
+                  <div key={j} className="h-4 bg-gray-300 rounded w-full"></div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    }>
+      <CompareDoctorsContent />
+    </Suspense>
+  );
+};
 
 const hardcodedDoctors: Doctor[] = [
   {
