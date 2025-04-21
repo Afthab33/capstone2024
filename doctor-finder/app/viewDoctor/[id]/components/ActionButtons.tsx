@@ -24,6 +24,7 @@ const [doctors, setDoctors] = useState<{ id: string; name: string }[]>([]);
           const doctorsSnapshot = await getDocs(doctorsCollection);
           const doctorsList = doctorsSnapshot.docs.map((doc) => ({
             id: doc.id,
+            name: `${doc.data().firstName} ${doc.data().lastName}`,
             ...doc.data(),
           })) as { id: string; name: string }[];
           console.log('Fetched doctors from Firestore:', doctorsList); 
