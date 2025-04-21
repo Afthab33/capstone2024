@@ -152,16 +152,15 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
 
     
   }, []);
-  const handleCompareClick = (doctorId: string) => {
-  if (!currentDoctor?.id) {
-    console.error("Current doctor ID is missing");
-    alert("Current doctor information is not loaded yet. Please try again.");
-    return;
-  }
-
-  console.log("Navigating to compare page with:", currentDoctor.id, doctorId);
-  router.push(`/compare?doctor1=${currentDoctor.id}&doctor2=${doctorId}`);
-};
+  const handleCompareClick = useCallback((doctorId: string) => {
+    if (!id) {
+      console.error("Current doctor ID is missing");
+      return;
+    }
+    
+    
+    router.push(`/compare?doctor1=${id}&doctor2=${doctorId}`);
+  }, [id, router]);
   useEffect(() => {
     if (!authLoading && !user) {
       localStorage.setItem('redirectAfterAuth', window.location.pathname);
