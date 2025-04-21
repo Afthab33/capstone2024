@@ -42,11 +42,7 @@ const [doctors, setDoctors] = useState<{ id: string; name: string }[]>([]);
   
     const handleDoctorSelect = (doctorId: string) => {
       setModalOpen(false);
-      if (currentDoctorId && doctorId) {
-        router.push(`/compare?doctor1=${currentDoctorId}&doctor2=${doctorId}`);
-      } else {
-        console.error("Missing doctor ID(s) for comparison");
-      }
+      router.push(`/compare?doctor1=${currentDoctorId}&doctor2=${doctorId}`);
     };
   
   
