@@ -47,7 +47,7 @@ const MemoizedDoctorCard = memo(({ doctor, isHovered, onHover }: {
       onClick={() => window.location.href = `/viewDoctor/${doctor.id}`}
       className={`cursor-pointer ${
         isHovered 
-          ? 'bg-gray-100 dark:bg-gray-900' 
+          ? 'bg-zinc-100 dark:bg-zinc-900' 
           : 'bg-white dark:bg-black'
       } transition-colors duration-200 [&_.doctor-name]:after:absolute [&_.doctor-name]:after:left-0 [&_.doctor-name]:after:bottom-0 [&_.doctor-name]:after:w-full [&_.doctor-name]:after:h-0.5 [&_.doctor-name]:after:bg-primary [&_.doctor-name]:after:transform [&_.doctor-name]:after:transition-transform [&_.doctor-name]:after:origin-left [&_.doctor-name]:relative ${
         isHovered 
@@ -221,7 +221,7 @@ export default function LocationSearch() {
                   onHover={setHoveredDoctorId}
                 />
                 {index < doctors.length - 1 && (
-                  <div className="border-b border-gray-200 dark:border-gray-800" />
+                  <div className="border-b border-zinc-200 dark:border-zinc-800" />
                 )}
               </Fragment>
             ))}
@@ -234,7 +234,7 @@ export default function LocationSearch() {
           <Skeleton className="w-full h-screen" />
         ) : (
           <div 
-            className="w-full h-screen sticky top-0 bg-gray-200 z-0"
+            className="w-full h-screen sticky top-0 bg-zinc-200 z-0"
             onMouseEnter={() => setIsMouseOverMap(true)}
             onMouseLeave={() => {
               setIsMouseOverMap(false);
@@ -245,7 +245,7 @@ export default function LocationSearch() {
           >
             {mapsKey && doctors.length > 0 && (
               <div className="w-full h-full relative">
-                <div className="absolute inset-0 bg-gray-200">
+                <div className="absolute inset-0 bg-zinc-200">
                   <iframe
                     src={createMapUrl(doctors, hoveredDoctorId)}
                     className={`w-full h-full transition-opacity duration-300 ${mapLoaded ? 'opacity-100' : 'opacity-0'}`}
@@ -281,22 +281,22 @@ export default function LocationSearch() {
                           <h3 className="text-sm">
                             {doctor.clinicName || `${doctor.degree === 'MD' ? 'Dr.' : ''} ${doctor.firstName} ${doctor.lastName}'s Clinic`}
                           </h3>
-                          <p className="text-gray-600 dark:text-gray-300">
+                          <p className="text-zinc-600 dark:text-zinc-300">
                             {doctor.streetAddress}
                           </p>
-                          <p className="text-gray-600 dark:text-gray-300">
+                          <p className="text-zinc-600 dark:text-zinc-300">
                             {doctor.city}, {doctor.state} {doctor.zipCode}
                           </p>
                         </div>
                         <div className="flex items-center gap-3 ml-3">
-                          <div className="h-16 w-px bg-gray-200 dark:bg-gray-800"></div>
+                          <div className="h-16 w-px bg-zinc-200 dark:bg-zinc-800"></div>
                           <a
                             href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
                               `${doctor.streetAddress}, ${doctor.city}, ${doctor.state} ${doctor.zipCode}`
                             )}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex flex-col items-center justify-center p-2 hover:bg-gray-100 rounded-md transition-colors"
+                            className="flex flex-col items-center justify-center p-2 hover:bg-zinc-100 dark:hover:bg-zinc-900 rounded-md transition-colors"
                           > 
                             <CircleArrowRight className="w-7 h-7 text-primary" />
                             <span className="text-sm text-primary mt-1">Directions</span>
@@ -308,7 +308,7 @@ export default function LocationSearch() {
                     // default overlay showing doctor count
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
-                      <h3 className="text-gray-600 dark:text-gray-200">
+                      <h3 className="text-zinc-600 dark:text-zinc-200">
                         Showing {doctors.length} {doctors.length === 1 ? 'Doctor' : 'Doctors'}
                       </h3>
                     </div>

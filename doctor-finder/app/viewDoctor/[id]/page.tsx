@@ -79,6 +79,7 @@ interface Doctor {
   state?: string;
   zipCode?: string;
   role?: string;
+  availability?: { [key: string]: string[] };
 }
 
 const ViewDoctor = ({ params }: ViewDoctorProps) => {
@@ -128,7 +129,7 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
   const [currentComparisonIndex, setCurrentComparisonIndex] = useState(0);
   const [loadingComparisonDoctors, setLoadingComparisonDoctors] = useState(false);
 
-  const specialtyMatchClass = "text-primary font-medium relative inline-block after:absolute after:inset-0 after:animate-pulse after:bg-primary/20 after:-z-10 after:rounded-full after:blur-sm after:scale-110 px-1 py-0.5 z-0";
+  const specialtyMatchClass = "text-primary font-medium relative inline-block after:absolute after:inset-0 after:animate-pulse after:bg-primary/30 after:-z-10 after:rounded-full after:blur-md dark:after:blur-xl  after:scale-110 z-0";
 
   useEffect(() => {
     const fetchCurrentDoctor = async () => {
@@ -145,7 +146,6 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
 
         if (doctorDoc.exists()) {
           const doctorData = { id: doctorDoc.id, ...doctorDoc.data() } as Doctor;
-          console.log("Fetched current doctor:", doctorData); // Debugging
           setCurrentDoctor(doctorData);
         } else {
           console.error("Doctor not found in Firestore.");
@@ -200,9 +200,28 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
       // combine the arrays with specialty matches first
       const sortedDoctors = [...sameSpecialtyDoctors, ...otherDoctors];
       
-      console.log(`Found ${sameSpecialtyDoctors.length} doctors with same specialty and ${otherDoctors.length} other doctors`);
+      // fetch availability for each doctor
+      const doctorsWithAvailability = await Promise.all(
+        sortedDoctors.map(async (docItem) => {
+          try {
+            const availabilityRef = doc(db, 'availability', docItem.id);
+            const availabilityDoc = await getDoc(availabilityRef);
+            
+            if (availabilityDoc.exists()) {
+              return {
+                ...docItem,
+                availability: availabilityDoc.data() as { [key: string]: string[] }
+              };
+            }
+            return docItem;
+          } catch (error) {
+            console.error(`Error fetching availability for doctor ${docItem.id}:`, error);
+            return docItem;
+          }
+        })
+      );
       
-      setComparisonDoctors(sortedDoctors);
+      setComparisonDoctors(doctorsWithAvailability);
       setCurrentComparisonIndex(0);
     } catch (error) {
       console.error("Error fetching comparison doctors:", error);
@@ -524,6 +543,47 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
     }
   }, [id, router]);
 
+   const getNextAvailableDate = (availability: { [key: string]: string[] } | undefined, currentTime: Date) => {
+    if (!availability || Object.keys(availability).length === 0) {
+      return null;
+    }
+    
+    // sort dates chronologically
+    const sortedDates = Object.keys(availability).sort((a, b) => {
+      const dateA = new Date(a);
+      const dateB = new Date(b);
+      return dateA.getTime() - dateB.getTime();
+    });
+    
+    // find the first date that has available slots and is not in the past
+    for (const dateStr of sortedDates) {
+      const [year, month, day] = dateStr.split('-').map(Number);
+      const date = new Date(year, month - 1, day);
+      
+      // skip dates in the past
+      if (isBefore(startOfDay(date), startOfDay(currentTime))) {
+        continue;
+      }
+      
+      // for today, check if there are any slots in the future
+      if (format(date, 'yyyy-MM-dd') === format(currentTime, 'yyyy-MM-dd')) {
+        const futureSlots = availability[dateStr].filter(timeStr => {
+          const [hours, minutes] = timeStr.split(':').map(Number);
+          const slotTime = new Date(year, month - 1, day, hours, minutes);
+          return !isBefore(slotTime, currentTime);
+        });
+        
+        if (futureSlots.length > 0) {
+          return date;
+        }
+      } else if (availability[dateStr].length > 0) {
+        return date;
+      }
+    }
+    
+    return null;
+  };
+
   if (authLoading || (!authLoading && !user)) {
     return null;
   }
@@ -553,7 +613,7 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
                     <div className="w-full h-px bg-gray-300 dark:bg-zinc-800 mt-4 mb-4 block sm:hidden" />
                   </div>
                   
-                  <div className="w-full sm:w-2/3 sm:pl-5 sm:border-l border-gray-300 dark:border-zinc-800">
+                  <div className="w-full sm:w-2/3 sm:pl-5 sm:border-l border-gray-300 dark:border-zinc-800 sm:flex sm:flex-col sm:justify-between sm:min-h-[100px]">
                     <Skeleton className="h-16 w-full mb-2" />
                     <div className="text-right">
                       <Skeleton className="h-4 w-24 ml-auto" />
@@ -636,7 +696,6 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
   if (error) return <div>{error}</div>;
 
   const displayName = formatDisplayName(doctor);
-  {console.log("Current doctor ID passed to ActionButtons:", currentDoctor?.id || "")}
 
   return (
     <div className="container mx-auto px-4 xs:px-4 sm:px-4 md:px-4 lg:px-24 pt-8 lg:pt-16">
@@ -668,28 +727,29 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
                     <span className="text-5xl sm:text-6xl font-regular leading-none">
                       {doctor?.rating === 0 ? '0' : doctor?.rating?.toFixed(1)}
                     </span>
-                      <div>
-                        <StarRating rating={doctor?.rating ?? 0} />
-                      </div>
+                    <div>
+                      <StarRating rating={doctor?.rating ?? 0} />
+                    </div>
                   </div>
                   <div className="w-full h-px bg-gray-300 dark:bg-zinc-800 mt-4 mb-4 block sm:hidden" />
                 </div>
-                <div className="w-full sm:w-2/3 sm:pl-5 sm:border-l border-gray-300 dark:border-zinc-800 flex flex-col justify-between min-h-[100px]">
+                
+                <div className="w-full sm:w-2/3 sm:pl-5 sm:border-l border-gray-300 dark:border-zinc-800 sm:flex sm:flex-col sm:justify-between sm:min-h-[100px]">
                   {reviewsLoading ? (
                     <>
                       <div className="mb-2">
                         <Skeleton className="h-16 w-full" />
                       </div>
-                      <div className="text-right mt-auto pt-2">
+                      <div className="text-right mt-2">
                         <Skeleton className="h-4 w-24 ml-auto" />
                       </div>
                     </>
                   ) : reviews.length > 0 ? (
                     <>
                       <div className="text-gray-600 dark:text-gray-400 text-md italic mb-2">
-                        "{reviews[0].review}"
+                        "{reviews[0].review.length > 100 ? `${reviews[0].review.substring(0, 100)}...` : reviews[0].review}"
                       </div>
-                      <div className="text-right mt-auto pt-2">
+                      <div className="text-right mt-2 sm:mt-auto">
                         <Dialog>
                           <DialogTrigger asChild>
                             <span
@@ -711,16 +771,14 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
                       </div>
                     </>
                   ) : (
-                    <>
-                      <div className="flex flex-col items-center justify-center h-full">
-                        <div className="text-gray-500 dark:text-gray-400 text-sm text-center">
-                          No reviews yet for {doctor?.degree === 'MD' ? 'Dr.' : ''} {doctor?.firstName} {doctor?.lastName}
-                        </div>
-                        <div className="text-gray-400 dark:text-gray-500 text-xs text-center mt-1">
-                          Be the first to share your experience
-                        </div>
+                    <div className="flex flex-col items-center justify-center h-full">
+                      <div className="text-gray-500 dark:text-gray-400 text-sm text-center">
+                        No reviews yet for {doctor?.degree === 'MD' ? 'Dr.' : ''} {doctor?.firstName} {doctor?.lastName}
                       </div>
-                    </>
+                      <div className="text-gray-400 dark:text-gray-500 text-xs text-center mt-1">
+                        Be the first to share your experience
+                      </div>
+                    </div>
                   )}
                 </div>
               </div>
@@ -1141,6 +1199,16 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
       >
         <DialogContent className="fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] w-[calc(100%-32px)] sm:w-[90%] max-w-[1200px] max-h-[90vh] overflow-y-auto rounded-lg border border-gray-200 dark:border-zinc-900 bg-white dark:bg-zinc-950 p-0 shadow-lg">
           <DialogHeader className="p-6 pb-2 sticky top-0 bg-white dark:bg-zinc-950 z-10">
+            <button 
+              onClick={() => setShowCompareDialog(false)}
+              className="absolute right-6 top-6 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+              <span className="sr-only">Close</span>
+            </button>
             <DialogTitle className="text-xl font-semibold">Compare Doctors</DialogTitle>
             <DialogDescription className="text-gray-500 mt-1.5 mb-0">
               Compare {doctor?.firstName} {doctor?.lastName} with other doctors
@@ -1172,6 +1240,7 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
                 </div>
               </div>
 
+              {/* Rating box first for consistency */}
               <div className="mt-8 sm:mt-8 bg-gray-100 dark:bg-zinc-900 rounded-lg p-4 sm:p-5">
                 <div className="flex flex-col items-center justify-center">
                   <div className="flex flex-row items-center gap-3 mb-2">
@@ -1179,10 +1248,38 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
                       {doctor?.rating === 0 ? 
                         '0' : doctor?.rating?.toFixed(1) || '0'}
                     </span>
-                    <div>
+                    <div className="h-10 w-px bg-gray-300 dark:bg-zinc-700 mx-1 mt-2"></div>
+                    <div className="mt-2 sm:mt-0">
                       <StarRating rating={doctor?.rating ?? 0} />
                     </div>
                   </div>
+                </div>
+              </div>
+
+              {/* availability box after rating */}
+              <div className="mt-4 bg-gray-100 dark:bg-zinc-900 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-5 h-5 text-primary" />
+                    <h3 className="text-md font-medium">Next Available</h3>
+                  </div>
+                  {(() => {
+                    const nextDate = getNextAvailableDate(availabilityData, currentTime);
+                    
+                    if (nextDate) {
+                      return (
+                        <span className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
+                          {format(nextDate, 'EEE, MMM d')}
+                        </span>
+                      );
+                    } else {
+                      return (
+                        <span className="text-sm text-zinc-500 dark:text-zinc-400">
+                          No availability 
+                        </span>
+                      );
+                    }
+                  })()}
                 </div>
               </div>
 
@@ -1220,6 +1317,9 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
               </div>
             </div>
 
+            {/* mobile only separator */}
+            <hr className="border-gray-200 dark:border-zinc-800 md:hidden mx-4" />
+
             {/* comparison doctor */}
             {loadingComparisonDoctors ? (
               <div className="rounded-lg p-4">
@@ -1236,18 +1336,30 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
                 {/* rating box skeleton */}
                 <div className="mt-8 sm:mt-12 bg-gray-100 dark:bg-zinc-900 rounded-lg p-4 sm:p-5">
                   <div className="flex flex-col items-center justify-center">
-                    <div className="flex flex-row items-center gap-3">
+                    <div className="flex flex-row items-center gap-3 mb-2">
                       <Skeleton className="h-12 w-12" />
+                      <div className="h-10 w-px bg-gray-300 dark:bg-zinc-700 mx-1"></div>
                       <Skeleton className="h-6 w-32" />
                     </div>
                   </div>
                 </div>
 
+                {/* availability box skeleton */}
+                <div className="mt-4 bg-gray-100 dark:bg-zinc-900 rounded-lg p-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Skeleton className="w-5 h-5 rounded-full" />
+                      <Skeleton className="h-5 w-32" />
+                    </div>
+                    <Skeleton className="h-4 w-24" />
+                  </div>
+                </div>
+
                 {/* info skeleton */}
-                <div className="mt-8 sm:mt-14 space-y-4 sm:space-y-6">
+                <div className="mt-8 sm:mt-8 space-y-4 sm:space-y-6">
                   <div className="space-y-1 relative">
                     <div className="flex items-center gap-2 sm:gap-3">
-                      <Skeleton className="w-10 h-10 absolute top-1/2 -translate-y-1/2" />
+                      <Skeleton className="w-10 h-10 rounded-full absolute top-1/2 -translate-y-1/2" />
                       <Skeleton className="h-6 w-48 ml-14" />
                     </div>
                     <div className="ml-12 sm:ml-14">
@@ -1256,9 +1368,10 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
                   </div>
                   <hr className="border-gray-200 dark:border-zinc-800" />
 
+                  {/* button skeleton */}
                   <div className="space-y-1 relative">
                     <div className="flex items-center gap-2 sm:gap-3">
-                      <Skeleton className="w-10 h-10 absolute top-1/2 -translate-y-1/2" />
+                      <Skeleton className="w-10 h-10 rounded-full absolute top-1/2 -translate-y-1/2" />
                       <Skeleton className="h-6 w-48 ml-14" />
                     </div>
                     <div className="ml-12 sm:ml-14">
@@ -1300,15 +1413,46 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
                         {comparisonDoctors[currentComparisonIndex]?.rating === 0 ? 
                           '0' : comparisonDoctors[currentComparisonIndex]?.rating?.toFixed(1) || '0'}
                       </span>
-                      <div>
+                      <div className="h-10 w-px bg-gray-300 dark:bg-zinc-700 mx-1 mt-2"></div>
+                      <div className="mt-2 sm:mt-0">
                         <StarRating rating={comparisonDoctors[currentComparisonIndex]?.rating ?? 0} />
                       </div>
                     </div>
                   </div>
                 </div>
 
+                {/* next available appointment */}
+                <div className="mt-4 mb-8 bg-gray-100 dark:bg-zinc-900 rounded-lg p-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Clock className="w-5 h-5 text-primary" />
+                      <h3 className="text-md font-medium">Next Available</h3>
+                    </div>
+                    {(() => {
+                      const nextDate = getNextAvailableDate(
+                        comparisonDoctors[currentComparisonIndex]?.availability,
+                        currentTime
+                      );
+                      
+                      if (nextDate) {
+                        return (
+                          <span className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
+                            {format(nextDate, 'EEE, MMM d')}
+                          </span>
+                        );
+                      } else {
+                        return (
+                          <span className="text-sm text-zinc-500 dark:text-zinc-400">
+                            No availability
+                          </span>
+                        );
+                      }
+                    })()}
+                  </div>
+                </div>
+
                 {/* info */}
-                <div className="mt-8 sm:mt-8 space-y-4 sm:space-y-6">
+                <div className="mt-4 sm:mt-4 space-y-4 sm:space-y-6">
                   <div className="space-y-1 relative">
                     <div className="flex items-center gap-2 sm:gap-3">
                       <Shield className="w-8 h-8 sm:w-10 sm:h-10 text-blue-500 absolute top-1/2 -translate-y-1/2" />
@@ -1362,39 +1506,67 @@ const ViewDoctor = ({ params }: ViewDoctorProps) => {
           
           {/* navigation arrows */}
           {loadingComparisonDoctors ? (
-            <div className="p-6 pt-0 flex justify-end items-center">
-              <div className="flex items-center gap-4">
-                <Skeleton className="w-10 h-10 rounded-full" />
-                <Skeleton className="w-10 h-10 rounded-full" />
-                <Skeleton className="w-24 h-10 rounded-md" />
+            <div className="p-6 pt-0 mx-4 flex justify-between items-center">
+              <div className="items-center hidden md:block">
+                <Skeleton className="h-5 w-20" />
+              </div>
+              
+              <div className="flex items-center gap-4 md:w-1/2 justify-end">
+                <Skeleton className="h-10 w-full max-w-[450px] rounded-md" />
+                
+                <div className="bg-gray-100 dark:bg-zinc-800 shadow-md rounded-full flex overflow-hidden flex-shrink-0">
+                  <Skeleton className="w-10 h-10 rounded-l-full" />
+                  <div className="w-px h-10 bg-gray-300 dark:bg-zinc-700 self-center"></div>
+                  <Skeleton className="w-10 h-10 rounded-r-full" />
+                </div>
               </div>
             </div>
           ) : comparisonDoctors.length > 0 && (
-            <div className="p-6 pt-0 flex justify-end items-center">
-              <div className="flex items-center gap-4">
-                <Button 
-                  variant="outline" 
-                  onClick={() => navigateComparisonDoctor('prev')}
-                  className="w-10 h-10 rounded-full p-0"
-                >
-                  ←
-                </Button>
-                <Button 
-                  variant="outline" 
-                  onClick={() => navigateComparisonDoctor('next')}
-                  className="w-10 h-10 rounded-full p-0"
-                >
-                  →
-                </Button>
+            <div className="p-6 pt-0 mx-4 flex justify-between items-center">
+              <div className="items-center hidden md:block">
+                <span className="text-sm text-gray-500">
+                  {currentComparisonIndex + 1} of {comparisonDoctors.length}
+                </span>
+              </div>
+              
+              <div className="flex items-center gap-4 w-full md:w-1/2 justify-end">
                 <Button
                   variant="default"
                   onClick={() => {
                     setShowCompareDialog(false);
                     router.push(`/viewDoctor/${comparisonDoctors[currentComparisonIndex].id}`);
                   }}
+                  className="bg-primary sm:ml-6 hover:bg-primary/90 text-white w-full sm:flex-grow truncate"
                 >
-                  Book Online
+                  <span className="hidden sm:inline">
+                    Book with {comparisonDoctors[currentComparisonIndex]?.firstName} {comparisonDoctors[currentComparisonIndex]?.lastName || 'Doctor'}
+                  </span>
+                  <span className="sm:hidden">
+                    Book Online
+                  </span>
                 </Button>
+                
+                <div className="bg-gray-100 dark:bg-zinc-800 shadow-md rounded-full flex overflow-hidden flex-shrink-0">
+                  <Button 
+                    variant="ghost" 
+                    onClick={() => navigateComparisonDoctor('prev')}
+                    className="w-10 h-10 rounded-l-full p-0 hover:bg-gray-200 dark:hover:bg-zinc-700 focus:ring-0 focus:ring-offset-0"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="grey" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
+                      <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                  </Button>
+                  <div className="w-px h-10 bg-gray-300 dark:bg-zinc-700 self-center"></div>
+                  <Button 
+                    variant="ghost" 
+                    onClick={() => navigateComparisonDoctor('next')}
+                    className="w-10 h-10 rounded-r-full p-0 hover:bg-gray-200 dark:hover:bg-zinc-700 focus:ring-0 focus:ring-offset-0"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="grey" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
+                      <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                  </Button>
+                </div>
               </div>
             </div>
           )}

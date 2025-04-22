@@ -251,7 +251,7 @@ export default function Home() {
           {isLoading ? (
             <Skeleton className="w-full h-[calc(100vh-2rem)]" />
           ) : (
-            <div className="w-full h-[calc(100vh-2rem)] relative sticky top-4">
+            <div className="w-full h-[calc(100vh-2rem)] sticky top-4">
               {/* search by location button */}
               <div className={`absolute top-8 left-1/2 transform -translate-x-1/2 z-10 transition-opacity duration-300 hidden lg:block ${mapLoaded ? 'opacity-100' : 'opacity-0'}`}>
                 <Link
