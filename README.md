@@ -1,28 +1,60 @@
 # Doctor Finder
 
-Doctor Finder is a web app that helps you find doctors near you. You can search for doctors by what they do, where they are, and what insurance they take. Doctors can make their own profile to show patients what they offer. We made it to make finding a doctor less of a headache. Whether you need a checkup or you're a doctor looking for patients, Doctor Finder's got you covered.
+![Doctor Finder Logo](public/logo.png)
+
+## Overview
+
+Doctor Finder is a comprehensive web application that connects patients with healthcare providers based on specialty, location, insurance acceptance, and other criteria. Built with Next.js and Firebase, the platform offers a seamless, user-friendly experience for both patients seeking medical care and doctors looking to expand their practice.
+
+## Features
+
+### For Patients
+- **Advanced Search**: Filter doctors by specialty, location, insurance, availability, and ratings
+- **Interactive Maps**: See doctor locations with Google Maps integration
+- **Patient Reviews**: Read and leave reviews for doctors you've visited
+- **Appointment Scheduling**: Request appointments directly through the platform
+- **User Profiles**: Save your favorite doctors and medical preferences
+
+### For Doctors
+- **Professional Profiles**: Create comprehensive profiles showcasing your expertise, education, and services
+- **Availability Management**: Set your working hours and appointment slots
+- **Patient Communication**: Respond to patient inquiries and appointment requests
+- **Review Management**: View and respond to patient reviews
+- **Analytics Dashboard**: Track profile views and appointment requests
+
+## Tech Stack
+
+- **Frontend**: Next.js 15.1.6, React 18.3.12, TypeScript 5.6.3
+- **Styling**: TailwindCSS 3.4.1, ShadCN UI components
+- **Backend**: Firebase 11.0.1 (Authentication, Firestore, Cloud Functions)
+- **Deployment**: Vercel
+- **Maps Integration**: Google Maps Embed API v1
+- **Geolocation**: IPGeolocation.io API
+- **Code Quality**: ESLint 8, Prettier 3.3.3
 
 ## Installation
 
 1. Clone the repository
-```
+```bash
 git clone https://github.com/markie-dev/capstone2024.git
 ```
-2. cd into the project
-```
+
+2. Navigate to the project directory
+```bash
 cd capstone2024/doctor-finder
 ```
+
 3. Install dependencies
-```
+```bash
 npm install
 ```
 
-3. Create environment variable file
-```
+4. Create environment variable file
+```bash
 touch .env.local
 ```
 
-4. Add the following environment variables to the .env.local file
+5. Add the following environment variables to the .env.local file
 ```
 FIREBASE_API_KEY=<your-firebase-api-key>
 FIREBASE_AUTH_DOMAIN=<your-firebase-auth-domain>
@@ -35,49 +67,73 @@ GOOGLE_MAPS_API_KEY=<your-google-maps-api-key>
 IPGEOLOCATION_API_KEY=<your-ipgeolocation-api-key>
 ```
 
-> [!WARNING]
-> Your Google Maps key only has to have embed capabilities.
+> **Note:** Your Google Maps key only needs to have embed capabilities
 
-> [!WARNING]
-> You can get your IPGeolocation key from [here](https://ipgeolocation.io/ip-location-api.html).
+> **Note:** You can obtain an IPGeolocation API key from [ipgeolocation.io](https://ipgeolocation.io/ip-location-api.html)
 
-5. Run the Cloud Functions
-```
-cd functions; npm install; firebase deploy --only functions
-```
-
-6. Start the development server
-```
-cd ..; npm run dev
+6. Deploy and set up Firebase Cloud Functions
+```bash
+cd functions
+npm install
+firebase deploy --only functions
 ```
 
+7. Return to project root and start the development server
+```bash
+cd ..
+npm run dev
+```
 
-7. Open your browser and navigate to `http://localhost:3000`
+8. Open your browser and navigate to `http://localhost:3000`
+
+## Deployment
+
+The application is designed to be deployed on Vercel:
+
+1. Create a Vercel account and connect it to your GitHub repository
+2. Set up all environment variables in the Vercel dashboard
+3. Deploy the application with automatic updates on push to main branch
+
+## Project Structure
+
+- `app/`: Main application code and pages
+- `api/`: Next.js server actions for Firebase, Google Maps, and geolocation
+- `components/`: Reusable UI components (buttons, forms, doctor cards, etc.)
+- `functions/src/`: Firebase Cloud Functions (including doctor rating updates)
+- `hooks/`: Custom React hooks (including toast notifications)
+- `public/`: Static assets and images
+- `.env.local`: Environment variables configuration
+- `next.config.mjs`: Next.js configuration
+- `package.json`: Project dependencies and scripts
+- `tsconfig.json`: TypeScript configuration
+- `.eslintrc.js`: ESLint rules for code quality
+- `.prettierrc`: Prettier configuration for code formatting
+
+## Firebase Setup
+
+1. Create a Firebase project at [firebase.google.com](https://firebase.google.com)
+2. Enable Authentication services (Email/Password, Google Sign-in)
+3. Create Firestore collections for doctors, users, reviews, and appointments
+4. Configure Firestore Security Rules to secure your data
+5. Set up Cloud Functions for background processes
 
 ## Contributing
 
-In order to see your changes on vercel, run the following command to check for linting errors:
-```
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Run linting checks before committing
+```bash
 npm run lint
 ```
-After fixing any errors, you may commit your code.
+5. Commit your changes (`git commit -m 'Add some amazing feature'`)
+6. Push to the branch (`git push origin feature/amazing-feature`)
+7. Open a Pull Request
 
-## Group Members
+## Documentation & Resources
 
-- Trung Du
-- Marcus Ellison
-- Daniel Wagner
-- Layth Gharbia
-- Mark Oladipo
-
-## Documentation
-
-### Firebase -https://firebase.google.com/docs/web/setup
-
-### Next.js - https://nextjs.org/docs
-
-### Tailwind CSS - https://tailwindcss.com/docs/guides/nextjs
-
-### Shadcn - https://ui.shadcn.com/docs/components
-
-
+- [Firebase Documentation](https://firebase.google.com/docs/web/setup)
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs/guides/nextjs)
+- [ShadCN UI Components](https://ui.shadcn.com/docs/components)
+- [Google Maps API Documentation](https://developers.google.com/maps/documentation/embed/get-started)
