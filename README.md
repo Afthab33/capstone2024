@@ -1,5 +1,7 @@
 # Doctor Finder
 
+https://capstone2024-five.vercel.app/
+
 ## Overview
 
 Doctor Finder is a comprehensive web application that connects patients with healthcare providers based on specialty, location, insurance acceptance, and other criteria. Built with Next.js and Firebase, the platform offers a seamless, user-friendly experience for both patients seeking medical care and doctors looking to expand their practice.
